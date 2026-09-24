@@ -65,3 +65,8 @@ node_modules/
 
 .vercel
 .env*
+
+# skills de agentes instaladas por integraciones (Neon)
+/.agents/
+/.claude/skills/
+/skills-lock.json
