@@ -77,12 +77,6 @@ export const Header: GlobalConfig = {
       ],
     },
     linkField({ name: 'cta', label: 'Botón destacado (ej: Solicitar presupuesto)' }),
-    {
-      name: 'showWhatsapp',
-      label: 'Mostrar acceso a WhatsApp en el header',
-      type: 'checkbox',
-      defaultValue: true,
-    },
   ],
   hooks: { afterChange: [revalidateGlobalHook('header')] },
 }

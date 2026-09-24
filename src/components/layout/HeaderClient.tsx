@@ -7,7 +7,6 @@ import { useEffect, useId, useRef, useState } from 'react'
 
 import { buttonVariants } from '@/components/ui/button-variants'
 import { BrandLogo, DoorShape } from '@/components/ui/Brand'
-import { track } from '@/lib/analytics/track'
 import { cn } from '@/lib/cn'
 
 import { MobileMenu } from './MobileMenu'
@@ -16,8 +15,6 @@ import { isActivePath, type NavItem, type SimpleLink } from './nav-types'
 type Props = {
   nav: NavItem[]
   cta: SimpleLink
-  whatsappHref: string | null
-  showWhatsapp: boolean
   brandName: string
   logo: { url: string; width: number; height: number } | null
 }
@@ -43,7 +40,7 @@ export function HeaderLogo({ brandName, logo }: Pick<Props, 'brandName' | 'logo'
  * transparente con texto blanco hasta hacer scroll — resuelto con CSS `:has()` para
  * que no haya parpadeo en la carga. En desktop, un ítem puede abrir un mega menú.
  */
-export function HeaderClient({ nav, cta, whatsappHref, showWhatsapp, brandName, logo }: Props) {
+export function HeaderClient({ nav, cta, brandName, logo }: Props) {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [megaIndex, setMegaIndex] = useState<number | null>(null)
@@ -134,17 +131,6 @@ export function HeaderClient({ nav, cta, whatsappHref, showWhatsapp, brandName, 
         </nav>
 
         <div className="flex items-center gap-3.5">
-          {showWhatsapp && whatsappHref && (
-            <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden py-3.5 text-eyebrow tracking-[0.18em] uppercase hover:text-brand 2xl:inline"
-              onClick={() => track('whatsapp_click', { location: 'header' })}
-            >
-              WhatsApp
-            </a>
-          )}
           <Link
             href={cta.href}
             className={cn(
@@ -154,13 +140,7 @@ export function HeaderClient({ nav, cta, whatsappHref, showWhatsapp, brandName, 
           >
             {cta.label}
           </Link>
-          <MobileMenu
-            nav={nav}
-            cta={cta}
-            whatsappHref={whatsappHref}
-            brandName={brandName}
-            pathname={pathname}
-          />
+          <MobileMenu nav={nav} cta={cta} brandName={brandName} pathname={pathname} />
         </div>
       </div>
 

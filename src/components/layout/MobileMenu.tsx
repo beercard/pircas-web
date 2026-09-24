@@ -6,7 +6,6 @@ import { useState } from 'react'
 
 import { buttonVariants } from '@/components/ui/button-variants'
 import { BrandLogo } from '@/components/ui/Brand'
-import { track } from '@/lib/analytics/track'
 import { cn } from '@/lib/cn'
 
 import { isActivePath, type NavItem, type SimpleLink } from './nav-types'
@@ -14,13 +13,12 @@ import { isActivePath, type NavItem, type SimpleLink } from './nav-types'
 type Props = {
   nav: NavItem[]
   cta: SimpleLink
-  whatsappHref: string | null
   brandName: string
   pathname: string
 }
 
 /** Menú mobile/tablet a pantalla completa (grafito). Accesible: foco atrapado, Escape, aria-modal. */
-export function MobileMenu({ nav, cta, whatsappHref, brandName, pathname }: Props) {
+export function MobileMenu({ nav, cta, brandName, pathname }: Props) {
   const [open, setOpen] = useState(false)
   // Cierra el menú al navegar (ajuste de estado durante el render, patrón recomendado por React).
   const [lastPath, setLastPath] = useState(pathname)
@@ -84,20 +82,6 @@ export function MobileMenu({ nav, cta, whatsappHref, brandName, pathname }: Prop
             >
               {cta.label}
             </Link>
-            {whatsappHref && (
-              <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(
-                  buttonVariants({ variant: 'outline-light' }),
-                  'h-[60px] justify-center',
-                )}
-                onClick={() => track('whatsapp_click', { location: 'mobile_menu' })}
-              >
-                WhatsApp
-              </a>
-            )}
           </div>
         </Dialog.Content>
       </Dialog.Portal>

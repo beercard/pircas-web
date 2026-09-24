@@ -3443,7 +3443,6 @@ export interface Header {
      */
     whatsappMessage?: string | null;
   };
-  showWhatsapp?: boolean | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -4095,7 +4094,6 @@ export interface HeaderSelect<T extends boolean = true> {
         url?: T;
         whatsappMessage?: T;
       };
-  showWhatsapp?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

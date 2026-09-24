@@ -22,7 +22,24 @@ export async function ContactBlock({ title, promo, showMap, settings }: ContactB
   if (a?.street)
     rows.push({
       label: 'Local',
-      value: (
+      value: a.mapsUrl ? (
+        <TrackedAnchor
+          href={a.mapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          event="map_click"
+          params={{ location: 'contact' }}
+          className="group inline-block hover:text-brand"
+          title="Ver en Google Maps"
+        >
+          {a.street}
+          <br />
+          {[a.city, a.region, 'Argentina'].filter(Boolean).join(', ')}
+          <span className="mt-1.5 block text-eyebrow font-medium tracking-[0.18em] text-brand-ink uppercase group-hover:underline">
+            Cómo llegar →
+          </span>
+        </TrackedAnchor>
+      ) : (
         <>
           {a.street}
           <br />

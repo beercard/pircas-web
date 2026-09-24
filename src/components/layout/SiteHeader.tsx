@@ -2,7 +2,7 @@ import { getHeader, getSiteSettings } from '@/lib/data/globals'
 import type { CmsLink } from '@/lib/links'
 import { ROUTES } from '@/lib/routes'
 import { mediaSrc } from '@/lib/media'
-import { getWhatsAppConfig, whatsappUrl } from '@/lib/whatsapp'
+import { getWhatsAppConfig } from '@/lib/whatsapp'
 
 import { HeaderClient } from './HeaderClient'
 import { resolveNavigation, toSimple } from './nav-types'
@@ -30,8 +30,6 @@ export async function SiteHeader() {
     <HeaderClient
       nav={resolveNavigation(header, whatsapp)}
       cta={cta}
-      whatsappHref={whatsappUrl(whatsapp)}
-      showWhatsapp={header.showWhatsapp !== false}
       brandName={settings.brandName}
       logo={logo}
     />

@@ -1,5 +1,6 @@
 import * as migration_20260924_000539_initial from './20260924_000539_initial';
 import * as migration_20260924_021647_vercel_blob from './20260924_021647_vercel_blob';
+import * as migration_20260924_023829_remove_header_whatsapp from './20260924_023829_remove_header_whatsapp';
 
 export const migrations = [
   {
@@ -10,6 +11,11 @@ export const migrations = [
   {
     up: migration_20260924_021647_vercel_blob.up,
     down: migration_20260924_021647_vercel_blob.down,
-    name: '20260924_021647_vercel_blob'
+    name: '20260924_021647_vercel_blob',
+  },
+  {
+    up: migration_20260924_023829_remove_header_whatsapp.up,
+    down: migration_20260924_023829_remove_header_whatsapp.down,
+    name: '20260924_023829_remove_header_whatsapp'
   },
 ];

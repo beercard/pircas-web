@@ -27,6 +27,7 @@
 
   --color-success: #2f6b3f;
   --color-danger: #b42318;
+  --color-whatsapp: #25d366; /* verde oficial de WhatsApp */
 
   /* Tipografía */
   --font-sans: var(--font-montserrat), Helvetica, Arial, sans-serif;

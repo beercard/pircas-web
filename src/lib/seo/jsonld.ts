@@ -41,6 +41,7 @@ export function organizationJsonLd(settings: SiteSetting, seo: SeoDefault): Json
           addressCountry: a.country || 'AR',
         })
       : undefined,
+    hasMap: a?.mapsUrl || undefined,
     areaServed: settings.coverageArea,
     sameAs: sameAs.length ? sameAs : undefined,
   })

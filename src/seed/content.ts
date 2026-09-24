@@ -48,9 +48,9 @@ export async function seedContent(payload: Payload, catalog: Catalog) {
         city: 'Coronda',
         region: 'Santa Fe',
         country: 'AR',
-        mapEmbedQuery: 'Hipólito Yrigoyen 1111, Coronda, Santa Fe',
-        mapsUrl:
-          'https://www.google.com/maps/search/?api=1&query=Hip%C3%B3lito+Yrigoyen+1111+Coronda+Santa+Fe',
+        mapEmbedQuery: 'Pircas Coronda, Hipólito Yrigoyen 1111, Coronda, Santa Fe',
+        // Ficha de Google Business Profile ("Pircas Coronda").
+        mapsUrl: 'https://maps.google.com/?cid=6846983047166669775',
       },
       coverageArea: 'Coronda y zona · +40 km · Envíos a todo el país',
       workingHours: [
@@ -686,7 +686,6 @@ export async function seedContent(payload: Payload, catalog: Catalog) {
         label: 'Solicitar presupuesto',
         reference: { relationTo: 'pages', value: quotePage.id },
       },
-      showWhatsapp: true,
     },
   })
 

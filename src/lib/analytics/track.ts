@@ -18,6 +18,7 @@ export type AnalyticsEventName =
   | 'contact_submit'
   | 'whatsapp_click'
   | 'phone_click'
+  | 'map_click'
   | 'advisor_complete'
 
 export type AnalyticsParams = Record<string, string | number | boolean | undefined>

@@ -4,6 +4,7 @@ import { TrackedAnchor } from '@/components/analytics/TrackedAnchor'
 import { CmsLink } from '@/components/cms/CmsLink'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { BrandLogo, DoorShape } from '@/components/ui/Brand'
+import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
 import { cn } from '@/lib/cn'
 import { getFooter, getSiteSettings } from '@/lib/data/globals'
 import type { CmsLink as CmsLinkData } from '@/lib/links'
@@ -102,13 +103,28 @@ export async function SiteFooter() {
           ))}
 
           <address className="flex flex-col gap-2.5 text-[0.84rem] leading-relaxed font-normal text-white/65 not-italic">
-            {a?.street && (
-              <span>
-                {a.street}
-                <br />
-                {[a.city, a.region].filter(Boolean).join(', ')}
-              </span>
-            )}
+            {a?.street &&
+              (a.mapsUrl ? (
+                <TrackedAnchor
+                  href={a.mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  event="map_click"
+                  params={{ location: 'footer' }}
+                  className="hover:text-white"
+                  title="Ver en Google Maps"
+                >
+                  {a.street}
+                  <br />
+                  {[a.city, a.region].filter(Boolean).join(', ')}
+                </TrackedAnchor>
+              ) : (
+                <span>
+                  {a.street}
+                  <br />
+                  {[a.city, a.region].filter(Boolean).join(', ')}
+                </span>
+              ))}
             {settings.phone && (
               <TrackedAnchor
                 href={`tel:+${(settings.whatsapp?.number ?? settings.phone).replace(/\D/g, '')}`}
@@ -152,7 +168,7 @@ export async function SiteFooter() {
 
       {/* Barra fija mobile: WhatsApp + Presupuesto */}
       <MobileCtaBar whatsappHref={wa} show={settings.whatsapp?.showMobileBar !== false} />
-      {/* Botón flotante desktop */}
+      {/* Botón flotante desktop (en mobile está la barra fija) */}
       {wa && settings.whatsapp?.showFloating !== false && (
         <TrackedAnchor
           href={wa}
@@ -160,12 +176,11 @@ export async function SiteFooter() {
           rel="noopener noreferrer"
           event="whatsapp_click"
           params={{ location: 'floating' }}
-          className={cn(
-            buttonVariants({ variant: 'dark', size: 'sm' }),
-            'floating-wa fixed right-6 bottom-6 z-40 hidden shadow-float md:inline-flex',
-          )}
+          aria-label="Escribinos por WhatsApp"
+          title="Escribinos por WhatsApp"
+          className="floating-wa fixed right-6 bottom-6 z-40 hidden size-15 items-center justify-center rounded-full bg-whatsapp text-white shadow-float transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-whatsapp md:flex"
         >
-          WhatsApp <span aria-hidden="true">→</span>
+          <WhatsAppIcon className="size-8" />
         </TrackedAnchor>
       )}
     </>
@@ -186,8 +201,9 @@ function MobileCtaBar({ whatsappHref, show }: { whatsappHref: string | null; sho
           rel="noopener noreferrer"
           event="whatsapp_click"
           params={{ location: 'mobile_bar' }}
-          className="flex h-[62px] items-center justify-center text-eyebrow tracking-[0.18em] text-white uppercase"
+          className="flex h-[62px] items-center justify-center gap-2.5 text-eyebrow tracking-[0.18em] text-white uppercase"
         >
+          <WhatsAppIcon className="size-5 text-whatsapp" />
           WhatsApp
         </TrackedAnchor>
       ) : (
