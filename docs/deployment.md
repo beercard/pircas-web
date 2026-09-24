@@ -55,12 +55,27 @@ docker compose logs -f app
 | Consola SQL | `docker compose exec postgres psql -U pircas pircas` |
 | Estado de migraciones | `docker compose --profile tools run --rm tools pnpm migrate:status` |
 
-## Opción B — Vercel (u otra plataforma serverless)
+## Opción B — Vercel (en uso: https://pircas-web.vercel.app)
 
-- Base PostgreSQL gestionada (Neon, Supabase, RDS…) en `DATABASE_URL`.
-- **Imágenes**: el sistema de archivos de Vercel es efímero → usar almacenamiento de objetos. Instalar `@payloadcms/storage-s3` (S3/R2/Spaces) o `@payloadcms/storage-vercel-blob` y agregarlo a `plugins` en `src/plugins.ts` para la colección `media`.
-- Rate limiting: en serverless cada instancia tiene su propia memoria → implementar `RateLimitStore` con Redis/Upstash (`src/lib/forms/rate-limit.ts`).
-- Las migraciones se aplican al iniciar (o en el build con `pnpm migrate && pnpm build`).
+Proyecto `pircas-web` conectado a GitHub (`main` → producción; cada push despliega).
+
+- **Base**: Neon (Marketplace de Vercel, región São Paulo). Inyecta `DATABASE_URL`.
+- **Imágenes**: Vercel Blob público `pircas-media` (São Paulo). Inyecta `BLOB_READ_WRITE_TOKEN`; con esa variable `src/plugins.ts` guarda los medios en Blob y el panel sube directo desde el navegador (sin el límite de 4,5 MB por request). Sin la variable (local, Docker) se usa el disco.
+- **Variables propias**: `PAYLOAD_SECRET` y `PREVIEW_SECRET` (secretas). `NEXT_PUBLIC_SITE_URL` no hace falta mientras se use `*.vercel.app` (se toma de Vercel); cargarla al conectar el dominio propio. SMTP, Turnstile, etc.: ver `.env.example`.
+- **Build** (`vercel.json`): `pnpm run build:vercel` = `payload migrate && next build`. Las migraciones se aplican en cada deploy (producción y previews usan la misma base).
+- **Funciones** en `gru1` (São Paulo), junto a la base.
+- `robots.txt` bloquea previews y `*.vercel.app`: solo se indexa el dominio propio.
+- Rate limiting: en serverless cada instancia tiene su propia memoria → para un límite global implementar `RateLimitStore` con Upstash Redis (`src/lib/forms/rate-limit.ts`). Turnstile + honeypot siguen protegiendo.
+
+Comandos útiles (con la CLI `vercel` vinculada):
+
+```bash
+vercel env pull .env.production.local --environment production   # credenciales de producción (NO usar .env.local: pnpm dev escribiría en la base real)
+vercel logs pircas-web.vercel.app
+vercel cache purge --type data --yes   # si se cargan datos por fuera del panel (p. ej. el seed) y el sitio muestra datos viejos
+```
+
+Contenido inicial en una base nueva: exportar las variables de producción en la terminal y correr `pnpm migrate && pnpm seed`, luego purgar la caché de datos.
 
 ## Opción C — Node sin Docker
 
