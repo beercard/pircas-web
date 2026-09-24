@@ -112,6 +112,8 @@ export const plugins: Plugin[] = [
   vercelBlobStorage({
     enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
     token: process.env.BLOB_READ_WRITE_TOKEN,
+    // Mismo esquema de base con y sin Blob (las migraciones no dependen del entorno).
+    alwaysInsertFields: true,
     collections: {
       // URL pública directa del CDN de Blob (los medios son públicos igual).
       media: { disablePayloadAccessControl: true },

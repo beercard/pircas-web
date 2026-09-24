@@ -62,3 +62,6 @@ node_modules/
 
 # design export duplicate (the unpacked /design folder is kept)
 /design.zip
+
+.vercel
+.env*
