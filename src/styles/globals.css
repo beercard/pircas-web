@@ -1,0 +1,236 @@
+@import 'tailwindcss';
+
+/*
+ * PIRCAS — tokens de diseño (fuente: diseño aprobado en /design).
+ * Terracota #B8502C · Grafito #26272B · Gris #ECEAE6 · Off-white #FAF9F7 · Montserrat.
+ * Los componentes usan solo estas utilidades (bg-brand, text-ink, bg-stone…);
+ * no hay colores sueltos en los componentes.
+ *
+ * Contraste (WCAG AA): blanco/terracota 4.97 · muted/off-white 5.95 · muted/gris 5.21 ·
+ * brand-ink/gris 4.84 · brand-soft/grafito 6.53.
+ */
+@theme {
+  /* Terracota */
+  --color-brand: #b8502c;
+  --color-brand-ink: #a9471f; /* texto terracota sobre gris */
+  --color-brand-soft: #e39a7e; /* acentos sobre grafito */
+  --color-brand-tint: #f3e3db;
+
+  /* Grafito y neutros */
+  --color-ink: #26272b;
+  --color-ink-deep: #18191c; /* base de los degradés sobre fotos */
+  --color-muted: #5f6066;
+  --color-stone: #eceae6; /* gris de secciones */
+  --color-paper: #faf9f7; /* off-white de fondo */
+  --color-line: rgb(38 39 43 / 0.14);
+  --color-line-strong: rgb(38 39 43 / 0.25);
+
+  --color-success: #2f6b3f;
+  --color-danger: #b42318;
+
+  /* Tipografía */
+  --font-sans: var(--font-montserrat), Helvetica, Arial, sans-serif;
+
+  --text-eyebrow: 0.6875rem; /* 11px */
+  --text-eyebrow--letter-spacing: 0.32em;
+  --text-label: 0.75rem; /* 12px — botones y etiquetas */
+  --text-label--letter-spacing: 0.18em;
+  --text-display: clamp(2.25rem, 1.2rem + 4.4vw, 5.125rem); /* 36 → 82 */
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.03em;
+  --text-h1: clamp(2.125rem, 1.3rem + 3.6vw, 4.875rem); /* 34 → 78 */
+  --text-h1--line-height: 1;
+  --text-h1--letter-spacing: -0.03em;
+  --text-h2: clamp(2rem, 1.3rem + 3vw, 4.25rem); /* 32 → 68 */
+  --text-h2--line-height: 1;
+  --text-h2--letter-spacing: -0.025em;
+  --text-h3: clamp(1.625rem, 1.2rem + 1.8vw, 2.875rem); /* 26 → 46 */
+  --text-h3--line-height: 1.05;
+  --text-h3--letter-spacing: -0.025em;
+  --text-h4: clamp(1.375rem, 1.1rem + 1vw, 2rem); /* 22 → 32 */
+  --text-h4--line-height: 1.05;
+  --text-h4--letter-spacing: -0.02em;
+  --text-lead: clamp(0.9375rem, 0.85rem + 0.4vw, 1.25rem); /* 15 → 20 */
+  --text-lead--line-height: 1.6;
+
+  /* Breakpoints: mobile < 768 ≤ tablet < 1024 ≤ desktop (1280 / 1440) */
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 90rem;
+
+  --container-site: 90rem; /* 1440 */
+  --container-prose: 36rem;
+
+  /* Arquitectónico: esquinas rectas. `door` = forma de puerta del botón principal. */
+  --radius-door: 0 999px 999px 0;
+
+  --shadow-float: 0 20px 40px -24px rgb(38 39 43 / 0.28);
+
+  --spacing-gutter: clamp(1.25rem, 5vw, 4.5rem); /* 20 → 72 */
+  --spacing-section: clamp(4rem, 8vw, 8.125rem); /* 64 → 130 */
+  --spacing-section-sm: clamp(3.5rem, 7vw, 7.5rem); /* 56 → 120 */
+  --spacing-header: 5.25rem; /* 84 */
+
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--spacing-header) + 1rem);
+  }
+
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+    font-weight: 500;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-medium text-balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Contenedor: máx. 1440 con márgenes laterales 20 → 72 px */
+  .container-site {
+    @apply mx-auto w-full max-w-site px-gutter;
+  }
+
+  /* Antetítulo: 11px, mayúsculas, tracking amplio, terracota */
+  .eyebrow {
+    @apply text-eyebrow font-medium text-brand uppercase;
+  }
+  .bg-stone .eyebrow {
+    @apply text-brand-ink;
+  }
+  .on-dark .eyebrow {
+    @apply text-brand-soft;
+  }
+
+  /* Etiquetas en mayúsculas (botones, datos) */
+  .label-caps {
+    @apply text-label font-medium uppercase;
+  }
+
+  /* Enlace subrayado con flecha (Conocé el taller →) */
+  .link-underline {
+    @apply inline-flex items-center gap-3.5 self-start border-b border-current py-1.5 text-label font-medium text-ink uppercase hover:border-brand hover:text-brand;
+  }
+  .on-dark .link-underline {
+    @apply text-white hover:border-brand-soft hover:text-brand-soft;
+  }
+
+  /* Texto enriquecido del CMS */
+  .prose-pircas {
+    @apply max-w-[54ch] text-[0.96875rem] leading-[1.75] font-normal text-muted;
+  }
+  .prose-pircas > * + * {
+    @apply mt-5;
+  }
+  .prose-pircas h2,
+  .prose-pircas h3,
+  .prose-pircas h4 {
+    @apply mt-10 text-h4 text-ink;
+  }
+  .prose-pircas strong {
+    @apply font-semibold text-ink;
+  }
+  .prose-pircas a {
+    @apply text-ink underline underline-offset-4 hover:text-brand;
+  }
+  .prose-pircas ul {
+    @apply space-y-2;
+  }
+  .prose-pircas ul > li {
+    @apply relative pl-[18px] before:absolute before:top-[0.8em] before:left-0 before:h-px before:w-2 before:bg-brand;
+  }
+  .prose-pircas ol {
+    @apply list-decimal space-y-2 pl-5 marker:text-brand;
+  }
+  .prose-pircas blockquote {
+    @apply border-l border-brand pl-5 text-lg text-ink;
+  }
+  .on-dark .prose-pircas {
+    @apply text-white/70;
+  }
+  .on-dark .prose-pircas h2,
+  .on-dark .prose-pircas h3,
+  .on-dark .prose-pircas strong {
+    @apply text-white;
+  }
+
+  /* Lista con guion terracota (specs cortas de tarjetas) */
+  .dash-list > li {
+    @apply relative pl-[18px];
+  }
+  .dash-list > li::before {
+    content: '';
+    @apply absolute top-[0.72em] left-0 h-px w-2 bg-brand;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/*
+ * Header transparente sobre heros oscuros: se activa cuando la página tiene un
+ * elemento [data-over-hero] y el usuario no hizo scroll ni abrió el mega menú.
+ * Con CSS (no JS) para que no haya parpadeo en la primera carga.
+ */
+body:has([data-over-hero]) .site-header[data-scrolled='false'][data-mega='false'] {
+  background-color: transparent;
+  color: #fff;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+/* Páginas que ya son un formulario ocultan la franja final (Página → "Ocultar la franja final"). */
+body:has([data-hide-footer-cta]) .footer-cta,
+body:has([data-hide-footer-cta]) .floating-wa {
+  display: none;
+}
+
+/* Deja lugar a la barra fija mobile para que no tape el final del footer. */
+@media (width < 48rem) {
+  body:has([data-mobile-cta-bar]) {
+    padding-bottom: calc(62px + env(safe-area-inset-bottom));
+  }
+}

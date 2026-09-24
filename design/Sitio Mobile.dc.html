@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#E6E3DD;font-family:Montserrat,Helvetica,Arial,sans-serif;color:#26272B}a{color:#26272B}a:hover{color:#B8502C}*{box-sizing:border-box}</style>
+</helmet>
+<div style="padding:44px 48px 64px;display:flex;flex-direction:column;gap:36px;background:#E6E3DD">
+  <div style="display:flex;flex-direction:column;gap:14px;max-width:820px">
+    <div style="display:flex;align-items:center;gap:12px"><div style="width:20px;height:30px;background:#B8502C;position:relative"><div style="position:absolute;left:8px;top:6px;width:9px;height:9px;background:#E6E3DD;border-radius:50%"></div></div><span style="font-size:11px;letter-spacing:.3em;text-transform:uppercase">Pircas Aberturas</span></div>
+    <h1 style="margin:0;font-weight:500;font-size:40px;line-height:1.05;letter-spacing:-.025em">Versión mobile · 390 px</h1>
+    <p style="margin:0;font-weight:400;font-size:13.5px;line-height:1.7;color:#5F6066">Las mismas 12 páginas a 390 px de ancho. Cada pantalla es la página real, no una maqueta aparte: header con menú hamburguesa a pantalla completa, CTA fija inferior (WhatsApp / Presupuesto), grids apilados a una columna, formularios y cotizador a ancho completo con áreas táctiles de 48 px mínimo. Tocá el ícono de menú o los pasos del cotizador para probarlos acá mismo.</p>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start">
+      <div style="display:flex;flex-direction:column;gap:9px;flex:none">
+        <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;padding:3px 7px;background:rgba(38,39,43,.1);border-radius:5px">01</span><span style="font-size:12.5px;font-weight:600">Home</span></div>
+        <div style="width:390px;height:844px;overflow:auto;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.07)">
+          <dc-import name="Home" hint-size="390px,844px" style="display:block;width:390px"></dc-import>
+        </div>
+        <span style="font-weight:400;font-size:11px;line-height:1.5;color:rgba(0,0,0,.55);max-width:390px">Hero vertical con foto a sangre, CTA a ancho completo, líneas apiladas.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;flex:none">
+        <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;padding:3px 7px;background:rgba(38,39,43,.1);border-radius:5px">02</span><span style="font-size:12.5px;font-weight:600">Productos</span></div>
+        <div style="width:390px;height:844px;overflow:auto;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.07)">
+          <dc-import name="Productos" hint-size="390px,844px" style="display:block;width:390px"></dc-import>
+        </div>
+        <span style="font-weight:400;font-size:11px;line-height:1.5;color:rgba(0,0,0,.55);max-width:390px">Filtros en fila desplazable, tarjetas a una columna.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;flex:none">
+        <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;padding:3px 7px;background:rgba(38,39,43,.1);border-radius:5px">03</span><span style="font-size:12.5px;font-weight:600">Herrero Económica</span></div>
+        <div style="width:390px;height:844px;overflow:auto;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.07)">
+          <dc-import name="Linea-Economica" hint-size="390px,844px" style="display:block;width:390px"></dc-import>
+        </div>
+        <span style="font-weight:400;font-size:11px;line-height:1.5;color:rgba(0,0,0,.55);max-width:390px">Beneficios y ficha técnica apilados; FAQ en acordeón.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;flex:none">
+        <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;padding:3px 7px;background:rgba(38,39,43,.1);border-radius:5px">04</span><span style="font-size:12.5px;font-weight:600">Herrero Reforzada</span></div>
+        <div style="width:390px;height:844px;overflow:auto;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.07)">
+          <dc-import name="Linea-Reforzada" hint-size="390px,844px" style="display:block;width:390px"></dc-import>
+        </div>
+        <span style="font-weight:400;font-size:11px;line-height:1.5;color:rgba(0,0,0,.55);max-width:390px">Misma plantilla, contenido propio.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;flex:none">
+        <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;padding:3px 7px;background:rgba(38,39,43,.1);border-radius:5px">05</span><span style="font-size:12.5px;font-weight:600">Modena</span></div>
+        <div style="width:390px;height:844px;overflow:auto;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.07)">
+          <dc-import name="Linea-Modena" hint-size="390px,844px" style="display:block;width:390px"></dc-import>
+        </div>
+        <span style="font-weight:400;font-size:11px;line-height:1.5;color:rgba(0,0,0,.55);max-width:390px">Línea alta gama: DVH y cierre Premium.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;flex:none">
+        <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;padding:3px 7px;background:rgba(38,39,43,.1);border-radius:5px">06</span><span style="font-size:12.5px;font-weight:600">Producto individual</span></div>
+        <div style="width:390px;height:844px;overflow:auto;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.07)">
+          <dc-import name="Producto" hint-size="390px,844px" style="display:block;width:390px"></dc-import>
+        </div>
+        <span style="font-weight:400;font-size:11px;line-height:1.5;color:rgba(0,0,0,.55);max-width:390px">Imagen primero, info debajo, técnica en acordeones.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;flex:none">
+        <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;padding:3px 7px;background:rgba(38,39,43,.1);border-radius:5px">07</span><span style="font-size:12.5px;font-weight:600">Mamparas</span></div>
+        <div style="width:390px;height:844px;overflow:auto;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.07)">
+          <dc-import name="Mamparas" hint-size="390px,844px" style="display:block;width:390px"></dc-import>
+        </div>
+        <span style="font-weight:400;font-size:11px;line-height:1.5;color:rgba(0,0,0,.55);max-width:390px">Frontal y angular en tarjetas verticales; proceso en timeline.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;flex:none">
+        <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;padding:3px 7px;background:rgba(38,39,43,.1);border-radius:5px">08</span><span style="font-size:12.5px;font-weight:600">Proyectos</span></div>
+        <div style="width:390px;height:844px;overflow:auto;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.07)">
+          <dc-import name="Proyectos" hint-size="390px,844px" style="display:block;width:390px"></dc-import>
+        </div>
+        <span style="font-weight:400;font-size:11px;line-height:1.5;color:rgba(0,0,0,.55);max-width:390px">Grid a una columna con foto grande y paginación táctil.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;flex:none">
+        <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;padding:3px 7px;background:rgba(38,39,43,.1);border-radius:5px">09</span><span style="font-size:12.5px;font-weight:600">Proyecto individual</span></div>
+        <div style="width:390px;height:844px;overflow:auto;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.07)">
+          <dc-import name="Proyecto" hint-size="390px,844px" style="display:block;width:390px"></dc-import>
+        </div>
+        <span style="font-weight:400;font-size:11px;line-height:1.5;color:rgba(0,0,0,.55);max-width:390px">Caso de estudio: datos apilados y galería vertical.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;flex:none">
+        <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;padding:3px 7px;background:rgba(38,39,43,.1);border-radius:5px">10</span><span style="font-size:12.5px;font-weight:600">Nosotros</span></div>
+        <div style="width:390px;height:844px;overflow:auto;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.07)">
+          <dc-import name="Nosotros" hint-size="390px,844px" style="display:block;width:390px"></dc-import>
+        </div>
+        <span style="font-weight:400;font-size:11px;line-height:1.5;color:rgba(0,0,0,.55);max-width:390px">Pilares en lista, taller a ancho completo.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;flex:none">
+        <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;padding:3px 7px;background:rgba(38,39,43,.1);border-radius:5px">11</span><span style="font-size:12.5px;font-weight:600">Cotizador</span></div>
+        <div style="width:390px;height:844px;overflow:auto;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.07)">
+          <dc-import name="Cotizador" hint-size="390px,844px" style="display:block;width:390px"></dc-import>
+        </div>
+        <span style="font-weight:400;font-size:11px;line-height:1.5;color:rgba(0,0,0,.55);max-width:390px">Un paso por pantalla, carrito debajo, inputs de 56 px.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;flex:none">
+        <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;padding:3px 7px;background:rgba(38,39,43,.1);border-radius:5px">12</span><span style="font-size:12.5px;font-weight:600">Contacto</span></div>
+        <div style="width:390px;height:844px;overflow:auto;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.07)">
+          <dc-import name="Contacto" hint-size="390px,844px" style="display:block;width:390px"></dc-import>
+        </div>
+        <span style="font-weight:400;font-size:11px;line-height:1.5;color:rgba(0,0,0,.55);max-width:390px">Datos arriba, formulario a una columna.</span>
+      </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      pages: [
+        ['01', 'Home', 'Home', 'Hero vertical con foto a sangre, CTA a ancho completo, líneas apiladas.'],
+        ['02', 'Productos', 'Productos', 'Filtros en fila desplazable, tarjetas a una columna.'],
+        ['03', 'Herrero Económica', 'Linea-Economica', 'Beneficios y ficha técnica apilados; FAQ en acordeón.'],
+        ['04', 'Herrero Reforzada', 'Linea-Reforzada', 'Misma plantilla, contenido propio.'],
+        ['05', 'Modena', 'Linea-Modena', 'Línea alta gama: DVH y cierre Premium.'],
+        ['06', 'Producto individual', 'Producto', 'Imagen primero, info debajo, técnica en acordeones.'],
+        ['07', 'Mamparas', 'Mamparas', 'Frontal y angular en tarjetas verticales; proceso en timeline.'],
+        ['08', 'Proyectos', 'Proyectos', 'Grid a una columna con foto grande y paginación táctil.'],
+        ['09', 'Proyecto individual', 'Proyecto', 'Caso de estudio: datos apilados y galería vertical.'],
+        ['10', 'Nosotros', 'Nosotros', 'Pilares en lista, taller a ancho completo.'],
+        ['11', 'Cotizador', 'Cotizador', 'Un paso por pantalla, carrito debajo, inputs de 56 px.'],
+        ['12', 'Contacto', 'Contacto', 'Datos arriba, formulario a una columna.']
+      ].map(([n, name, dc, note]) => ({ n, name, dc, note }))
+    };
+  }
+}
+</script>
+</body>
+</html>

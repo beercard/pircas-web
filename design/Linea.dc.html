@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>body{margin:0;background:#FAF9F7;font-family:Montserrat,Helvetica,Arial,sans-serif;color:#26272B;-webkit-font-smoothing:antialiased}a{color:#26272B}a:hover{color:#B8502C}*{box-sizing:border-box}:focus-visible{outline:2px solid #B8502C;outline-offset:3px}</style>
+</helmet>
+<div style="container-type:inline-size;background:#FAF9F7;color:#26272B;font-family:Montserrat,Helvetica,Arial,sans-serif;font-weight:500">
+<dc-import name="SiteHeader" active="lineas" over-hero="{{ true }}" hint-size="100%,84px" style="display:block"></dc-import>
+
+<!-- HERO -->
+<section data-screen-label="Línea · Hero" style="position:relative;margin-top:-84px;min-height:min(78cqh,720px);background:#26272B;color:#fff;overflow:hidden;display:flex">
+  <div style="position:absolute;inset:0"><image-slot id="{{ slotHero }}" shape="rect" placeholder="{{ photoHero }}"></image-slot></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(24,25,28,.85) 0%,rgba(24,25,28,.45) 60%,rgba(24,25,28,.1) 100%);pointer-events:none"></div>
+  <div style="position:absolute;right:-4%;top:-14%;width:clamp(180px,26cqw,400px);aspect-ratio:480/680;background:rgba(184,80,44,.75);mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');mask-size:100% 100%;mask-repeat:no-repeat;mask-position:center;-webkit-mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;pointer-events:none"></div>
+  <div style="position:relative;width:100%;max-width:1440px;margin:0 auto;padding:160px clamp(20px,5cqw,72px) 64px;display:flex;flex-direction:column;justify-content:flex-end;gap:26px">
+    <nav style="display:flex;gap:10px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.65)"><a href="./Home.dc.html" style="text-decoration:none;color:inherit">Inicio</a><span>/</span><a href="./Productos.dc.html" style="text-decoration:none;color:inherit">Productos</a><span>/</span><span style="color:#fff">{{ name }}</span></nav>
+    <span style="font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#E39A7E">{{ tag }}</span>
+    <h1 style="margin:0;font-weight:500;font-size:clamp(36px,5.4cqw,84px);line-height:1;letter-spacing:-.03em;max-width:16ch">{{ name }}</h1>
+    <p style="margin:0;font-size:clamp(17px,1.6cqw,24px);line-height:1.4;color:#fff;max-width:34ch">{{ claim }}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;padding-top:6px">
+      <a href="./Cotizador.dc.html" style="display:inline-flex;align-items:center;gap:14px;padding:19px 28px;background:#B8502C;color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-radius:0 999px 999px 0" style-hover="background:#fff;color:#26272B">Solicitar presupuesto <span aria-hidden="true">→</span></a>
+      <a href="https://wa.me/5493425903814" style="display:inline-flex;align-items:center;gap:14px;padding:19px 28px;border:1px solid rgba(255,255,255,.5);color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none" style-hover="border-color:#fff">WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- INTRO -->
+<section data-screen-label="Línea · Intro" style="background:#FAF9F7;padding:clamp(56px,7cqw,120px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(32px,4cqw,80px);align-items:start">
+    <h2 style="margin:0;font-weight:500;font-size:clamp(26px,3.2cqw,48px);line-height:1.08;letter-spacing:-.025em;max-width:22ch;text-wrap:balance">{{ intro }}</h2>
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <p style="margin:0;font-weight:400;font-size:15.5px;line-height:1.7;color:#5F6066;max-width:52ch">{{ body }}</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:rgba(38,39,43,.14);margin-top:8px">
+        <sc-for list="{{ facts }}" as="f" hint-placeholder-count="3">
+          <div style="background:#FAF9F7;padding:20px 18px 20px 0;display:flex;flex-direction:column;gap:8px;padding-left:18px"><span style="font-size:clamp(20px,2cqw,28px);letter-spacing:-.02em;color:#B8502C">{{ f.v }}</span><span style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066;line-height:1.5">{{ f.k }}</span></div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFICIOS -->
+<section data-screen-label="Línea · Beneficios" style="background:#ECEAE6;padding:clamp(56px,7cqw,120px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(30px,4cqw,56px)">
+    <h2 style="margin:0;font-weight:500;font-size:clamp(28px,3.6cqw,54px);line-height:1.02;letter-spacing:-.025em">Beneficios clave</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:1px;background:rgba(38,39,43,.16)">
+      <sc-for list="{{ benefits }}" as="b" hint-placeholder-count="4">
+        <div style="background:#ECEAE6;padding:30px 26px;display:flex;flex-direction:column;gap:16px;min-height:210px"><span style="width:26px;height:26px;border:1.5px solid #26272B;border-radius:{{ b.shape }}"></span><span style="font-size:12.5px;letter-spacing:.16em;text-transform:uppercase">{{ b.t }}</span><p style="margin:0;font-weight:400;font-size:13.5px;line-height:1.6;color:#5F6066">{{ b.d }}</p></div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- TÉCNICO + APLICACIONES -->
+<section data-screen-label="Línea · Técnico" style="background:#FAF9F7;padding:clamp(56px,7cqw,120px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(32px,4cqw,80px);align-items:start">
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <h2 style="margin:0;font-weight:500;font-size:clamp(26px,3.2cqw,46px);line-height:1.05;letter-spacing:-.025em">Información técnica</h2>
+      <div style="display:flex;flex-direction:column;border-top:1px solid rgba(38,39,43,.16)">
+        <sc-for list="{{ specs }}" as="sp" hint-placeholder-count="5">
+          <div style="display:flex;justify-content:space-between;gap:24px;padding:16px 0;border-bottom:1px solid rgba(38,39,43,.14)"><span style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#5F6066;flex:none;max-width:44%">{{ sp.k }}</span><span style="font-weight:400;font-size:14px;line-height:1.5;text-align:right">{{ sp.v }}</span></div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <h2 style="margin:0;font-weight:500;font-size:clamp(26px,3.2cqw,46px);line-height:1.05;letter-spacing:-.025em">Aplicaciones</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{ apps }}" as="a" hint-placeholder-count="5">
+          <span style="padding:12px 18px;border:1px solid rgba(38,39,43,.22);font-size:12px;letter-spacing:.1em">{{ a }}</span>
+        </sc-for>
+      </div>
+      <div style="position:relative;aspect-ratio:16/10;margin-top:12px"><image-slot id="{{ slotApp }}" shape="rect" placeholder="{{ photoApp }}"></image-slot></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERÍA -->
+<section data-screen-label="Línea · Galería" style="background:#FAF9F7;padding:0 clamp(20px,5cqw,72px) clamp(56px,7cqw,120px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:22px">
+    <h2 style="margin:0;font-weight:500;font-size:clamp(26px,3.2cqw,46px);line-height:1.05;letter-spacing:-.025em">Galería</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px">
+      <div style="position:relative;aspect-ratio:3/4;grid-row:span 1"><image-slot id="{{ slotG1 }}" shape="rect" placeholder="{{ photoG1 }}"></image-slot></div>
+      <div style="position:relative;aspect-ratio:3/4"><image-slot id="{{ slotG2 }}" shape="rect" placeholder="{{ photoG2 }}"></image-slot></div>
+      <div style="position:relative;aspect-ratio:3/4"><image-slot id="{{ slotG3 }}" shape="rect" placeholder="{{ photoG3 }}"></image-slot></div>
+      <div style="position:relative;aspect-ratio:3/4"><image-slot id="{{ slotG4 }}" shape="rect" placeholder="{{ photoG4 }}"></image-slot></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section data-screen-label="Línea · FAQ" style="background:#ECEAE6;padding:clamp(56px,7cqw,120px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(32px,4cqw,80px);align-items:start">
+    <h2 style="margin:0;font-weight:500;font-size:clamp(26px,3.2cqw,46px);line-height:1.05;letter-spacing:-.025em">Preguntas frecuentes</h2>
+    <div style="display:flex;flex-direction:column;border-top:1px solid rgba(38,39,43,.2)">
+      <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="4">
+        <div style="border-bottom:1px solid rgba(38,39,43,.16)">
+          <button onClick="{{ q.toggle }}" style="display:flex;width:100%;align-items:center;justify-content:space-between;gap:20px;padding:22px 0;background:transparent;border:0;cursor:pointer;text-align:left;font-size:clamp(15px,1.4cqw,19px);font-weight:500;color:{{ q.color }};transition:color .2s" style-hover="color:#B8502C">{{ q.q }}<span style="font-size:18px;color:#B8502C;flex:none">{{ q.sign }}</span></button>
+          <sc-if value="{{ q.open }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:0 40px 24px 0;font-weight:400;font-size:14.5px;line-height:1.7;color:#5F6066;max-width:60ch">{{ q.a }}</p></sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- OTRAS LÍNEAS -->
+<section data-screen-label="Línea · Relacionados" style="background:#FAF9F7;padding:clamp(56px,7cqw,120px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:26px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:16px">
+      <h2 style="margin:0;font-weight:500;font-size:clamp(26px,3.2cqw,46px);line-height:1.05;letter-spacing:-.025em">Otras líneas</h2>
+      <a href="./Productos.dc.html" style="display:inline-flex;align-items:center;gap:12px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;color:#26272B;border-bottom:1px solid #26272B;padding:6px 0" style-hover="color:#B8502C;border-color:#B8502C">Ver todos los productos <span aria-hidden="true">→</span></a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px">
+      <sc-for list="{{ others }}" as="o" hint-placeholder-count="2">
+        <a href="{{ o.href }}" style="display:flex;flex-direction:column;background:#ECEAE6;text-decoration:none;color:#26272B;overflow:hidden;transition:transform .3s" style-hover="transform:translateY(-4px)">
+          <div style="position:relative;aspect-ratio:16/10"><image-slot id="{{ o.slot }}" shape="rect" placeholder="{{ o.photo }}"></image-slot></div>
+          <div style="padding:24px 22px;display:flex;flex-direction:column;gap:8px"><span style="font-size:20px;letter-spacing:-.01em">{{ o.name }}</span><span style="font-weight:400;font-size:13.5px;color:#5F6066">{{ o.claim }}</span><span style="margin-top:10px;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase">Ver línea →</span></div>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<dc-import name="SiteFooter" hint-size="100%,520px" style="display:block"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;linea&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;economica&quot;,&quot;reforzada&quot;,&quot;modena&quot;],&quot;default&quot;:&quot;reforzada&quot;,&quot;tsType&quot;:&quot;'economica'|'reforzada'|'modena'&quot;}}">
+class Component extends DCLogic {
+  state = { open: 0 };
+  data() {
+    return {
+      economica: {
+        name: 'Herrero Económica', tag: 'Línea económica', claim: 'La más económica, para ambientes de poco uso.',
+        intro: 'La opción más barata, bien hecha. Para ambientes que no se usan todo el día.',
+        body: 'Perfilería liviana de aluminio con vidrio de 3 mm incluido, disponible en blanco y negro. Corredizas y rajas universales que resuelven ambientes secundarios, depósitos y obras donde el presupuesto manda. Fabricada a medida exacta del vano, igual que el resto de nuestras líneas.',
+        facts: [{ v: '3 mm', k: 'Vidrio de serie' }, { v: '2', k: 'Colores disponibles' }, { v: 'A medida', k: 'Fabricación' }],
+        benefits: [
+          { t: 'Mejor precio', d: 'La opción más accesible del catálogo, sin cargos ocultos.', shape: '0' },
+          { t: 'Entrega rápida', d: 'Perfilería de stock permanente y plazos cortos.', shape: '0 999px 999px 0' },
+          { t: 'Mosquiteros', d: 'Adaptables a las hojas corredizas.', shape: '50%' },
+          { t: 'A medida', d: 'Se fabrica según el vano real, sin cortes ni parches.', shape: '0' }
+        ],
+        specs: [{ k: 'Vidrio', v: '3 mm · opción laminado o Blindex' }, { k: 'Colores', v: 'Blanco y negro' }, { k: 'Tipologías', v: 'Corredizas y rajas universales' }, { k: 'Mosquiteros', v: 'Adaptables' }, { k: 'Instalación', v: 'Profesional u autoinstalación guiada' }],
+        apps: ['Depósitos', 'Ambientes secundarios', 'Lavaderos', 'Obras de bajo costo', 'Galpones'],
+        photoHero: 'Foto: ventana corrediza blanca en ambiente simple, luz natural',
+        photoApp: 'Foto: lavadero con ventana corrediza blanca',
+        faqs: [
+          { q: '¿Sirve para dormitorios?', a: 'Puede usarse, pero para uso diario intenso recomendamos Herrero Reforzada por su mayor rigidez estructural.' },
+          { q: '¿Puedo pedir vidrio de seguridad?', a: 'Sí, está disponible la opción de vidrio laminado o Blindex con un adicional.' },
+          { q: '¿Incluye mosquitero?', a: 'No de serie, pero es adaptable y lo cotizamos junto a la abertura.' },
+          { q: '¿La instalan ustedes?', a: 'Sí, en Coronda y zona (+40 km). También podés instalarla vos con nuestras instrucciones.' }
+        ],
+        others: [{ name: 'Herrero Reforzada', claim: 'La más pedida', href: './Linea-Reforzada.dc.html', slot: 'lo-ref', photo: 'Foto: ventana reforzada con reja' }, { name: 'Modena', claim: 'La que mejor aísla', href: './Linea-Modena.dc.html', slot: 'lo-mod', photo: 'Foto: puerta Modena negra' }]
+      },
+      reforzada: {
+        name: 'Herrero Reforzada', tag: 'Más elegida', claim: 'La más pedida. Aguanta el uso de todos los días.',
+        intro: 'La que más colocamos en casas. Perfil más grueso, que aguanta abrir y cerrar todos los días.',
+        body: 'Parantes de 65 mm y zócalos de 75/48 mm dan un cuerpo más sólido, con mejor cierre y durabilidad. Cubre casi cualquier tipología: corredizas, de abrir de una a tres hojas y puertas exteriores serie 100 a 700, con rejas, mosquiteros y celosías integrables al mismo sistema.',
+        facts: [{ v: '65 mm', k: 'Parantes' }, { v: '75/48', k: 'Zócalos (mm)' }, { v: '1–3', k: 'Hojas de abrir' }],
+        benefits: [
+          { t: 'Rigidez', d: 'Perfil reforzado para hojas grandes y uso cotidiano.', shape: '0' },
+          { t: 'Versatilidad', d: 'Corredizas, de abrir y puertas exteriores en el mismo sistema.', shape: '0 999px 999px 0' },
+          { t: 'Complementos', d: 'Rejas, mosquiteros y celosías integradas.', shape: '50%' },
+          { t: 'Durabilidad', d: 'Herrajes y cierres pensados para años de servicio.', shape: '0' }
+        ],
+        specs: [{ k: 'Parantes', v: '65 mm' }, { k: 'Zócalos', v: '75 mm / 48 mm' }, { k: 'Vidrio', v: '3 mm entero o repartido · laminado o Blindex' }, { k: 'Tipologías', v: 'Corredizas · de abrir 1/2/3 hojas · puertas serie 100–700' }, { k: 'Complementos', v: 'Rejas, mosquiteros y celosías' }],
+        apps: ['Dormitorios', 'Cocinas', 'Living', 'Frentes de vivienda', 'Obra nueva', 'Reformas'],
+        photoHero: 'Foto: frente de vivienda con ventanas de aluminio reforzadas',
+        photoApp: 'Foto: dormitorio con ventana de abrir y reja',
+        faqs: [
+          { q: '¿Cuál es la diferencia con la Económica?', a: 'La perfilería es más robusta: parantes de 65 mm frente a un perfil liviano. Eso mejora el cierre, soporta hojas más grandes y resiste mejor el uso diario.' },
+          { q: '¿Puede llevar DVH?', a: 'El DVH es de serie en Modena. En Reforzada se resuelve con laminado o Blindex; consultanos tu caso.' },
+          { q: '¿Incluye celosía?', a: 'Es opcional y se cotiza junto a la abertura, en el mismo sistema de perfiles.' },
+          { q: '¿Qué plazo de fabricación tiene?', a: 'Según medidas y cantidad, habitualmente entre 7 y 15 días hábiles.' }
+        ],
+        others: [{ name: 'Herrero Económica', claim: 'La más económica', href: './Linea-Economica.dc.html', slot: 'lo-eco', photo: 'Foto: ventana corrediza blanca' }, { name: 'Modena', claim: 'La que mejor aísla', href: './Linea-Modena.dc.html', slot: 'lo-mod2', photo: 'Foto: puerta Modena negra' }]
+      },
+      modena: {
+        name: 'Modena', tag: 'Alta gama', claim: 'La que mejor aísla del frío, el calor y el ruido.',
+        intro: 'Nuestra mejor línea: cierra bien, aísla y queda prolija.',
+        body: 'Vidrio de 4 mm de serie, cierre estándar o Premium y opción DVH 4/9/4 para aislar temperatura y ruido. Perfiles de líneas finas, terminación prolija y Stopsol antirreflejo disponible. Es la que recomendamos si querés gastar menos en calefacción o vivís en una zona con ruido.',
+        facts: [{ v: '4 mm', k: 'Vidrio de serie' }, { v: '4/9/4', k: 'Opción DVH' }, { v: 'Premium', k: 'Cierre disponible' }],
+        benefits: [
+          { t: 'Aislación', d: 'DVH con cámara de aire: menos frío, calor y ruido.', shape: '0' },
+          { t: 'Hermeticidad', d: 'Cierre Premium sin filtraciones de aire ni agua.', shape: '0 999px 999px 0' },
+          { t: 'Estética', d: 'Perfiles finos y terminación superior.', shape: '50%' },
+          { t: 'Control solar', d: 'Stopsol antirreflejo opcional.', shape: '0' }
+        ],
+        specs: [{ k: 'Vidrio', v: '4 mm de serie · laminado o Blindex' }, { k: 'DVH', v: '4 mm / 9 mm cámara / 4 mm' }, { k: 'Cierre', v: 'Estándar o Premium' }, { k: 'Stopsol', v: 'Antirreflejo disponible' }, { k: 'Otros', v: 'Mamparas de baño en la misma línea' }],
+        apps: ['Ventanales', 'Puertas corredizas', 'Frentes vidriados', 'Dormitorios', 'Obra de diseño', 'Mamparas'],
+        photoHero: 'Foto: living con ventanal corredizo Modena de piso a techo',
+        photoApp: 'Foto: puerta corrediza Modena negra con DVH',
+        faqs: [
+          { q: '¿Cuánto aísla el DVH?', a: 'La cámara de aire reduce sensiblemente la transmisión térmica y el ruido exterior respecto a un vidrio simple de 3 o 4 mm.' },
+          { q: '¿Qué diferencia el cierre Premium?', a: 'Mejora la hermeticidad y el tacto de uso; es la opción recomendada en ventanales grandes o zonas ventosas.' },
+          { q: '¿Sirve para mamparas?', a: 'Sí, nuestras mamparas de baño usan perfilería de esta línea con paneles Klara.' },
+          { q: '¿El Stopsol oscurece el ambiente?', a: 'Reduce el reflejo y la carga solar manteniendo buena entrada de luz; te mostramos muestras en el local.' }
+        ],
+        others: [{ name: 'Herrero Reforzada', claim: 'La más pedida', href: './Linea-Reforzada.dc.html', slot: 'lo-ref2', photo: 'Foto: ventana reforzada con reja' }, { name: 'Herrero Económica', claim: 'La más económica', href: './Linea-Economica.dc.html', slot: 'lo-eco2', photo: 'Foto: ventana corrediza blanca' }]
+      }
+    };
+  }
+  renderVals() {
+    const key = (this.props.linea || 'reforzada').toLowerCase();
+    const d = this.data()[key] || this.data().reforzada;
+    const s = this.state;
+    const faqs = d.faqs.map((f, i) => ({
+      q: f.q, a: f.a, open: s.open === i, sign: s.open === i ? '−' : '+',
+      color: s.open === i ? '#B8502C' : '#26272B',
+      toggle: () => this.setState({ open: s.open === i ? -1 : i })
+    }));
+    return {
+      ...d, faqs,
+      slotHero: 'lh-' + key, slotApp: 'la-' + key,
+      slotG1: 'lg1-' + key, slotG2: 'lg2-' + key, slotG3: 'lg3-' + key, slotG4: 'lg4-' + key,
+      photoG1: 'Foto: abertura instalada, vista general', photoG2: 'Foto: detalle de herraje y perfil',
+      photoG3: 'Foto: interior con luz natural', photoG4: 'Foto: detalle de cierre / encuentro de hojas'
+    };
+  }
+}
+</script>
+</body>
+</html>

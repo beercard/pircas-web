@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#FAF9F7;font-family:Montserrat,Helvetica,Arial,sans-serif;color:#26272B;-webkit-font-smoothing:antialiased}a{color:#26272B}a:hover{color:#B8502C}*{box-sizing:border-box}input,select,textarea,button{font-family:inherit}input:focus,select:focus,textarea:focus{outline:none;border-color:#B8502C}:focus-visible{outline:2px solid #B8502C;outline-offset:3px}</style>
+</helmet>
+<div style="container-type:inline-size;background:#FAF9F7;color:#26272B;font-family:Montserrat,Helvetica,Arial,sans-serif;font-weight:500">
+<dc-import name="SiteHeader" hint-size="100%,84px" style="display:block"></dc-import>
+
+<section data-screen-label="Cotizador · Hero" style="background:#FAF9F7;padding:clamp(40px,5cqw,72px) clamp(20px,5cqw,72px) clamp(28px,3cqw,44px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+    <nav style="display:flex;gap:10px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#5F6066"><a href="./Home.dc.html" style="text-decoration:none;color:#5F6066">Inicio</a><span>/</span><span style="color:#26272B">Cotizador</span></nav>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(24px,4cqw,70px);align-items:end">
+      <h1 style="margin:0;font-weight:500;font-size:clamp(34px,5cqw,78px);line-height:1;letter-spacing:-.03em">Cotizá tu proyecto</h1>
+      <p style="margin:0;font-weight:400;font-size:15px;line-height:1.65;color:#5F6066;max-width:46ch;padding-bottom:8px">Armá tu lista de aberturas y mirá el precio estimado al instante. El presupuesto final lo ajustás con un vendedor, por WhatsApp o en el local.</p>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Cotizador · Flujo" style="background:#FAF9F7;padding:0 clamp(20px,5cqw,72px) clamp(56px,7cqw,120px)">
+  <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:12px;align-items:start">
+
+  <aside style="display:flex;flex-direction:column;gap:18px;padding:clamp(24px,2.6cqw,36px);background:#ECEAE6">
+    <span style="font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#5F6066">Paso {{ step }} de 5</span>
+    <div style="display:flex;gap:5px">
+      <sc-for list="{{ bars }}" as="b" hint-placeholder-count="5"><span style="flex:1;height:3px;background:{{ b.bg }};transition:background .3s"></span></sc-for>
+    </div>
+    <ol style="margin:8px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;border-top:1px solid rgba(38,39,43,.16)">
+      <sc-for list="{{ stepList }}" as="s" hint-placeholder-count="5">
+        <li style="display:flex;gap:14px;align-items:baseline;padding:14px 0;border-bottom:1px solid rgba(38,39,43,.14);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:{{ s.color }}"><span style="font-size:10.5px;letter-spacing:.28em;color:{{ s.numColor }}">{{ s.n }}</span>{{ s.label }}</li>
+      </sc-for>
+    </ol>
+    <p style="margin:6px 0 0;font-weight:400;font-size:12.5px;line-height:1.6;color:#5F6066">Precios estimados de referencia, sin instalación ni envío. No es un presupuesto definitivo.</p>
+  </aside>
+
+  <div style="min-width:0;background:#fff;border:1px solid rgba(38,39,43,.12);padding:clamp(24px,3cqw,48px);display:flex;flex-direction:column;gap:26px;min-height:560px">
+    <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <h2 style="margin:0;font-weight:500;font-size:clamp(23px,2.3cqw,34px);line-height:1.1;letter-spacing:-.025em">¿Qué necesitás?</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px">
+          <sc-for list="{{ needs }}" as="n" hint-placeholder-count="4">
+            <button onClick="{{ n.pick }}" style="display:flex;flex-direction:column;align-items:flex-start;gap:14px;padding:22px 18px;min-height:136px;text-align:left;cursor:pointer;background:{{ n.bg }};color:{{ n.color }};border:1px solid {{ n.border }};transition:all .2s" style-hover="border-color:#26272B"><span style="width:18px;height:24px;background:{{ n.mark }};clip-path:path('M0 0 H11 A7 7 0 0 1 11 14 H6 V24 H0 Z')"></span><span style="font-size:15.5px;line-height:1.3;letter-spacing:-.01em">{{ n.label }}</span><span style="font-weight:400;font-size:12.5px;line-height:1.5;opacity:.72">{{ n.desc }}</span></button>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <h2 style="margin:0;font-weight:500;font-size:clamp(23px,2.3cqw,34px);line-height:1.1;letter-spacing:-.025em">Producto y línea</h2>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Producto</span>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,155px),1fr));gap:8px">
+            <sc-for list="{{ products }}" as="pr" hint-placeholder-count="6"><button onClick="{{ pr.pick }}" style="padding:14px 16px;min-height:48px;cursor:pointer;background:{{ pr.bg }};color:{{ pr.color }};border:1px solid {{ pr.border }};font-size:12.5px;text-align:left;transition:all .2s" style-hover="border-color:#26272B">{{ pr.label }}</button></sc-for>
+          </div>
+        </div>
+        <sc-if value="{{ showLinea }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <span style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Línea</span>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,170px),1fr));gap:8px">
+              <sc-for list="{{ lineas }}" as="ln" hint-placeholder-count="3"><button onClick="{{ ln.pick }}" style="padding:14px 16px;min-height:48px;cursor:pointer;background:{{ ln.bg }};color:{{ ln.color }};border:1px solid {{ ln.border }};font-size:12.5px;text-align:left;transition:all .2s" style-hover="border-color:#26272B">{{ ln.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showLinea }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <span style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Vidrio</span>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,145px),1fr));gap:8px">
+              <sc-for list="{{ vidrios }}" as="vd" hint-placeholder-count="3"><button onClick="{{ vd.pick }}" style="padding:14px 16px;min-height:48px;cursor:pointer;background:{{ vd.bg }};color:{{ vd.color }};border:1px solid {{ vd.border }};font-size:12.5px;text-align:left;transition:all .2s" style-hover="border-color:#26272B">{{ vd.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <h2 style="margin:0;font-weight:500;font-size:clamp(23px,2.3cqw,34px);line-height:1.1;letter-spacing:-.025em">Medidas y cantidad</h2>
+        <p style="margin:0;font-weight:400;font-size:14px;line-height:1.6;color:#5F6066;max-width:52ch">En centímetros. Podés sumar tantas aberturas como necesites al presupuesto.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,128px),1fr));gap:12px">
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Ancho (cm)<input type="number" min="30" value="{{ cfg.ancho }}" onChange="{{ onAncho }}" style="height:56px;padding:0 16px;border:1px solid rgba(38,39,43,.25);background:#FAF9F7;font-size:18px;font-weight:500;color:#26272B;width:100%"></label>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Alto (cm)<input type="number" min="30" value="{{ cfg.alto }}" onChange="{{ onAlto }}" style="height:56px;padding:0 16px;border:1px solid rgba(38,39,43,.25);background:#FAF9F7;font-size:18px;font-weight:500;color:#26272B;width:100%"></label>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Cantidad<input type="number" min="1" value="{{ cfg.qty }}" onChange="{{ onQty }}" style="height:56px;padding:0 16px;border:1px solid rgba(38,39,43,.25);background:#FAF9F7;font-size:18px;font-weight:500;color:#26272B;width:100%"></label>
+          <sc-if value="{{ needsProf }}" hint-placeholder-val="{{ false }}">
+            <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Lado 2 (cm)<input type="number" min="30" value="{{ cfg.prof }}" onChange="{{ onProf }}" style="height:56px;padding:0 16px;border:1px solid rgba(38,39,43,.25);background:#FAF9F7;font-size:18px;font-weight:500;color:#26272B;width:100%"></label>
+          </sc-if>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;padding-top:20px;border-top:1px solid rgba(38,39,43,.12)">
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Estimado por unidad</span><span style="font-size:clamp(22px,2.2cqw,30px);letter-spacing:-.02em">{{ unitPrice }}</span><span style="font-weight:400;font-size:12.5px;color:#5F6066">{{ unitDesc }}</span></div>
+          <button onClick="{{ addItem }}" disabled="{{ cantAdd }}" style="display:inline-flex;align-items:center;gap:14px;padding:18px 26px;background:{{ addBg }};color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;border:0;cursor:pointer;border-radius:0 999px 999px 0;transition:background .25s">Agregar al presupuesto <span aria-hidden="true">+</span></button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isStep4 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <h2 style="margin:0;font-weight:500;font-size:clamp(23px,2.3cqw,34px);line-height:1.1;letter-spacing:-.025em">Tu proyecto y tus datos</h2>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Tipo de proyecto</span>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,165px),1fr));gap:8px">
+            <sc-for list="{{ tipos }}" as="tp" hint-placeholder-count="4"><button onClick="{{ tp.pick }}" style="padding:14px 16px;min-height:48px;cursor:pointer;background:{{ tp.bg }};color:{{ tp.color }};border:1px solid {{ tp.border }};font-size:12.5px;text-align:left;transition:all .2s" style-hover="border-color:#26272B">{{ tp.label }}</button></sc-for>
+          </div>
+        </div>
+        <label style="display:flex;align-items:center;gap:12px;font-weight:400;font-size:14px;cursor:pointer"><input type="checkbox" checked="{{ visita }}" onChange="{{ toggleVisit }}" style="width:18px;height:18px;accent-color:#B8502C">Quiero medición en obra (Coronda y zona, +40 km)</label>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:14px">
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Nombre<input type="text" value="{{ c.nombre }}" onChange="{{ onNombre }}" style="height:54px;padding:0 14px;border:1px solid rgba(38,39,43,.25);background:#FAF9F7;font-size:15px;color:#26272B;width:100%"></label>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Apellido<input type="text" value="{{ c.apellido }}" onChange="{{ onApellido }}" style="height:54px;padding:0 14px;border:1px solid rgba(38,39,43,.25);background:#FAF9F7;font-size:15px;color:#26272B;width:100%"></label>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Teléfono / WhatsApp<input type="tel" value="{{ c.tel }}" onChange="{{ onTel }}" style="height:54px;padding:0 14px;border:1px solid rgba(38,39,43,.25);background:#FAF9F7;font-size:15px;color:#26272B;width:100%"></label>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Email<input type="email" value="{{ c.email }}" onChange="{{ onEmail }}" style="height:54px;padding:0 14px;border:1px solid rgba(38,39,43,.25);background:#FAF9F7;font-size:15px;color:#26272B;width:100%"></label>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Ciudad<input type="text" value="{{ c.ciudad }}" onChange="{{ onCiudad }}" style="height:54px;padding:0 14px;border:1px solid rgba(38,39,43,.25);background:#FAF9F7;font-size:15px;color:#26272B;width:100%"></label>
+        </div>
+        <label style="display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Mensaje<textarea rows="3" value="{{ c.msg }}" onChange="{{ onMsg }}" style="padding:14px;border:1px solid rgba(38,39,43,.25);background:#FAF9F7;font-size:15px;font-weight:400;color:#26272B;width:100%;resize:vertical;line-height:1.5"></textarea></label>
+        <sc-if value="{{ contactError }}" hint-placeholder-val="{{ false }}"><span style="font-weight:400;font-size:13px;color:#B8502C">Ingresá al menos tu email o teléfono para continuar.</span></sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isStep5 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div style="width:44px;height:60px;background:#B8502C;clip-path:path('M0 0 H26 A18 18 0 0 1 26 36 H15 V60 H0 Z')"></div>
+        <h2 style="margin:0;font-weight:500;font-size:clamp(23px,2.3cqw,34px);line-height:1.1;letter-spacing:-.025em">Recibimos tu consulta.</h2>
+        <p style="margin:0;font-weight:400;font-size:15px;line-height:1.7;color:#5F6066;max-width:52ch">Un vendedor revisa tu lista y te contacta en menos de 24 horas hábiles para ajustar el presupuesto final. Si preferís, seguí ahora mismo por WhatsApp con el detalle ya cargado.</p>
+        <dl style="margin:0;display:grid;grid-template-columns:auto 1fr;gap:10px 24px;font-size:14px;font-weight:400;padding:20px 0;border-top:1px solid rgba(38,39,43,.14);border-bottom:1px solid rgba(38,39,43,.14)">
+          <dt style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066;font-weight:500">Ítems</dt><dd style="margin:0">{{ cartCount }}</dd>
+          <dt style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066;font-weight:500">Total estimado</dt><dd style="margin:0">{{ cartTotal }}</dd>
+          <dt style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066;font-weight:500">Contacto</dt><dd style="margin:0">{{ contactSummary }}</dd>
+        </dl>
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <a href="{{ waHref }}" style="display:inline-flex;align-items:center;gap:14px;padding:18px 26px;background:#B8502C;color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-radius:0 999px 999px 0" style-hover="background:#26272B">Seguir por WhatsApp <span aria-hidden="true">→</span></a>
+          <a href="./Proyectos.dc.html" style="display:inline-flex;align-items:center;gap:14px;padding:18px 26px;border:1px solid #26272B;color:#26272B;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none" style-hover="background:#26272B;color:#fff">Ver proyectos</a>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="margin-top:auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-top:24px;border-top:1px solid rgba(38,39,43,.12)">
+      <button onClick="{{ back }}" disabled="{{ noBack }}" style="padding:16px 0;background:transparent;border:0;cursor:pointer;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:{{ backColor }}">← Volver</button>
+      <sc-if value="{{ showNext }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ next }}" disabled="{{ cantNext }}" style="display:inline-flex;align-items:center;gap:14px;padding:18px 28px;background:{{ nextBg }};color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;border:0;cursor:pointer;border-radius:0 999px 999px 0;transition:background .25s">{{ nextLabel }} <span aria-hidden="true">→</span></button>
+      </sc-if>
+      <sc-if value="{{ isStep5 }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ restart }}" style="padding:16px 0;background:transparent;border:0;cursor:pointer;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#5F6066">Hacer otra cotización</button>
+      </sc-if>
+    </div>
+  </div>
+
+  <!-- CARRITO -->
+  <aside style="min-width:0;background:#26272B;color:#fff;padding:clamp(24px,2.8cqw,40px);display:flex;flex-direction:column;gap:22px;min-height:400px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><h2 style="margin:0;font-weight:500;font-size:clamp(20px,1.9cqw,27px);letter-spacing:-.02em">Tu presupuesto</h2><span style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.6)">{{ cartCount }}</span></div>
+    <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:28px 0;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12)">
+        <div style="width:28px;height:38px;background:rgba(255,255,255,.14);clip-path:path('M0 0 H17 A11 11 0 0 1 17 22 H9 V38 H0 Z')"></div>
+        <p style="margin:0;font-weight:400;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.65);max-width:32ch">Todavía no agregaste aberturas. Configurá la primera y sumala a la lista.</p>
+      </div>
+    </sc-if>
+    <sc-if value="{{ cartHasItems }}" hint-placeholder-val="{{ false }}">
+      <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;border-top:1px solid rgba(255,255,255,.12)">
+        <sc-for list="{{ cart }}" as="it" hint-placeholder-count="2">
+          <li style="display:flex;justify-content:space-between;gap:14px;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12)">
+            <div style="display:flex;flex-direction:column;gap:5px;min-width:0"><span style="font-size:14px">{{ it.title }}</span><span style="font-weight:400;font-size:12px;line-height:1.5;color:rgba(255,255,255,.6)">{{ it.desc }}</span></div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none"><span style="font-size:14px">{{ it.total }}</span><button onClick="{{ it.remove }}" style="background:transparent;border:0;color:rgba(255,255,255,.55);cursor:pointer;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;padding:4px 0" style-hover="color:#E39A7E">Quitar</button></div>
+          </li>
+        </sc-for>
+      </ul>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><span style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.6)">Total estimado</span><span style="font-size:clamp(24px,2.4cqw,34px);letter-spacing:-.02em">{{ cartTotal }}</span></div>
+    </sc-if>
+    <p style="margin:0;font-weight:400;font-size:12.5px;line-height:1.6;color:rgba(255,255,255,.55)">Valores de referencia sin instalación ni envío. Se ajustan según medidas en obra, herrajes y terminaciones.</p>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:auto">
+      <span style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#E39A7E">Ajustá con un vendedor</span>
+      <a href="{{ waHref }}" style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px 22px;background:#B8502C;color:#fff;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-radius:0 999px 999px 0" style-hover="background:#fff;color:#26272B">Enviar por WhatsApp <span aria-hidden="true">→</span></a>
+      <a href="./Contacto.dc.html" style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px 22px;border:1px solid rgba(255,255,255,.35);color:#fff;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none" style-hover="border-color:#fff">Visitar el local <span aria-hidden="true">→</span></a>
+      <span style="font-weight:400;font-size:12px;color:rgba(255,255,255,.55)">Hipólito Yrigoyen 1111 · Coronda</span>
+    </div>
+  </aside>
+
+  </div>
+</section>
+
+<dc-import name="SiteFooter" show-cta="{{ false }}" hint-size="100%,380px" style="display:block"></dc-import>
+</div>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#26272B"/><path d="M34 26 H55 A14 14 0 0 1 55 54 H45 V74 H34 Z" fill="#B8502C"/></svg></template>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { step: 1, need: null, tipo: null, visit: false, contactError: false,
+    cfg: { product: 'Ventana corrediza', linea: 'Herrero Reforzada', vidrio: 'Float', ancho: '150', alto: '110', qty: '1', prof: '90' },
+    c: { nombre: '', apellido: '', tel: '', email: '', ciudad: '', msg: '' }, cart: [] };
+  price(cfg) {
+    const isMampara = /Mampara/.test(cfg.product);
+    const m2 = Math.max(0.5, (Number(cfg.ancho) || 0) * (Number(cfg.alto) || 0) / 10000);
+    let rate = isMampara ? 390000 : ({ 'Herrero Económica': 180000, 'Herrero Reforzada': 260000, 'Modena': 420000 }[cfg.linea] || 260000);
+    if (/Puerta/.test(cfg.product)) rate *= 1.3;
+    if (/de abrir/.test(cfg.product)) rate *= 1.15;
+    if (!isMampara) rate *= ({ Float: 1, Laminado: 1.25, DVH: 1.45 }[cfg.vidrio] || 1);
+    return Math.round(rate * m2 / 1000) * 1000;
+  }
+  fmt(n) { return '$ ' + n.toLocaleString('es-AR'); }
+  renderVals() {
+    const T = '#B8502C', G = '#26272B', M = '#5F6066';
+    const s = this.state, cfg = s.cfg;
+    const setCfg = patch => this.setState({ cfg: { ...this.state.cfg, ...patch } });
+    const setC = k => e => this.setState({ c: { ...this.state.c, [k]: e.target.value }, contactError: false });
+    const chip = (label, sel, onPick) => ({ label, pick: onPick, bg: sel ? G : 'transparent', color: sel ? '#fff' : G, border: sel ? G : 'rgba(38,39,43,.2)' });
+    const isMampara = /Mampara/.test(cfg.product);
+    const needs = [
+      ['Aberturas para mi casa', 'Ventanas y puertas de aluminio a medida.'],
+      ['Mampara de baño', 'Frontal o angular, con paneles Klara.'],
+      ['Obra completa', 'Varias aberturas para una vivienda u obra.'],
+      ['Reponer o reformar', 'Reemplazo de aberturas existentes.']
+    ].map(([label, desc]) => ({
+      label, desc, pick: () => this.setState({ need: label, step: 2, cfg: { ...cfg, product: label === 'Mampara de baño' ? 'Mampara frontal' : cfg.product } }),
+      bg: s.need === label ? G : '#FAF9F7', color: s.need === label ? '#fff' : G,
+      border: s.need === label ? G : 'rgba(38,39,43,.16)', mark: s.need === label ? '#E39A7E' : T
+    }));
+    const products = ['Ventana corrediza', 'Ventana de abrir', 'Puerta de aluminio', 'Puerta corrediza', 'Mampara frontal', 'Mampara angular']
+      .map(l => chip(l, cfg.product === l, () => setCfg({ product: l })));
+    const lineas = ['Herrero Económica', 'Herrero Reforzada', 'Modena'].map(l => chip(l, cfg.linea === l, () => setCfg({ linea: l })));
+    const vidriosList = cfg.linea === 'Modena' ? ['Float', 'Laminado', 'DVH'] : ['Float', 'Laminado'];
+    const vidrios = vidriosList.map(l => chip(l, cfg.vidrio === l, () => setCfg({ vidrio: l })));
+    const tipos = ['Vivienda nueva', 'Reforma', 'Obra comercial', 'Otro'].map(l => chip(l, s.tipo === l, () => this.setState({ tipo: l })));
+    const unit = this.price(cfg);
+    const validDims = Number(cfg.ancho) >= 30 && Number(cfg.alto) >= 30 && Number(cfg.qty) >= 1;
+    const descOf = c => (/Mampara/.test(c.product) ? 'Modena · Paneles Klara' : c.linea + ' · Vidrio ' + c.vidrio) + ' · ' + c.ancho + '×' + c.alto + ' cm · ×' + c.qty;
+    const cart = s.cart.map((it, i) => ({ title: it.product, desc: descOf(it), total: this.fmt(this.price(it) * Number(it.qty)), remove: () => this.setState({ cart: this.state.cart.filter((_, j) => j !== i) }) }));
+    const total = s.cart.reduce((a, it) => a + this.price(it) * Number(it.qty), 0);
+    const waMsg = 'Hola Pircas, armé este presupuesto en la web:%0A' + s.cart.map(it => '- ' + it.product + ' (' + descOf(it) + '): ' + this.fmt(this.price(it) * Number(it.qty))).join('%0A') + (s.cart.length ? '%0ATotal estimado: ' + this.fmt(total) : '') + '%0A¿Lo ajustamos?';
+    const stepLabels = ['¿Qué necesitás?', 'Producto y línea', 'Medidas', 'Proyecto y datos', 'Confirmación'];
+    const stepList = stepLabels.map((label, i) => ({ n: '0' + (i + 1), label, color: i + 1 === s.step ? G : (i + 1 < s.step ? M : 'rgba(38,39,43,.42)'), numColor: i + 1 <= s.step ? T : 'rgba(38,39,43,.35)' }));
+    const bars = [1, 2, 3, 4, 5].map(i => ({ bg: i <= s.step ? T : 'rgba(38,39,43,.16)' }));
+    const hasContact = !!(s.c.email || s.c.tel);
+    const cantNext = (s.step === 1 && !s.need) || (s.step === 3 && !s.cart.length);
+    return {
+      step: s.step, stepList, bars,
+      isStep1: s.step === 1, isStep2: s.step === 2, isStep3: s.step === 3, isStep4: s.step === 4, isStep5: s.step === 5,
+      needs, products, lineas, vidrios, tipos, showLinea: !isMampara, needsProf: cfg.product === 'Mampara angular',
+      cfg, onAncho: e => setCfg({ ancho: e.target.value }), onAlto: e => setCfg({ alto: e.target.value }), onQty: e => setCfg({ qty: e.target.value }), onProf: e => setCfg({ prof: e.target.value }),
+      unitPrice: validDims ? this.fmt(unit) : '—', unitDesc: validDims ? descOf(cfg) : 'Ingresá ancho y alto (mín. 30 cm)',
+      cantAdd: !validDims, addBg: validDims ? T : 'rgba(38,39,43,.3)',
+      addItem: () => { if (validDims) this.setState({ cart: [...this.state.cart, { ...cfg }] }); },
+      c: s.c, onNombre: setC('nombre'), onApellido: setC('apellido'), onTel: setC('tel'), onEmail: setC('email'), onCiudad: setC('ciudad'), onMsg: setC('msg'),
+      visita: s.visit, toggleVisit: () => this.setState({ visit: !s.visit }), contactError: s.contactError,
+      cart, cartEmpty: !cart.length, cartHasItems: !!cart.length,
+      cartCount: cart.length + (cart.length === 1 ? ' ítem' : ' ítems'), cartTotal: this.fmt(total),
+      contactSummary: [s.c.nombre, s.c.tel, s.c.email].filter(Boolean).join(' · ') || '—',
+      waHref: 'https://wa.me/5493425903814?text=' + waMsg,
+      showNext: s.step < 5, nextLabel: s.step === 4 ? 'Enviar consulta' : 'Continuar',
+      cantNext, nextBg: cantNext ? 'rgba(38,39,43,.3)' : T,
+      next: () => {
+        if (cantNext) return;
+        if (s.step === 4 && !hasContact) return this.setState({ contactError: true });
+        this.setState({ step: Math.min(5, s.step + 1) });
+      },
+      back: () => this.setState({ step: Math.max(1, s.step - 1) }), noBack: s.step === 1, backColor: s.step === 1 ? 'rgba(38,39,43,.35)' : M,
+      restart: () => this.setState({ step: 1, cart: [], need: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

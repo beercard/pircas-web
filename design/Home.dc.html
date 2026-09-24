@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>body{margin:0;background:#FAF9F7;font-family:Montserrat,Helvetica,Arial,sans-serif;color:#26272B;-webkit-font-smoothing:antialiased}a{color:#26272B}a:hover{color:#B8502C}*{box-sizing:border-box}:focus-visible{outline:2px solid #B8502C;outline-offset:3px}</style>
+</helmet>
+<div style="container-type:inline-size;background:#FAF9F7;color:#26272B;font-family:Montserrat,Helvetica,Arial,sans-serif;font-weight:500">
+<dc-import name="SiteHeader" active="inicio" over-hero="{{ true }}" hint-size="100%,84px" style="display:block"></dc-import>
+
+<!-- HERO -->
+<section data-screen-label="Home · Hero" style="position:relative;margin-top:-84px;min-height:min(92cqh,880px);background:#26272B;color:#fff;overflow:hidden;display:flex">
+  <div style="position:absolute;inset:0"><image-slot id="h-hero" shape="rect" placeholder="Foto: ventanal de aluminio recién colocado en una casa de la zona"></image-slot></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(24,25,28,.82) 0%,rgba(24,25,28,.4) 58%,rgba(24,25,28,.06) 100%);pointer-events:none"></div>
+  <div style="position:absolute;right:-5%;bottom:-10%;width:clamp(200px,34cqw,520px);aspect-ratio:480/680;background:rgba(184,80,44,.8);mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20fill-rule=%22evenodd%22%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%20M160%20130%20H270%20A70%2070%200%200%201%20270%20270%20H160%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');mask-size:100% 100%;mask-repeat:no-repeat;mask-position:center;-webkit-mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20fill-rule=%22evenodd%22%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%20M160%20130%20H270%20A70%2070%200%200%201%20270%20270%20H160%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;pointer-events:none"></div>
+  <div style="position:relative;width:100%;max-width:1440px;margin:0 auto;padding:180px clamp(20px,5cqw,72px) 72px;display:flex;flex-direction:column;justify-content:flex-end;gap:32px">
+    <div style="display:flex;align-items:center;gap:16px;font-size:11px;letter-spacing:.32em;text-transform:uppercase"><span style="width:44px;height:1px;background:#B8502C"></span>Taller en Coronda, Santa Fe</div>
+    <h1 style="margin:0;font-weight:500;font-size:clamp(36px,5.4cqw,82px);line-height:1.02;letter-spacing:-.03em;max-width:17ch;text-wrap:balance">Aberturas de aluminio hechas a medida, en nuestro taller.</h1>
+    <p style="margin:0;font-weight:400;font-size:clamp(15px,1.3cqw,20px);line-height:1.6;max-width:46ch;color:rgba(255,255,255,.85)">Medimos en obra, fabricamos y colocamos. Si algo no cierra bien, volvemos y lo arreglamos.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <a href="./Cotizador.dc.html" style="flex:1 1 260px;display:inline-flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 30px;background:#B8502C;color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-radius:0 999px 999px 0;transition:background .25s" style-hover="background:#fff;color:#26272B">Solicitar presupuesto <span aria-hidden="true">→</span></a>
+      <a href="./Productos.dc.html" style="flex:1 1 200px;display:inline-flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 30px;border:1px solid rgba(255,255,255,.5);color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;transition:border-color .25s" style-hover="border-color:#fff">Ver productos <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Home · Compromisos" style="background:#26272B;color:#fff;padding:0 clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))">
+    <div style="display:flex;gap:14px;align-items:flex-start;padding:26px 20px 26px 0;border-top:1px solid rgba(255,255,255,.12)"><span style="width:8px;height:8px;margin-top:6px;background:#B8502C;flex:none"></span><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14.5px">Taller propio en Coronda</span><span style="font-weight:400;font-size:13px;line-height:1.5;color:rgba(255,255,255,.7)">No revendemos: lo fabricamos acá.</span></div></div>
+    <div style="display:flex;gap:14px;align-items:flex-start;padding:26px 20px 26px 0;border-top:1px solid rgba(255,255,255,.12)"><span style="width:8px;height:8px;margin-top:6px;background:#B8502C;flex:none"></span><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14.5px">Medimos nosotros</span><span style="font-weight:400;font-size:13px;line-height:1.5;color:rgba(255,255,255,.7)">En Coronda y zona, antes de fabricar.</span></div></div>
+    <div style="display:flex;gap:14px;align-items:flex-start;padding:26px 20px 26px 0;border-top:1px solid rgba(255,255,255,.12)"><span style="width:8px;height:8px;margin-top:6px;background:#B8502C;flex:none"></span><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14.5px">Colocación con garantía</span><span style="font-weight:400;font-size:13px;line-height:1.5;color:rgba(255,255,255,.7)">Si algo falla, volvemos y lo arreglamos.</span></div></div>
+    <div style="display:flex;gap:14px;align-items:flex-start;padding:26px 20px 26px 0;border-top:1px solid rgba(255,255,255,.12)"><span style="width:8px;height:8px;margin-top:6px;background:#B8502C;flex:none"></span><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14.5px">Respondemos en el día</span><span style="font-weight:400;font-size:13px;line-height:1.5;color:rgba(255,255,255,.7)">Por WhatsApp, de lunes a viernes.</span></div></div>
+  </div>
+</section>
+
+<!-- BRAND STATEMENT -->
+<section data-screen-label="Home · Statement" style="background:#FAF9F7;padding:clamp(72px,9cqw,150px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(36px,5cqw,90px);align-items:end">
+    <h2 style="margin:0;font-weight:500;font-size:clamp(40px,6cqw,96px);line-height:.98;letter-spacing:-.035em">Medimos.<br>Fabricamos.<br><span style="color:#B8502C">Colocamos.</span></h2>
+    <div style="display:flex;flex-direction:column;gap:26px;padding-bottom:10px">
+      <p style="margin:0;font-weight:400;font-size:clamp(16px,1.4cqw,21px);line-height:1.6;color:#5F6066;max-width:46ch">Hacemos tus aberturas de principio a fin: cortamos el perfil, armamos la hoja, ponemos el vidrio y la colocamos. Por eso te podemos decir exactamente qué llevás, cuánto tarda y cuánto va a durar.</p>
+      <a href="./Nosotros.dc.html" style="align-self:flex-start;display:inline-flex;align-items:center;gap:14px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;color:#26272B;padding:6px 0;border-bottom:1px solid #26272B" style-hover="color:#B8502C;border-color:#B8502C">Conocé el taller <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- LÍNEAS -->
+<section data-screen-label="Home · Líneas" style="background:#ECEAE6;padding:clamp(64px,8cqw,130px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(36px,4cqw,64px)">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:24px">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <span style="font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#B8502C">Nuestras líneas</span>
+        <h2 style="margin:0;font-weight:500;font-size:clamp(32px,4.4cqw,68px);line-height:1;letter-spacing:-.025em">Tres líneas, según lo que necesites</h2>
+      </div>
+      <p style="margin:0;font-weight:400;font-size:15px;line-height:1.6;color:#5F6066;max-width:34ch">Te explicamos la diferencia sin vueltas: precio, resistencia o aislación.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px">
+      <sc-for list="{{ lineas }}" as="l" hint-placeholder-count="3">
+        <a href="{{ l.href }}" style="display:flex;flex-direction:column;background:#FAF9F7;text-decoration:none;color:#26272B;overflow:hidden;transition:transform .35s" style-hover="transform:translateY(-6px)">
+          <div style="position:relative;aspect-ratio:4/3"><image-slot id="{{ l.slot }}" shape="rect" placeholder="{{ l.photo }}"></image-slot><span style="position:absolute;left:0;top:0;padding:14px 20px;background:{{ l.tagBg }};color:#fff;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;pointer-events:none">{{ l.tag }}</span></div>
+          <div style="padding:30px 28px 34px;display:flex;flex-direction:column;gap:14px;flex:1">
+            <h3 style="margin:0;font-weight:500;font-size:clamp(24px,2.2cqw,32px);line-height:1.05;letter-spacing:-.02em">{{ l.name }}</h3>
+            <p style="margin:0;font-size:16px;line-height:1.4;color:#B8502C">{{ l.claim }}</p>
+            <ul style="margin:6px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-weight:400;font-size:13.5px;line-height:1.5;color:#5F6066">
+              <sc-for list="{{ l.specs }}" as="sp" hint-placeholder-count="3"><li style="padding-left:18px;position:relative"><span style="position:absolute;left:0;top:9px;width:8px;height:1px;background:#B8502C"></span>{{ sp }}</li></sc-for>
+            </ul>
+            <span style="margin-top:auto;padding-top:22px;display:inline-flex;align-items:center;gap:12px;font-size:12px;letter-spacing:.18em;text-transform:uppercase">Ver línea <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- OTRAS SOLUCIONES -->
+<section data-screen-label="Home · Soluciones" style="background:#FAF9F7;padding:clamp(64px,8cqw,130px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(32px,4cqw,56px)">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:24px">
+      <h2 style="margin:0;font-weight:500;font-size:clamp(30px,3.8cqw,58px);line-height:1.02;letter-spacing:-.025em">También hacemos</h2>
+      <a href="./Productos.dc.html" style="display:inline-flex;align-items:center;gap:14px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;color:#26272B;padding:6px 0;border-bottom:1px solid #26272B" style-hover="color:#B8502C;border-color:#B8502C">Ver todos los productos <span aria-hidden="true">→</span></a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:10px">
+      <sc-for list="{{ soluciones }}" as="s" hint-placeholder-count="6">
+        <a href="{{ s.href }}" style="position:relative;display:block;aspect-ratio:1/1;background:#ECEAE6;text-decoration:none;color:#26272B;overflow:hidden">
+          <image-slot id="{{ s.slot }}" shape="rect" placeholder="{{ s.photo }}"></image-slot>
+          <span style="position:absolute;left:0;bottom:0;padding:14px 26px 14px 18px;background:#FAF9F7;font-size:11px;letter-spacing:.2em;text-transform:uppercase;border-radius:0 999px 0 0;pointer-events:none">{{ s.label }}</span>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- ASÍ TRABAJAMOS -->
+<section data-screen-label="Home · Proceso" style="background:#26272B;color:#fff;padding:clamp(64px,8cqw,130px) clamp(20px,5cqw,72px);position:relative;overflow:hidden">
+  <div style="position:absolute;right:-110px;top:-50px;width:400px;aspect-ratio:480/680;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');mask-size:100% 100%;mask-repeat:no-repeat;mask-position:center;-webkit-mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;pointer-events:none"></div>
+  <div style="max-width:1440px;margin:0 auto;position:relative;display:flex;flex-direction:column;gap:clamp(40px,5cqw,80px)">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:24px">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <span style="font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#E39A7E">Nuestro proceso</span>
+        <h2 style="margin:0;font-weight:500;font-size:clamp(32px,4.4cqw,68px);line-height:1;letter-spacing:-.025em">Así trabajamos</h2>
+      </div>
+      <p style="margin:0;font-weight:400;font-size:15px;line-height:1.6;color:rgba(255,255,255,.7);max-width:36ch">Sin sorpresas: sabés qué pasa en cada paso y cuándo.</p>
+    </div>
+    <ol style="margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))">
+      <sc-for list="{{ pasos }}" as="p" hint-placeholder-count="5">
+        <li style="border-top:1px solid rgba(255,255,255,.2);padding:26px 22px 0 0;display:flex;flex-direction:column;gap:14px;position:relative"><span style="position:absolute;left:0;top:-4px;width:7px;height:7px;background:#B8502C;border-radius:50%"></span><span style="font-size:11px;letter-spacing:.3em;color:#E39A7E">{{ p.n }}</span><h3 style="margin:0;font-weight:500;font-size:13.5px;letter-spacing:.14em;text-transform:uppercase;line-height:1.5">{{ p.t }}</h3><p style="margin:0;font-weight:400;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.65)">{{ p.d }}</p></li>
+      </sc-for>
+    </ol>
+  </div>
+</section>
+
+<!-- ASESOR -->
+<section data-screen-label="Home · Asesor" style="background:#FAF9F7;padding:clamp(64px,8cqw,130px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:clamp(36px,5cqw,90px);align-items:start">
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <span style="font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#B8502C">Asesor virtual</span>
+      <h2 style="margin:0;font-weight:500;font-size:clamp(32px,4cqw,62px);line-height:1.02;letter-spacing:-.025em;text-wrap:balance">¿No sabés qué línea necesitás?</h2>
+      <p style="margin:0;font-weight:400;font-size:15px;line-height:1.65;color:#5F6066;max-width:42ch">Decinos qué te importa más y te decimos cuál conviene. Si seguís con dudas, pasá por el local y lo vemos juntos.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;border-top:1px solid #26272B">
+      <div style="padding:20px 0 10px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">¿Qué priorizás?</div>
+      <sc-for list="{{ advisorOptions }}" as="o" hint-placeholder-count="4">
+        <button onClick="{{ o.pick }}" style="display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;text-align:left;padding:22px 16px 22px {{ o.pad }};background:transparent;border:0;border-bottom:1px solid rgba(38,39,43,.14);cursor:pointer;font-size:clamp(17px,1.6cqw,23px);font-weight:500;letter-spacing:-.01em;color:{{ o.color }};transition:color .2s,padding-left .25s" style-hover="color:#B8502C">
+          <span style="display:flex;align-items:center;gap:16px"><span style="width:12px;height:12px;border:1.5px solid currentColor;border-radius:0 999px 999px 0;background:{{ o.fill }}"></span>{{ o.label }}</span>
+          <span style="font-size:11px;letter-spacing:.22em;color:#5F6066">{{ o.idx }}</span>
+        </button>
+      </sc-for>
+      <sc-if value="{{ hasRec }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:24px;background:#26272B;color:#fff;padding:32px 28px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:22px;align-items:end;position:relative;overflow:hidden">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#E39A7E">Te recomendamos</span>
+            <span style="font-size:clamp(24px,2.4cqw,36px);line-height:1.05;letter-spacing:-.02em">{{ rec.title }}</span>
+            <span style="font-weight:400;font-size:14px;line-height:1.6;color:rgba(255,255,255,.7);max-width:40ch">{{ rec.why }}</span>
+          </div>
+          <a href="{{ rec.href }}" style="display:inline-flex;align-items:center;gap:14px;padding:18px 26px;background:#B8502C;color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-radius:0 999px 999px 0" style-hover="background:#fff;color:#26272B">Ver esta línea <span aria-hidden="true">→</span></a>
+        </div>
+      </sc-if>
+      <sc-if value="{{ noRec }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:24px;display:flex;align-items:center;gap:14px;font-weight:400;font-size:13px;color:#5F6066"><span style="width:28px;height:1px;background:#B8502C"></span>Elegí una opción para ver la línea recomendada.</div>
+      </sc-if>
+    </div>
+  </div>
+</section>
+
+<!-- MAMPARAS -->
+<section data-screen-label="Home · Mamparas" style="background:#ECEAE6;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))">
+  <div style="position:relative;min-height:440px"><image-slot id="h-mampara" shape="rect" placeholder="Foto: baño contemporáneo con mampara de vidrio y perfil de aluminio"></image-slot></div>
+  <div style="padding:clamp(52px,7cqw,120px) clamp(20px,5cqw,72px);display:flex;flex-direction:column;gap:24px;justify-content:center">
+    <span style="font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#B8502C">Mamparas</span>
+    <h2 style="margin:0;font-weight:500;font-size:clamp(30px,3.8cqw,58px);line-height:1.02;letter-spacing:-.025em;max-width:16ch">Mamparas de baño a medida</h2>
+    <p style="margin:0;font-weight:400;font-size:15.5px;line-height:1.65;color:#5F6066;max-width:44ch">Paneles Klara que no cortan ni estallan, sobre perfil de aluminio. Frontal o de esquina, a la medida de tu baño.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:0;border-top:1px solid rgba(38,39,43,.2);border-bottom:1px solid rgba(38,39,43,.2)">
+      <span style="padding:16px 24px 16px 0;font-size:12px;letter-spacing:.2em;text-transform:uppercase">Mampara frontal</span>
+      <span style="padding:16px 0 16px 24px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;border-left:1px solid rgba(38,39,43,.2)">Mampara angular</span>
+    </div>
+    <a href="./Mamparas.dc.html" style="align-self:flex-start;display:inline-flex;align-items:center;gap:14px;padding:18px 28px;background:#26272B;color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-radius:0 999px 999px 0" style-hover="background:#B8502C">Ver mamparas <span aria-hidden="true">→</span></a>
+  </div>
+</section>
+
+<!-- COTIZADOR TEASER -->
+<section data-screen-label="Home · Cotizador" style="background:#FAF9F7;padding:clamp(64px,8cqw,130px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(36px,5cqw,90px);align-items:center">
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <span style="font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#B8502C">Cotizador online</span>
+      <h2 style="margin:0;font-weight:500;font-size:clamp(32px,4.4cqw,68px);line-height:1;letter-spacing:-.025em">Cotizá tu proyecto</h2>
+      <p style="margin:0;font-weight:400;font-size:15.5px;line-height:1.65;color:#5F6066;max-width:44ch">Armá tu lista de aberturas, mirá el precio estimado al instante y ajustá el presupuesto final con un vendedor —en el local o por WhatsApp.</p>
+      <a href="./Cotizador.dc.html" style="align-self:flex-start;display:inline-flex;align-items:center;gap:14px;padding:20px 30px;background:#B8502C;color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-radius:0 999px 999px 0" style-hover="background:#26272B">Solicitar presupuesto <span aria-hidden="true">→</span></a>
+    </div>
+    <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;border-top:1px solid rgba(38,39,43,.14)">
+      <li style="display:flex;gap:20px;align-items:baseline;padding:18px 0;border-bottom:1px solid rgba(38,39,43,.14)"><span style="font-size:11px;letter-spacing:.3em;color:#B8502C">01</span><span style="font-size:15px">Elegís producto y línea</span></li>
+      <li style="display:flex;gap:20px;align-items:baseline;padding:18px 0;border-bottom:1px solid rgba(38,39,43,.14)"><span style="font-size:11px;letter-spacing:.3em;color:#B8502C">02</span><span style="font-size:15px">Cargás medidas y cantidad</span></li>
+      <li style="display:flex;gap:20px;align-items:baseline;padding:18px 0;border-bottom:1px solid rgba(38,39,43,.14)"><span style="font-size:11px;letter-spacing:.3em;color:#B8502C">03</span><span style="font-size:15px">Sumás ítems a tu presupuesto</span></li>
+      <li style="display:flex;gap:20px;align-items:baseline;padding:18px 0;border-bottom:1px solid rgba(38,39,43,.14)"><span style="font-size:11px;letter-spacing:.3em;color:#B8502C">04</span><span style="font-size:15px">Ves el total estimado</span></li>
+      <li style="display:flex;gap:20px;align-items:baseline;padding:18px 0"><span style="font-size:11px;letter-spacing:.3em;color:#B8502C">05</span><span style="font-size:15px">Lo ajustás con un vendedor</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- PROYECTOS -->
+<section data-screen-label="Home · Proyectos" style="background:#FAF9F7;padding:0 clamp(20px,5cqw,72px) clamp(64px,8cqw,130px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(32px,4cqw,52px);border-top:1px solid rgba(38,39,43,.14);padding-top:clamp(52px,6cqw,90px)">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:24px">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <span style="font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#B8502C">Trabajos realizados</span>
+        <h2 style="margin:0;font-weight:500;font-size:clamp(32px,4.4cqw,68px);line-height:1;letter-spacing:-.025em">Trabajos que hicimos</h2>
+      </div>
+      <a href="./Proyectos.dc.html" style="display:inline-flex;align-items:center;gap:14px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;color:#26272B;padding:6px 0;border-bottom:1px solid #26272B" style-hover="color:#B8502C;border-color:#B8502C">Ver todos los trabajos <span aria-hidden="true">→</span></a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:12px">
+      <sc-for list="{{ proyectos }}" as="p" hint-placeholder-count="4">
+        <a href="./Proyecto.dc.html" style="display:block;text-decoration:none;color:#26272B;transition:transform .35s" style-hover="transform:translateY(-4px)">
+          <div style="position:relative;aspect-ratio:4/5;background:#ECEAE6;overflow:hidden"><image-slot id="{{ p.slot }}" shape="rect" placeholder="{{ p.photo }}"></image-slot></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0 8px;border-bottom:1px solid rgba(38,39,43,.14)">
+            <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;letter-spacing:-.01em">{{ p.name }}</span><span style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">{{ p.cat }}</span></div>
+            <span style="color:#B8502C;font-size:18px">→</span>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- NOSOTROS -->
+<section data-screen-label="Home · Nosotros" style="background:#ECEAE6;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))">
+  <div style="padding:clamp(52px,7cqw,120px) clamp(20px,5cqw,72px);display:flex;flex-direction:column;gap:26px;justify-content:center;order:2">
+    <span style="font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#B8502C">Pircas</span>
+    <h2 style="margin:0;font-weight:500;font-size:clamp(30px,3.6cqw,56px);line-height:1.05;letter-spacing:-.025em;text-wrap:balance">Gente que sabe hacer y responde por lo que hace.</h2>
+    <p style="margin:0;font-weight:400;font-size:15.5px;line-height:1.7;color:#5F6066;max-width:48ch">Somos un taller de Coronda. Fabricamos, colocamos y damos la cara: si una abertura nuestra tiene un problema, lo resolvemos.</p>
+    <a href="./Nosotros.dc.html" style="align-self:flex-start;display:inline-flex;align-items:center;gap:14px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;color:#26272B;padding:6px 0;border-bottom:1px solid #26272B" style-hover="color:#B8502C;border-color:#B8502C">Conocé el taller <span aria-hidden="true">→</span></a>
+  </div>
+  <div style="position:relative;min-height:460px;order:1"><image-slot id="h-about" shape="rect" placeholder="Foto: el equipo en el taller cortando y armando perfiles"></image-slot><div style="position:absolute;right:-1px;bottom:-1px;width:34%;aspect-ratio:480/680;background:#ECEAE6;mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');mask-size:100% 100%;mask-repeat:no-repeat;mask-position:center;-webkit-mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;transform:scaleX(-1);pointer-events:none"></div></div>
+</section>
+
+<dc-import name="SiteFooter" hint-size="100%,520px" style="display:block"></dc-import>
+</div>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#26272B"/><path d="M34 26 H55 A14 14 0 0 1 55 54 H45 V74 H34 Z" fill="#B8502C"/></svg></template>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { advisor: null };
+  renderVals() {
+    const T = '#B8502C', G = '#26272B';
+    const s = this.state;
+    const recs = {
+      precio: { title: 'Herrero Económica', why: 'La más económica para ambientes secundarios.', href: './Linea-Economica.dc.html' },
+      resistencia: { title: 'Herrero Reforzada', why: 'Parantes de 65 mm y mayor rigidez para el uso diario intenso.', href: './Linea-Reforzada.dc.html' },
+      confort: { title: 'Modena', why: 'Cierres herméticos y opción DVH para aislar frío, calor y ruido.', href: './Linea-Modena.dc.html' },
+      diseno: { title: 'Modena Premium', why: 'Perfiles finos y cierre Premium: es la que mejor queda.', href: './Linea-Modena.dc.html' }
+    };
+    const advisorOptions = [['precio', 'Precio'], ['resistencia', 'Resistencia'], ['confort', 'Confort'], ['diseno', 'Diseño']].map(([k, label], i) => ({
+      label, idx: '0' + (i + 1), pick: () => this.setState({ advisor: k }),
+      color: s.advisor === k ? T : G, fill: s.advisor === k ? T : 'transparent', pad: s.advisor === k ? '12px' : '0px'
+    }));
+    const rec = s.advisor ? recs[s.advisor] : null;
+    return {
+      advisorOptions, hasRec: !!rec, noRec: !rec, rec: rec || {},
+      lineas: [
+        { name: 'Herrero Económica', claim: 'La más económica, para ambientes de poco uso.', tag: 'Económica', tagBg: G, href: './Linea-Economica.dc.html', slot: 'h-l1', photo: 'Foto: ventana corrediza blanca, línea económica', specs: ['Vidrio de 3 mm incluido', 'Blanco y negro', 'Corredizas y rajas universales'] },
+        { name: 'Herrero Reforzada', claim: 'La más pedida. Aguanta el uso de todos los días.', tag: 'Más elegida', tagBg: T, href: './Linea-Reforzada.dc.html', slot: 'h-l2', photo: 'Foto: ventana de abrir con reja, línea reforzada', specs: ['Parantes 65 mm · zócalos 75/48', 'Corredizas y de abrir 1/2/3 hojas', 'Rejas, mosquiteros y celosías'] },
+        { name: 'Modena', claim: 'La que mejor aísla del frío, el calor y el ruido.', tag: 'Alta gama', tagBg: G, href: './Linea-Modena.dc.html', slot: 'h-l3', photo: 'Foto: puerta corrediza Modena negra con DVH', specs: ['Vidrio 4 mm de serie · DVH', 'Cierre estándar o Premium', 'Stopsol antirreflejo'] }
+      ],
+      soluciones: [
+        { label: 'Puertas', slot: 'h-s1', photo: 'Foto: puerta de aluminio', href: './Producto.dc.html' },
+        { label: 'Ventanas', slot: 'h-s2', photo: 'Foto: ventana corrediza', href: './Producto.dc.html' },
+        { label: 'Mamparas', slot: 'h-s3', photo: 'Foto: mampara de baño', href: './Mamparas.dc.html' },
+        { label: 'Vidrios', slot: 'h-s4', photo: 'Foto: detalle vidrio DVH', href: './Productos.dc.html' },
+        { label: 'Rejas', slot: 'h-s5', photo: 'Foto: reja de hierro', href: './Productos.dc.html' },
+        { label: 'Otras soluciones', slot: 'h-s6', photo: 'Foto: puerta placa / puerta granero', href: './Productos.dc.html' }
+      ],
+      pasos: [
+        { n: '01', t: 'Consulta', d: 'Nos contás qué necesitás por WhatsApp, web o en el local.' },
+        { n: '02', t: 'Asesoramiento', d: 'Te orientamos sobre la línea ideal para tu espacio.' },
+        { n: '03', t: 'Cotización', d: 'Armás tu presupuesto online y lo ajustamos juntos.' },
+        { n: '04', t: 'Fabricación', d: 'Producimos a medida exacta, sin cortes ni adaptaciones.' },
+        { n: '05', t: 'Instalación', d: 'Colocación profesional en Coronda y zona, o guiada.' }
+      ],
+      proyectos: [
+        { name: 'Ventanal DVH', cat: 'Modena', slot: 'h-p1', photo: 'Foto: ventanal DVH en living' },
+        { name: 'Puerta de aluminio', cat: 'Herrero Reforzada', slot: 'h-p2', photo: 'Foto: puerta de aluminio en acceso' },
+        { name: 'Mampara angular', cat: 'Mamparas', slot: 'h-p3', photo: 'Foto: mampara angular en ducha' },
+        { name: 'Ventana con celosía', cat: 'Herrero Económica', slot: 'h-p4', photo: 'Foto: ventana con celosía' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

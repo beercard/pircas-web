@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>body{margin:0;background:#FAF9F7;font-family:Montserrat,Helvetica,Arial,sans-serif;color:#26272B;-webkit-font-smoothing:antialiased}a{color:#26272B}a:hover{color:#B8502C}*{box-sizing:border-box}:focus-visible{outline:2px solid #B8502C;outline-offset:3px}</style>
+</helmet>
+<div style="container-type:inline-size;background:#FAF9F7;color:#26272B;font-family:Montserrat,Helvetica,Arial,sans-serif;font-weight:500">
+<dc-import name="SiteHeader" active="nosotros" hint-size="100%,84px" style="display:block"></dc-import>
+
+<section data-screen-label="Nosotros · Hero" style="background:#FAF9F7;padding:clamp(44px,5cqw,80px) clamp(20px,5cqw,72px) clamp(40px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:30px">
+    <nav style="display:flex;gap:10px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#5F6066"><a href="./Home.dc.html" style="text-decoration:none;color:#5F6066">Inicio</a><span>/</span><span style="color:#26272B">Nosotros</span></nav>
+    <h1 style="margin:0;font-weight:500;font-size:clamp(34px,5.2cqw,82px);line-height:1;letter-spacing:-.03em;max-width:20ch;text-wrap:balance">Hacemos aberturas. Y respondemos por ellas.</h1>
+    <div style="position:relative;aspect-ratio:21/9;min-height:280px;margin-top:10px">
+      <image-slot id="ns-hero" shape="rect" placeholder="Foto: taller de aluminio en Coronda, perfiles ordenados y luz natural"></image-slot>
+      <div style="position:absolute;left:0;bottom:0;width:22%;aspect-ratio:480/680;max-height:100%;background:#FAF9F7;mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');mask-size:100% 100%;mask-repeat:no-repeat;mask-position:center;-webkit-mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;pointer-events:none"></div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Nosotros · Filosofía" style="background:#FAF9F7;padding:0 clamp(20px,5cqw,72px) clamp(56px,7cqw,120px)">
+  <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(30px,4cqw,80px);align-items:start">
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <span style="font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#B8502C">Quiénes somos</span>
+      <p style="margin:0;font-size:clamp(19px,2cqw,30px);line-height:1.45;letter-spacing:-.015em;max-width:34ch">Un taller de Coronda que fabrica, coloca y da la cara.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <p style="margin:0;font-weight:400;font-size:15.5px;line-height:1.75;color:#5F6066;max-width:56ch">Trabajamos desde Coronda, Santa Fe, con taller propio y equipo estable. Cada abertura se fabrica a la medida real del vano: medimos en obra, producimos y colocamos, de modo que la responsabilidad del encastre perfecto es nuestra y no del cliente.</p>
+      <p style="margin:0;font-weight:400;font-size:15.5px;line-height:1.75;color:#5F6066;max-width:56ch">No vendemos de catálogo: elegimos con vos la línea, el vidrio y los herrajes según el uso, el clima y lo que querés invertir. Te decimos lo que de verdad te conviene, aunque sea lo más barato.</p>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Nosotros · Pilares" style="background:#26272B;color:#fff;padding:clamp(56px,7cqw,120px) clamp(20px,5cqw,72px);position:relative;overflow:hidden">
+  <div style="position:absolute;right:-6%;top:-20%;width:clamp(240px,32cqw,480px);aspect-ratio:480/680;background:rgba(255,255,255,.04);mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');mask-size:100% 100%;mask-repeat:no-repeat;mask-position:center;-webkit-mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;pointer-events:none"></div>
+  <div style="max-width:1440px;margin:0 auto;position:relative;display:flex;flex-direction:column;gap:clamp(32px,4cqw,60px)">
+    <h2 style="margin:0;font-weight:500;font-size:clamp(28px,3.8cqw,58px);line-height:1.02;letter-spacing:-.025em">Lo que prometemos</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))">
+      <sc-for list="{{ pilares }}" as="p" hint-placeholder-count="5">
+        <div style="border-top:1px solid rgba(255,255,255,.22);padding:26px 22px 0 0;display:flex;flex-direction:column;gap:14px;position:relative"><span style="position:absolute;left:0;top:-4px;width:7px;height:7px;background:#B8502C;border-radius:50%"></span><span style="font-size:clamp(17px,1.7cqw,23px);letter-spacing:-.01em">{{ p.t }}</span><p style="margin:0;font-weight:400;font-size:13.5px;line-height:1.65;color:rgba(255,255,255,.68)">{{ p.d }}</p></div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Nosotros · Taller" style="background:#ECEAE6;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))">
+  <div style="position:relative;min-height:440px"><image-slot id="ns-taller" shape="rect" placeholder="Foto: corte y armado de perfiles en el taller"></image-slot></div>
+  <div style="padding:clamp(52px,7cqw,120px) clamp(20px,5cqw,72px);display:flex;flex-direction:column;gap:24px;justify-content:center">
+    <span style="font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#B8502C">El taller</span>
+    <h2 style="margin:0;font-weight:500;font-size:clamp(28px,3.4cqw,50px);line-height:1.05;letter-spacing:-.025em;max-width:20ch">Vení a ver el taller</h2>
+    <p style="margin:0;font-weight:400;font-size:15.5px;line-height:1.7;color:#5F6066;max-width:46ch">Corte, armado y control de cada abertura en nuestro taller de Hipólito Yrigoyen 1111. Cubrimos Coronda y zona en un radio de más de 40 km, con envíos a todo el país.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:rgba(38,39,43,.2)">
+      <div style="background:#ECEAE6;padding:20px 16px 20px 0;display:flex;flex-direction:column;gap:6px;padding-left:16px"><span style="font-size:clamp(20px,2cqw,28px);color:#B8502C;letter-spacing:-.02em">+40 km</span><span style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Cobertura</span></div>
+      <div style="background:#ECEAE6;padding:20px 16px;display:flex;flex-direction:column;gap:6px"><span style="font-size:clamp(20px,2cqw,28px);color:#B8502C;letter-spacing:-.02em">3</span><span style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Líneas</span></div>
+      <div style="background:#ECEAE6;padding:20px 16px;display:flex;flex-direction:column;gap:6px"><span style="font-size:clamp(20px,2cqw,28px);color:#B8502C;letter-spacing:-.02em">País</span><span style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Envíos</span></div>
+    </div>
+    <a href="./Contacto.dc.html" style="align-self:flex-start;display:inline-flex;align-items:center;gap:14px;padding:18px 28px;background:#26272B;color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-radius:0 999px 999px 0" style-hover="background:#B8502C">Visitar el local <span aria-hidden="true">→</span></a>
+  </div>
+</section>
+
+<dc-import name="SiteFooter" hint-size="100%,520px" style="display:block"></dc-import>
+</div>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#26272B"/><path d="M34 26 H55 A14 14 0 0 1 55 54 H45 V74 H34 Z" fill="#B8502C"/></svg></template>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      pilares: [
+        { t: 'Medimos nosotros', d: 'Vamos a la obra y tomamos las medidas. Si no encaja, es problema nuestro.' },
+        { t: 'Fabricamos acá', d: 'Cortamos, armamos y controlamos cada abertura en el taller.' },
+        { t: 'Colocamos bien', d: 'Sin filtraciones de aire ni de agua. Si pasa, volvemos.' },
+        { t: 'Explicamos claro', d: 'Te decimos qué conviene y por qué, sin vueltas.' },
+        { t: 'Cumplimos plazos', d: 'Te damos una fecha y la respetamos.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>body{margin:0;background:#FAF9F7;font-family:Montserrat,Helvetica,Arial,sans-serif;color:#26272B;-webkit-font-smoothing:antialiased}a{color:#26272B}a:hover{color:#B8502C}*{box-sizing:border-box}:focus-visible{outline:2px solid #B8502C;outline-offset:3px}</style>
+</helmet>
+<div style="container-type:inline-size;background:#FAF9F7;color:#26272B;font-family:Montserrat,Helvetica,Arial,sans-serif;font-weight:500">
+<dc-import name="SiteHeader" active="mamparas" over-hero="{{ true }}" hint-size="100%,84px" style="display:block"></dc-import>
+
+<section data-screen-label="Mamparas · Hero" style="position:relative;margin-top:-84px;min-height:min(76cqh,700px);background:#26272B;color:#fff;overflow:hidden;display:flex">
+  <div style="position:absolute;inset:0"><image-slot id="mp-hero" shape="rect" placeholder="Foto: baño contemporáneo con mampara de vidrio, microcemento y luz natural"></image-slot></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(24,25,28,.82) 0%,rgba(24,25,28,.35) 62%,rgba(24,25,28,.05) 100%);pointer-events:none"></div>
+  <div style="position:relative;width:100%;max-width:1440px;margin:0 auto;padding:160px clamp(20px,5cqw,72px) 64px;display:flex;flex-direction:column;justify-content:flex-end;gap:24px">
+    <nav style="display:flex;gap:10px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.65)"><a href="./Home.dc.html" style="text-decoration:none;color:inherit">Inicio</a><span>/</span><a href="./Productos.dc.html" style="text-decoration:none;color:inherit">Productos</a><span>/</span><span style="color:#fff">Mamparas</span></nav>
+    <h1 style="margin:0;font-weight:500;font-size:clamp(36px,5.4cqw,84px);line-height:1;letter-spacing:-.03em;max-width:15ch;text-wrap:balance">Mamparas de baño a medida</h1>
+    <p style="margin:0;font-weight:400;font-size:clamp(15px,1.3cqw,19px);line-height:1.6;color:rgba(255,255,255,.85);max-width:44ch">A la medida de tu baño, con paneles Klara que no cortan ni estallan. La colocás vos o te la instalamos.</p>
+    <a href="./Cotizador.dc.html" style="align-self:flex-start;display:inline-flex;align-items:center;gap:14px;padding:19px 28px;background:#B8502C;color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-radius:0 999px 999px 0" style-hover="background:#fff;color:#26272B">Cotizar mi mampara <span aria-hidden="true">→</span></a>
+  </div>
+</section>
+
+<!-- DOS SOLUCIONES -->
+<section data-screen-label="Mamparas · Tipos" style="background:#FAF9F7;padding:clamp(56px,7cqw,120px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(32px,4cqw,56px)">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:24px">
+      <h2 style="margin:0;font-weight:500;font-size:clamp(28px,3.8cqw,58px);line-height:1.02;letter-spacing:-.025em">Dos soluciones</h2>
+      <p style="margin:0;font-weight:400;font-size:15px;line-height:1.6;color:#5F6066;max-width:36ch">Según la geometría de tu ducha o bañera.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:12px">
+      <sc-for list="{{ tipos }}" as="t" hint-placeholder-count="2">
+        <article style="background:#ECEAE6;display:flex;flex-direction:column">
+          <div style="position:relative;aspect-ratio:5/4"><image-slot id="{{ t.slot }}" shape="rect" placeholder="{{ t.photo }}"></image-slot><div style="position:absolute;left:0;top:0;width:92px;height:56px;background:#26272B;display:flex;align-items:center;justify-content:center;pointer-events:none"><div style="{{ t.icon }}"></div></div></div>
+          <div style="padding:30px clamp(20px,3cqw,38px) 36px;display:flex;flex-direction:column;gap:14px;flex:1">
+            <span style="font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#5F6066">{{ t.for }}</span>
+            <h3 style="margin:0;font-weight:500;font-size:clamp(24px,2.4cqw,36px);line-height:1.05;letter-spacing:-.02em">{{ t.name }}</h3>
+            <p style="margin:0;font-weight:400;font-size:14.5px;line-height:1.65;color:#5F6066">{{ t.desc }}</p>
+            <ul style="margin:6px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-weight:400;font-size:13.5px;line-height:1.5">
+              <sc-for list="{{ t.advantages }}" as="a" hint-placeholder-count="3"><li style="padding-left:18px;position:relative"><span style="position:absolute;left:0;top:9px;width:8px;height:1px;background:#B8502C"></span>{{ a }}</li></sc-for>
+            </ul>
+            <a href="./Cotizador.dc.html" style="margin-top:auto;padding-top:22px;align-self:flex-start;display:inline-flex;align-items:center;gap:14px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;color:#26272B" style-hover="color:#B8502C">{{ t.cta }} <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- TÉCNICAS -->
+<section data-screen-label="Mamparas · Técnica" style="background:#26272B;color:#fff;padding:clamp(56px,7cqw,120px) clamp(20px,5cqw,72px);position:relative;overflow:hidden">
+  <div style="position:absolute;left:-8%;bottom:-30%;width:clamp(220px,30cqw,440px);aspect-ratio:480/680;background:rgba(255,255,255,.04);mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');mask-size:100% 100%;mask-repeat:no-repeat;mask-position:center;-webkit-mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;pointer-events:none"></div>
+  <div style="max-width:1440px;margin:0 auto;position:relative;display:flex;flex-direction:column;gap:clamp(32px,4cqw,56px)">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:24px">
+      <div style="display:flex;flex-direction:column;gap:18px"><span style="font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#E39A7E">Características técnicas</span><h2 style="margin:0;font-weight:500;font-size:clamp(28px,3.8cqw,58px);line-height:1.02;letter-spacing:-.025em">Lo que hace que dure</h2></div>
+      <p style="margin:0;font-weight:400;font-size:15px;line-height:1.6;color:rgba(255,255,255,.7);max-width:34ch">Las cuatro piezas que revisamos antes de que salga del taller.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:1px;background:rgba(255,255,255,.14)">
+      <div style="background:#26272B;padding:30px 26px;display:flex;flex-direction:column;gap:20px;min-height:240px">
+        <div style="height:42px;display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border:1.5px solid #fff;border-radius:50%"></span><span style="width:14px;height:14px;border:1.5px solid #fff;border-radius:50%"></span><span style="flex:1;height:1.5px;background:#fff"></span></div>
+        <span style="font-size:12.5px;letter-spacing:.16em;text-transform:uppercase">Sistema de rodamientos</span>
+        <p style="margin:0;font-weight:400;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.7)">Deslizamiento suave y silencioso, diseñado para uso diario intenso.</p>
+      </div>
+      <div style="background:#26272B;padding:30px 26px;display:flex;flex-direction:column;gap:20px;min-height:240px">
+        <div style="height:42px;display:flex;align-items:center"><span style="width:46px;height:28px;border:1.5px solid #fff;border-right-width:6px"></span></div>
+        <span style="font-size:12.5px;letter-spacing:.16em;text-transform:uppercase">Perfilería de aluminio</span>
+        <p style="margin:0;font-weight:400;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.7)">Alta resistencia, terminación prolija y duradera. Anodizado o blanco.</p>
+      </div>
+      <div style="background:#26272B;padding:30px 26px;display:flex;flex-direction:column;gap:20px;min-height:240px">
+        <div style="height:42px;display:flex;align-items:end"><span style="width:2px;height:22px;background:#fff"></span><span style="width:46px;height:1.5px;background:#fff;margin-bottom:20px"></span><span style="width:2px;height:22px;background:#fff"></span></div>
+        <span style="font-size:12.5px;letter-spacing:.16em;text-transform:uppercase">Toallero integrado</span>
+        <p style="margin:0;font-weight:400;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.7)">Funcional y práctico, de diseño minimalista incluido de serie.</p>
+      </div>
+      <div style="background:#26272B;padding:30px 26px;display:flex;flex-direction:column;gap:20px;min-height:240px">
+        <div style="height:42px;display:flex;align-items:center"><span style="width:32px;height:42px;border:1.5px solid #fff;background:repeating-linear-gradient(135deg,transparent 0 5px,rgba(255,255,255,.3) 5px 6px)"></span></div>
+        <span style="font-size:12.5px;letter-spacing:.16em;text-transform:uppercase">Paneles Klara</span>
+        <p style="margin:0;font-weight:400;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.7)">No corta, no estalla. Liviano, durable y sin manchas de agua tras la ducha.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MEDICIÓN + PROCESO -->
+<section data-screen-label="Mamparas · Medición" style="background:#ECEAE6;padding:clamp(56px,7cqw,120px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(32px,4cqw,80px);align-items:start">
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <span style="font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#B8502C">Fabricación a medida</span>
+      <h2 style="margin:0;font-weight:500;font-size:clamp(28px,3.4cqw,50px);line-height:1.05;letter-spacing:-.025em;max-width:20ch">Medís, la hacemos y la colocás en una tarde</h2>
+      <p style="margin:0;font-weight:400;font-size:15.5px;line-height:1.7;color:#5F6066;max-width:48ch">Medís tu espacio, cargás las medidas en el cotizador y fabricamos la mampara exacta. El sistema de encastre es tan sencillo que podés colocarla vos mismo.</p>
+      <div style="position:relative;aspect-ratio:16/10;margin-top:6px"><image-slot id="mp-medicion" shape="rect" placeholder="Foto: cinta métrica midiendo el vano de una ducha"></image-slot></div>
+    </div>
+    <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;border-top:1px solid rgba(38,39,43,.2)">
+      <sc-for list="{{ pasos }}" as="p" hint-placeholder-count="5">
+        <li style="display:flex;gap:22px;padding:22px 0;border-bottom:1px solid rgba(38,39,43,.16)">
+          <span style="font-size:11px;letter-spacing:.3em;color:#B8502C;padding-top:4px;flex:none">{{ p.n }}</span>
+          <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:clamp(16px,1.5cqw,20px);letter-spacing:-.01em">{{ p.t }}</span><span style="font-weight:400;font-size:14px;line-height:1.6;color:#5F6066;max-width:46ch">{{ p.d }}</span></div>
+        </li>
+      </sc-for>
+    </ol>
+  </div>
+</section>
+
+<!-- ENTREGA -->
+<section data-screen-label="Mamparas · Entrega" style="background:#FAF9F7;padding:clamp(56px,7cqw,120px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(28px,3cqw,48px)">
+    <h2 style="margin:0;font-weight:500;font-size:clamp(28px,3.4cqw,50px);line-height:1.05;letter-spacing:-.025em">¿Cómo llega tu mampara?</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:1px;background:rgba(38,39,43,.14);border:1px solid rgba(38,39,43,.14)">
+      <div style="background:#FAF9F7;padding:28px 24px;display:flex;flex-direction:column;gap:12px;min-height:180px"><span style="font-size:12px;letter-spacing:.16em;text-transform:uppercase">Envío a todo el país</span><p style="margin:0;font-weight:400;font-size:13.5px;line-height:1.6;color:#5F6066">Por transporte a coordinar. Consultanos costo y plazo según tu provincia.</p></div>
+      <div style="background:#FAF9F7;padding:28px 24px;display:flex;flex-direction:column;gap:12px;min-height:180px"><span style="font-size:12px;letter-spacing:.16em;text-transform:uppercase">Retiro en local</span><p style="margin:0;font-weight:400;font-size:13.5px;line-height:1.6;color:#5F6066">Taller en Coronda. Lista en 5 a 7 días hábiles.</p></div>
+      <div style="background:#FAF9F7;padding:28px 24px;display:flex;flex-direction:column;gap:12px;min-height:180px"><span style="font-size:12px;letter-spacing:.16em;text-transform:uppercase">Instalación profesional</span><p style="margin:0;font-weight:400;font-size:13.5px;line-height:1.6;color:#5F6066">Disponible en Coronda y zona (≤40 km), con costo fijo a confirmar.</p></div>
+      <div style="background:#FAF9F7;padding:28px 24px;display:flex;flex-direction:column;gap:12px;min-height:180px"><span style="font-size:12px;letter-spacing:.16em;text-transform:uppercase">La instalás vos</span><p style="margin:0;font-weight:400;font-size:13.5px;line-height:1.6;color:#5F6066">Sistema de encastre simple, con instrucciones paso a paso.</p></div>
+    </div>
+  </div>
+</section>
+
+<dc-import name="SiteFooter" hint-size="100%,520px" style="display:block"></dc-import>
+</div>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#26272B"/><path d="M34 26 H55 A14 14 0 0 1 55 54 H45 V74 H34 Z" fill="#B8502C"/></svg></template>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      tipos: [
+        { name: 'Mampara Frontal', for: 'Duchas lineales y bañeras', slot: 'mp-frontal', photo: 'Foto: mampara frontal corrediza en baño claro',
+          icon: 'width:44px;height:2px;background:#fff',
+          desc: 'Mampara lineal con hojas corredizas. Acceso cómodo y diseño integrado al espacio.',
+          advantages: ['Cómodo y fácil acceso', 'No ocupa espacio al abrir', 'Se fabrica a medida exacta'], cta: 'Cotizar frontal' },
+        { name: 'Mampara Angular', for: 'Esquinas y duchas sin receptáculo', slot: 'mp-angular', photo: 'Foto: mampara angular tipo box 90° con puerta de abrir',
+          icon: 'width:26px;height:26px;border-left:2px solid #fff;border-bottom:2px solid #fff',
+          desc: 'Box en 90° con puerta de abrir. Cierre total y máxima contención de agua.',
+          advantages: ['Mayor contención de agua', 'Cierre total en esquina', 'Se fabrica a medida exacta'], cta: 'Cotizar angular' }
+      ],
+      pasos: [
+        { n: '01', t: 'Medís tu espacio', d: 'Alto y ancho de la ducha o bañera. Sin necesidad de visita técnica.' },
+        { n: '02', t: 'Cotizás online', d: 'Cargás las medidas en el cotizador y ves el precio estimado al instante.' },
+        { n: '03', t: 'Ajustás con un vendedor', d: 'Confirmamos detalles, herrajes y terminaciones antes de fabricar.' },
+        { n: '04', t: 'Fabricamos y entregamos', d: 'Retiro en Coronda o envío a todo el país por transporte a coordinar.' },
+        { n: '05', t: 'Instalás en minutos', d: 'Encastre sencillo. También ofrecemos instalación profesional.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

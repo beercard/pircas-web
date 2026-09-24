@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>body{margin:0;background:#FAF9F7;font-family:Montserrat,Helvetica,Arial,sans-serif;color:#26272B;-webkit-font-smoothing:antialiased}a{color:#26272B}a:hover{color:#B8502C}*{box-sizing:border-box}:focus-visible{outline:2px solid #B8502C;outline-offset:3px}</style>
+</helmet>
+<div style="container-type:inline-size;background:#FAF9F7;color:#26272B;font-family:Montserrat,Helvetica,Arial,sans-serif;font-weight:500">
+<dc-import name="SiteHeader" active="productos" hint-size="100%,84px" style="display:block"></dc-import>
+
+<section data-screen-label="Producto · Detalle" style="background:#FAF9F7;padding:clamp(32px,4cqw,56px) clamp(20px,5cqw,72px) clamp(56px,7cqw,110px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(28px,3cqw,44px)">
+    <nav style="display:flex;flex-wrap:wrap;gap:10px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#5F6066"><a href="./Home.dc.html" style="text-decoration:none;color:#5F6066">Inicio</a><span>/</span><a href="./Productos.dc.html" style="text-decoration:none;color:#5F6066">Productos</a><span>/</span><a href="./Productos.dc.html" style="text-decoration:none;color:#5F6066">Ventanas</a><span>/</span><span style="color:#26272B">Ventana corrediza</span></nav>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:clamp(28px,3.5cqw,64px);align-items:start">
+      <!-- Galería -->
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="position:relative;aspect-ratio:4/3;background:#ECEAE6"><image-slot id="{{ mainSlot }}" shape="rect" placeholder="{{ mainPhoto }}"></image-slot></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+          <sc-for list="{{ thumbs }}" as="t" hint-placeholder-count="4">
+            <button onClick="{{ t.pick }}" style="position:relative;aspect-ratio:1/1;padding:0;border:1px solid {{ t.border }};background:#ECEAE6;cursor:pointer;overflow:hidden"><image-slot id="{{ t.slot }}" shape="rect" placeholder="{{ t.photo }}"></image-slot></button>
+          </sc-for>
+        </div>
+      </div>
+      <!-- Info -->
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <span style="font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#B8502C">Ventanas · Herrero Reforzada</span>
+        <h1 style="margin:0;font-weight:500;font-size:clamp(32px,4cqw,60px);line-height:1.02;letter-spacing:-.03em">Ventana corrediza</h1>
+        <p style="margin:0;font-weight:400;font-size:16px;line-height:1.7;color:#5F6066;max-width:52ch">Dos, tres o cuatro hojas sobre perfilería reforzada de 65 mm. Deslizamiento suave, cierre firme y opción de mosquitero o reja integrada. Se fabrica a la medida exacta de tu vano.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:rgba(38,39,43,.14)">
+          <div style="background:#FAF9F7;padding:18px 16px 18px 0;display:flex;flex-direction:column;gap:6px"><span style="font-size:22px;letter-spacing:-.02em;color:#B8502C">2–4</span><span style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Hojas</span></div>
+          <div style="background:#FAF9F7;padding:18px 16px;display:flex;flex-direction:column;gap:6px"><span style="font-size:22px;letter-spacing:-.02em;color:#B8502C">65 mm</span><span style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Parantes</span></div>
+          <div style="background:#FAF9F7;padding:18px 16px;display:flex;flex-direction:column;gap:6px"><span style="font-size:22px;letter-spacing:-.02em;color:#B8502C">3 mm</span><span style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Vidrio base</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">Configuraciones disponibles</span>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <sc-for list="{{ configs }}" as="c" hint-placeholder-count="4">
+              <button onClick="{{ c.pick }}" style="padding:13px 18px;min-height:46px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};font-size:12px;letter-spacing:.08em;cursor:pointer;transition:all .2s" style-hover="border-color:#26272B">{{ c.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;padding-top:6px">
+          <a href="https://wa.me/5493425903814?text=Hola%20Pircas%2C%20quiero%20consultar%20por%20una%20ventana%20corrediza" style="flex:1 1 240px;display:inline-flex;align-items:center;justify-content:space-between;gap:14px;padding:19px 28px;background:#26272B;color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-radius:0 999px 999px 0" style-hover="background:#B8502C">Consultar este producto <span aria-hidden="true">→</span></a>
+          <a href="./Cotizador.dc.html" style="flex:1 1 220px;display:inline-flex;align-items:center;justify-content:space-between;gap:14px;padding:19px 28px;border:1px solid #26272B;color:#26272B;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none" style-hover="background:#26272B;color:#fff">Solicitar presupuesto <span aria-hidden="true">→</span></a>
+        </div>
+        <!-- Acordeones -->
+        <div style="display:flex;flex-direction:column;border-top:1px solid rgba(38,39,43,.16);margin-top:10px">
+          <sc-for list="{{ panels }}" as="pn" hint-placeholder-count="4">
+            <div style="border-bottom:1px solid rgba(38,39,43,.14)">
+              <button onClick="{{ pn.toggle }}" style="display:flex;width:100%;align-items:center;justify-content:space-between;gap:20px;padding:20px 0;background:transparent;border:0;cursor:pointer;text-align:left;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:{{ pn.color }}" style-hover="color:#B8502C">{{ pn.t }}<span style="font-size:18px;color:#B8502C">{{ pn.sign }}</span></button>
+              <sc-if value="{{ pn.open }}" hint-placeholder-val="{{ true }}">
+                <div style="padding:0 0 22px">
+                  <sc-for list="{{ pn.rows }}" as="r" hint-placeholder-count="3">
+                    <div style="display:flex;justify-content:space-between;gap:24px;padding:9px 0;font-weight:400;font-size:14px;line-height:1.5"><span style="color:#5F6066;flex:none;max-width:46%">{{ r.k }}</span><span style="text-align:right">{{ r.v }}</span></div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Producto · Aplicaciones" style="background:#ECEAE6;padding:clamp(52px,6cqw,110px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(30px,4cqw,70px);align-items:center">
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <h2 style="margin:0;font-weight:500;font-size:clamp(26px,3.2cqw,46px);line-height:1.05;letter-spacing:-.025em">Dónde funciona mejor</h2>
+      <p style="margin:0;font-weight:400;font-size:15.5px;line-height:1.7;color:#5F6066;max-width:48ch">La corrediza es la tipología más elegida en viviendas: no ocupa espacio al abrir y permite vanos amplios con hojas manejables.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span style="padding:12px 18px;border:1px solid rgba(38,39,43,.22);font-size:12px">Dormitorios</span>
+        <span style="padding:12px 18px;border:1px solid rgba(38,39,43,.22);font-size:12px">Cocinas</span>
+        <span style="padding:12px 18px;border:1px solid rgba(38,39,43,.22);font-size:12px">Living</span>
+        <span style="padding:12px 18px;border:1px solid rgba(38,39,43,.22);font-size:12px">Galerías</span>
+      </div>
+    </div>
+    <div style="position:relative;aspect-ratio:16/11"><image-slot id="pd-app" shape="rect" placeholder="Foto: ventana corrediza instalada en dormitorio con luz lateral"></image-slot></div>
+  </div>
+</section>
+
+<section data-screen-label="Producto · Relacionados" style="background:#FAF9F7;padding:clamp(52px,6cqw,110px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:26px">
+    <h2 style="margin:0;font-weight:500;font-size:clamp(26px,3.2cqw,46px);line-height:1.05;letter-spacing:-.025em">Productos relacionados</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:12px">
+      <sc-for list="{{ related }}" as="r" hint-placeholder-count="4">
+        <a href="{{ r.href }}" style="display:flex;flex-direction:column;background:#fff;border:1px solid rgba(38,39,43,.1);text-decoration:none;color:#26272B;transition:transform .3s,border-color .3s" style-hover="transform:translateY(-4px);border-color:#26272B">
+          <div style="position:relative;aspect-ratio:4/3;background:#ECEAE6"><image-slot id="{{ r.slot }}" shape="rect" placeholder="{{ r.photo }}"></image-slot></div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:8px"><span style="font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#5F6066">{{ r.cat }}</span><span style="font-size:17px;letter-spacing:-.01em">{{ r.name }}</span><span style="margin-top:8px;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase">Ver detalle →</span></div>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<dc-import name="SiteFooter" hint-size="100%,520px" style="display:block"></dc-import>
+</div>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#26272B"/><path d="M34 26 H55 A14 14 0 0 1 55 54 H45 V74 H34 Z" fill="#B8502C"/></svg></template>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { img: 0, config: '2 hojas', open: 0 };
+  renderVals() {
+    const T = '#B8502C', G = '#26272B';
+    const s = this.state;
+    const gallery = [
+      { slot: 'pd-1', photo: 'Foto: ventana corrediza, vista frontal completa' },
+      { slot: 'pd-2', photo: 'Foto: detalle del riel y las hojas' },
+      { slot: 'pd-3', photo: 'Foto: detalle de cierre y manija' },
+      { slot: 'pd-4', photo: 'Foto: ventana instalada con mosquitero' }
+    ];
+    const thumbs = gallery.map((g, i) => ({ ...g, slot: g.slot + '-t', pick: () => this.setState({ img: i }), border: s.img === i ? G : 'rgba(38,39,43,.12)' }));
+    const configs = ['2 hojas', '3 hojas', '4 hojas', 'Con mosquitero', 'Con reja'].map(label => ({
+      label, pick: () => this.setState({ config: label }),
+      bg: s.config === label ? G : 'transparent', color: s.config === label ? '#fff' : G, border: s.config === label ? G : 'rgba(38,39,43,.22)'
+    }));
+    const panelDefs = [
+      { t: 'Características técnicas', rows: [{ k: 'Parantes', v: '65 mm' }, { k: 'Zócalos', v: '75 / 48 mm' }, { k: 'Vidrio', v: '3 mm entero o repartido' }, { k: 'Cierre', v: 'Cremona reforzada' }] },
+      { t: 'Materiales', rows: [{ k: 'Perfilería', v: 'Aluminio línea Herrero Reforzada' }, { k: 'Vidrio', v: 'Float 3 mm · laminado o Blindex opcional' }, { k: 'Herrajes', v: 'Rodamientos de nylon reforzado' }] },
+      { t: 'Medidas y fabricación', rows: [{ k: 'Medida', v: 'A medida exacta del vano' }, { k: 'Mínimo', v: '60 × 60 cm' }, { k: 'Plazo', v: '7 a 15 días hábiles' }] },
+      { t: 'Entrega e instalación', rows: [{ k: 'Retiro', v: 'Taller Coronda, Hipólito Yrigoyen 1111' }, { k: 'Envío', v: 'A todo el país, transporte a coordinar' }, { k: 'Instalación', v: 'Profesional en Coronda y zona (+40 km)' }] }
+    ];
+    const panels = panelDefs.map((p, i) => ({
+      t: p.t, rows: p.rows, open: s.open === i, sign: s.open === i ? '−' : '+',
+      color: s.open === i ? T : G, toggle: () => this.setState({ open: s.open === i ? -1 : i })
+    }));
+    return {
+      mainSlot: gallery[s.img].slot, mainPhoto: gallery[s.img].photo, thumbs, configs, panels,
+      related: [
+        { name: 'Ventana de abrir', cat: 'Ventanas', slot: 'pdr-1', photo: 'Foto: ventana de abrir dos hojas', href: './Producto.dc.html' },
+        { name: 'Ventana con celosía', cat: 'Ventanas', slot: 'pdr-2', photo: 'Foto: ventana con celosía', href: './Producto.dc.html' },
+        { name: 'Reja de hierro', cat: 'Rejas', slot: 'pdr-3', photo: 'Foto: reja de hierro 1/2"', href: './Productos.dc.html' },
+        { name: 'Vidrio DVH', cat: 'Vidrios', slot: 'pdr-4', photo: 'Foto: detalle de vidrio DVH', href: './Productos.dc.html' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

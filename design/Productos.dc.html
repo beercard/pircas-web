@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>body{margin:0;background:#FAF9F7;font-family:Montserrat,Helvetica,Arial,sans-serif;color:#26272B;-webkit-font-smoothing:antialiased}a{color:#26272B}a:hover{color:#B8502C}*{box-sizing:border-box}:focus-visible{outline:2px solid #B8502C;outline-offset:3px}</style>
+</helmet>
+<div style="container-type:inline-size;background:#FAF9F7;color:#26272B;font-family:Montserrat,Helvetica,Arial,sans-serif;font-weight:500">
+<dc-import name="SiteHeader" active="productos" hint-size="100%,84px" style="display:block"></dc-import>
+
+<section data-screen-label="Productos · Hero" style="background:#FAF9F7;padding:clamp(48px,6cqw,90px) clamp(20px,5cqw,72px) clamp(40px,5cqw,70px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:28px">
+    <nav style="display:flex;gap:10px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#5F6066"><a href="./Home.dc.html" style="text-decoration:none;color:#5F6066">Inicio</a><span>/</span><span style="color:#26272B">Productos</span></nav>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(30px,4cqw,80px);align-items:end">
+      <h1 style="margin:0;font-weight:500;font-size:clamp(38px,5.6cqw,88px);line-height:.98;letter-spacing:-.03em;max-width:15ch;text-wrap:balance">Todo lo que fabricamos.</h1>
+      <p style="margin:0;font-weight:400;font-size:clamp(15px,1.3cqw,19px);line-height:1.65;color:#5F6066;max-width:44ch;padding-bottom:8px">Ventanas, puertas, mamparas, vidrios y rejas. Todo se hace a medida en nuestro taller de Coronda.</p>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Productos · Filtros" style="background:#FAF9F7;padding:0 clamp(20px,5cqw,72px) clamp(56px,7cqw,120px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(28px,3cqw,44px)">
+    <div style="display:flex;flex-wrap:wrap;gap:6px 26px;border-bottom:1px solid rgba(38,39,43,.14)">
+      <sc-for list="{{ cats }}" as="c" hint-placeholder-count="7">
+        <button onClick="{{ c.pick }}" style="padding:14px 0;background:transparent;border:0;border-bottom:2px solid {{ c.border }};margin-bottom:-1px;cursor:pointer;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:{{ c.color }};transition:color .2s" style-hover="color:#B8502C">{{ c.label }}</button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ showLineas }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <h2 style="margin:0;font-weight:500;font-size:clamp(24px,2.6cqw,38px);line-height:1.05;letter-spacing:-.02em">Líneas de aberturas</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px">
+          <sc-for list="{{ lineas }}" as="l" hint-placeholder-count="3">
+            <a href="{{ l.href }}" style="position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:400px;text-decoration:none;color:#fff;overflow:hidden;background:#26272B">
+              <image-slot id="{{ l.slot }}" shape="rect" placeholder="{{ l.photo }}"></image-slot>
+              <div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(24,25,28,.88) 0%,rgba(24,25,28,.25) 55%,rgba(24,25,28,0) 100%);pointer-events:none"></div>
+              <div style="position:relative;padding:28px 26px 30px;display:flex;flex-direction:column;gap:12px;pointer-events:none">
+                <span style="font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:#E39A7E">{{ l.tag }}</span>
+                <span style="font-size:clamp(22px,2.2cqw,30px);line-height:1.05;letter-spacing:-.02em">{{ l.name }}</span>
+                <span style="font-weight:400;font-size:14px;line-height:1.55;color:rgba(255,255,255,.8);max-width:32ch">{{ l.claim }}</span>
+                <span style="margin-top:8px;display:inline-flex;align-items:center;gap:12px;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase">Ver línea →</span>
+              </div>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:16px">
+        <h2 style="margin:0;font-weight:500;font-size:clamp(24px,2.6cqw,38px);line-height:1.05;letter-spacing:-.02em">{{ listTitle }}</h2>
+        <span style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">{{ countLabel }}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px">
+        <sc-for list="{{ visible }}" as="p" hint-placeholder-count="9">
+          <a href="{{ p.href }}" style="display:flex;flex-direction:column;background:#fff;border:1px solid rgba(38,39,43,.1);text-decoration:none;color:#26272B;overflow:hidden;transition:transform .3s,border-color .3s" style-hover="transform:translateY(-4px);border-color:#26272B">
+            <div style="position:relative;aspect-ratio:4/3;background:#ECEAE6"><image-slot id="{{ p.slot }}" shape="rect" placeholder="{{ p.photo }}"></image-slot></div>
+            <div style="padding:22px 20px 24px;display:flex;flex-direction:column;gap:10px;flex:1">
+              <span style="font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#5F6066">{{ p.cat }}</span>
+              <span style="font-size:18px;line-height:1.25;letter-spacing:-.01em">{{ p.name }}</span>
+              <span style="font-weight:400;font-size:13.5px;line-height:1.55;color:#5F6066">{{ p.desc }}</span>
+              <span style="margin-top:auto;padding-top:18px;display:inline-flex;align-items:center;justify-content:space-between;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase">Ver detalle <span style="color:#B8502C;font-size:16px">→</span></span>
+            </div>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;background:#ECEAE6;padding:34px clamp(22px,3cqw,44px);margin-top:12px">
+      <div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#B8502C">¿No encontrás lo que buscás?</span><span style="font-size:clamp(20px,2cqw,28px);line-height:1.15;letter-spacing:-.02em;max-width:30ch">Si se puede hacer en aluminio, lo hacemos. Consultanos.</span></div>
+      <a href="./Cotizador.dc.html" style="display:inline-flex;align-items:center;gap:14px;padding:18px 28px;background:#B8502C;color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-radius:0 999px 999px 0" style-hover="background:#26272B">Solicitar presupuesto <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<dc-import name="SiteFooter" hint-size="100%,520px" style="display:block"></dc-import>
+</div>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#26272B"/><path d="M34 26 H55 A14 14 0 0 1 55 54 H45 V74 H34 Z" fill="#B8502C"/></svg></template>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { cat: 'TODOS' };
+  renderVals() {
+    const T = '#B8502C', G = '#26272B', M = '#5F6066';
+    const s = this.state;
+    const catDefs = ['TODOS', 'LÍNEAS', 'PUERTAS', 'VENTANAS', 'MAMPARAS', 'VIDRIOS', 'REJAS', 'OTRAS SOLUCIONES'];
+    const cats = catDefs.map(c => ({ label: c, pick: () => this.setState({ cat: c }), color: s.cat === c ? G : M, border: s.cat === c ? T : 'transparent' }));
+    const items = [
+      ['Ventana corrediza', 'VENTANAS', 'Dos, tres o cuatro hojas. Con o sin mosquitero.', 'pr-1', 'Foto: ventana corrediza de aluminio'],
+      ['Ventana de abrir', 'VENTANAS', 'Una, dos o tres hojas. Cierre hermético.', 'pr-2', 'Foto: ventana de abrir dos hojas'],
+      ['Ventana con celosía', 'VENTANAS', 'Control de luz y ventilación regulable.', 'pr-3', 'Foto: ventana con celosía'],
+      ['Puerta de aluminio', 'PUERTAS', 'Serie 100 a 700, exterior e interior.', 'pr-4', 'Foto: puerta de aluminio exterior'],
+      ['Puerta corrediza', 'PUERTAS', 'Grandes luces con paso libre total.', 'pr-5', 'Foto: puerta corrediza de vidrio'],
+      ['Puerta placa', 'OTRAS SOLUCIONES', 'Madera y MDF para interiores.', 'pr-6', 'Foto: puerta placa de madera'],
+      ['Puerta granero', 'OTRAS SOLUCIONES', 'Sistema colgante, ahorra espacio.', 'pr-7', 'Foto: puerta granero colgante'],
+      ['Mampara frontal', 'MAMPARAS', 'Duchas lineales y bañeras, hojas corredizas.', 'pr-8', 'Foto: mampara frontal'],
+      ['Mampara angular', 'MAMPARAS', 'Box en 90° con puerta de abrir.', 'pr-9', 'Foto: mampara angular'],
+      ['Vidrio DVH', 'VIDRIOS', '4 mm / 9 mm cámara / 4 mm. Aislación térmica.', 'pr-10', 'Foto: detalle de vidrio DVH'],
+      ['Vidrio laminado', 'VIDRIOS', 'Seguridad: no estalla en fragmentos.', 'pr-11', 'Foto: vidrio laminado'],
+      ['Stopsol', 'VIDRIOS', 'Antirreflejo y control solar.', 'pr-12', 'Foto: fachada con vidrio Stopsol'],
+      ['Rejas de hierro', 'REJAS', 'Hierro 3/8" y 1/2", a medida del vano.', 'pr-13', 'Foto: reja de hierro'],
+      ['Mosquiteros', 'OTRAS SOLUCIONES', 'Adaptables a corredizas y de abrir.', 'pr-14', 'Foto: mosquitero corredizo']
+    ].map(([name, cat, desc, slot, photo]) => ({ name, cat, desc, slot, photo, href: cat === 'MAMPARAS' ? './Mamparas.dc.html' : './Producto.dc.html' }));
+    const showLineas = s.cat === 'TODOS' || s.cat === 'LÍNEAS';
+    const visible = s.cat === 'TODOS' || s.cat === 'LÍNEAS' ? items : items.filter(i => i.cat === s.cat);
+    return {
+      cats, showLineas, visible,
+      listTitle: s.cat === 'TODOS' || s.cat === 'LÍNEAS' ? 'Productos y complementos' : s.cat.charAt(0) + s.cat.slice(1).toLowerCase(),
+      countLabel: visible.length + (visible.length === 1 ? ' producto' : ' productos'),
+      lineas: [
+        { name: 'Herrero Económica', claim: 'La más económica, para ambientes de poco uso.', tag: 'Económica', href: './Linea-Economica.dc.html', slot: 'pl-1', photo: 'Foto: ventana corrediza blanca' },
+        { name: 'Herrero Reforzada', claim: 'La más pedida. Aguanta el uso de todos los días.', tag: 'Más elegida', href: './Linea-Reforzada.dc.html', slot: 'pl-2', photo: 'Foto: ventana reforzada con reja' },
+        { name: 'Modena', claim: 'La que mejor aísla del frío, el calor y el ruido.', tag: 'Alta gama', href: './Linea-Modena.dc.html', slot: 'pl-3', photo: 'Foto: puerta Modena negra con DVH' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

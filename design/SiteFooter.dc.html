@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div ref="{{ rootRef }}" style="container-type:inline-size;font-family:Montserrat,Helvetica,Arial,sans-serif;font-weight:500">
+  <sc-if value="{{ showCta }}" hint-placeholder-val="{{ true }}">
+    <section style="position:relative;background:#B8502C;color:#fff;padding:clamp(72px,10cqw,150px) clamp(20px,5cqw,72px);overflow:hidden">
+      <div style="position:absolute;left:-6%;top:-20%;width:clamp(300px,42cqw,640px);aspect-ratio:480/680;background:rgba(255,255,255,.08);mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');mask-size:100% 100%;mask-repeat:no-repeat;mask-position:center;-webkit-mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;pointer-events:none"></div>
+      <div style="max-width:1440px;margin:0 auto;position:relative;display:flex;flex-direction:column;gap:30px;align-items:flex-start">
+        <h2 style="margin:0;font-weight:500;font-size:clamp(36px,6cqw,92px);line-height:.98;letter-spacing:-.03em;max-width:13ch;text-wrap:balance">¿Tenés una obra o una reforma?</h2>
+        <p style="margin:0;font-weight:400;font-size:clamp(15px,1.3cqw,20px);line-height:1.6;color:rgba(255,255,255,.85);max-width:40ch">Mandanos las medidas o pasá por el local. Te pasamos precio sin compromiso.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;width:100%">
+          <a href="./Cotizador.dc.html" style="flex:1 1 240px;display:inline-flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 28px;background:#fff;color:#26272B;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-radius:0 999px 999px 0" style-hover="background:#26272B;color:#fff">Solicitar presupuesto <span aria-hidden="true">→</span></a>
+          <a href="https://wa.me/5493425903814?text=Hola%20Pircas%2C%20quiero%20pedir%20un%20presupuesto" style="flex:1 1 240px;display:inline-flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 28px;border:1px solid rgba(255,255,255,.6);color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none" style-hover="border-color:#fff;background:rgba(255,255,255,.1)">WhatsApp <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+  </sc-if>
+  <footer style="position:relative;background:#26272B;color:#fff;padding:clamp(56px,7cqw,96px) clamp(20px,5cqw,72px) 56px;overflow:hidden">
+    <div style="position:absolute;right:clamp(20px,5cqw,72px);bottom:-32%;width:clamp(180px,26cqw,380px);aspect-ratio:480/680;background:rgba(255,255,255,.05);mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');mask-size:100% 100%;mask-repeat:no-repeat;mask-position:center;-webkit-mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;pointer-events:none"></div>
+    <div style="max-width:1440px;margin:0 auto;position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:40px">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:22px;height:30px;background:#B8502C;clip-path:path('M0 0 H13 A9 9 0 0 1 13 18 H7 V30 H0 Z')"></div><div style="display:flex;flex-direction:column;line-height:1"><span style="font-size:17px;letter-spacing:.22em;font-weight:600">PIRCAS</span><span style="font-size:8.5px;letter-spacing:.32em;margin-top:4px;opacity:.85">ABERTURAS</span></div></div>
+        <p style="margin:0;font-weight:400;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.65);max-width:30ch">Aberturas de aluminio fabricadas e instaladas a medida. Coronda, Santa Fe.</p>
+      </div>
+      <nav style="display:flex;flex-direction:column;gap:12px;font-size:12px;letter-spacing:.18em;text-transform:uppercase">
+        <a href="./Productos.dc.html" style="color:#fff;text-decoration:none" style-hover="color:#E39A7E">Productos</a>
+        <a href="./Linea-Reforzada.dc.html" style="color:#fff;text-decoration:none" style-hover="color:#E39A7E">Líneas</a>
+        <a href="./Mamparas.dc.html" style="color:#fff;text-decoration:none" style-hover="color:#E39A7E">Mamparas</a>
+        <a href="./Proyectos.dc.html" style="color:#fff;text-decoration:none" style-hover="color:#E39A7E">Proyectos</a>
+        <a href="./Nosotros.dc.html" style="color:#fff;text-decoration:none" style-hover="color:#E39A7E">Nosotros</a>
+        <a href="./Contacto.dc.html" style="color:#fff;text-decoration:none" style-hover="color:#E39A7E">Contacto</a>
+      </nav>
+      <div style="display:flex;flex-direction:column;gap:12px;font-size:12px;letter-spacing:.18em;text-transform:uppercase">
+        <a href="https://wa.me/5493425903814" style="color:#fff;text-decoration:none" style-hover="color:#E39A7E">WhatsApp</a>
+        <a href="https://www.instagram.com/pircas_coronda" style="color:#fff;text-decoration:none" style-hover="color:#E39A7E">Instagram</a>
+        <a href="./Cotizador.dc.html" style="color:#fff;text-decoration:none" style-hover="color:#E39A7E">Cotizador</a>
+        <span style="margin-top:10px;font-weight:400;letter-spacing:.06em;text-transform:none;color:rgba(255,255,255,.65)">www.pircas.com.ar</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-weight:400;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.65)">
+        <span>Hipólito Yrigoyen 1111<br>Coronda, Santa Fe</span>
+        <a href="tel:+5493425903814" style="color:#fff;text-decoration:none">342 590 3814</a>
+        <span>Lun a Vie · 8–12 y 16–20 h</span>
+      </div>
+    </div>
+    <div style="max-width:1440px;margin:52px auto 0;position:relative;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-weight:400;font-size:11.5px;letter-spacing:.06em;color:rgba(255,255,255,.5)"><span>© 2026 Pircas Aberturas · Aberturas de aluminio</span><span>Coronda · Santa Fe · Argentina</span></div>
+  </footer>
+  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+    <div style="position:sticky;bottom:0;z-index:40;display:grid;grid-template-columns:1fr 1fr;background:#26272B;border-top:1px solid rgba(255,255,255,.12)">
+      <a href="https://wa.me/5493425903814" style="display:flex;align-items:center;justify-content:center;height:62px;color:#fff;font-size:11px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none">WhatsApp</a>
+      <a href="./Cotizador.dc.html" style="display:flex;align-items:center;justify-content:center;height:62px;background:#B8502C;color:#fff;font-size:11px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none">Presupuesto</a>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showCta&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { isMobile: false };
+  rootRef = React.createRef();
+  componentDidMount() {
+    const el = this.rootRef.current;
+    if (el && window.ResizeObserver) { this.ro = new ResizeObserver(([e]) => { const m = e.contentRect.width < 860; if (m !== this.state.isMobile) this.setState({ isMobile: m }); }); this.ro.observe(el); }
+  }
+  componentWillUnmount() { this.ro && this.ro.disconnect(); }
+  renderVals() { return { rootRef: this.rootRef, showCta: this.props.showCta !== false, isMobile: this.state.isMobile }; }
+}
+</script>
+</body>
+</html>

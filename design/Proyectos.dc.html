@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>body{margin:0;background:#FAF9F7;font-family:Montserrat,Helvetica,Arial,sans-serif;color:#26272B;-webkit-font-smoothing:antialiased}a{color:#26272B}a:hover{color:#B8502C}*{box-sizing:border-box}:focus-visible{outline:2px solid #B8502C;outline-offset:3px}</style>
+</helmet>
+<div style="container-type:inline-size;background:#FAF9F7;color:#26272B;font-family:Montserrat,Helvetica,Arial,sans-serif;font-weight:500">
+<dc-import name="SiteHeader" active="proyectos" hint-size="100%,84px" style="display:block"></dc-import>
+
+<section data-screen-label="Proyectos · Hero" style="background:#FAF9F7;padding:clamp(44px,5cqw,80px) clamp(20px,5cqw,72px) clamp(32px,4cqw,56px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:26px">
+    <nav style="display:flex;gap:10px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#5F6066"><a href="./Home.dc.html" style="text-decoration:none;color:#5F6066">Inicio</a><span>/</span><span style="color:#26272B">Proyectos</span></nav>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(28px,4cqw,80px);align-items:end">
+      <h1 style="margin:0;font-weight:500;font-size:clamp(38px,5.6cqw,88px);line-height:.98;letter-spacing:-.03em">Trabajos hechos</h1>
+      <p style="margin:0;font-weight:400;font-size:clamp(16px,1.5cqw,22px);line-height:1.5;color:#26272B;max-width:34ch;padding-bottom:10px">Fotos reales de obras que hicimos en Coronda y la zona.</p>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Proyectos · Grid" style="background:#FAF9F7;padding:0 clamp(20px,5cqw,72px) clamp(56px,7cqw,120px)">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(24px,3cqw,40px)">
+    <div style="display:flex;flex-wrap:wrap;gap:6px 26px;border-bottom:1px solid rgba(38,39,43,.14)">
+      <sc-for list="{{ filters }}" as="f" hint-placeholder-count="6">
+        <button onClick="{{ f.pick }}" style="padding:14px 0;background:transparent;border:0;border-bottom:2px solid {{ f.border }};margin-bottom:-1px;cursor:pointer;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:{{ f.color }};transition:color .2s" style-hover="color:#B8502C">{{ f.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:12px">
+      <sc-for list="{{ visible }}" as="p" hint-placeholder-count="9">
+        <a href="./Proyecto.dc.html" style="display:block;text-decoration:none;color:#26272B;transition:transform .35s" style-hover="transform:translateY(-5px)">
+          <div style="position:relative;aspect-ratio:{{ p.ratio }};background:#ECEAE6;overflow:hidden"><image-slot id="{{ p.slot }}" shape="rect" placeholder="{{ p.photo }}"></image-slot></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0 10px;border-bottom:1px solid rgba(38,39,43,.14)">
+            <div style="display:flex;flex-direction:column;gap:5px"><span style="font-size:15px;letter-spacing:-.01em">{{ p.name }}</span><span style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#5F6066">{{ p.cat }} · {{ p.place }}</span></div>
+            <span style="color:#B8502C;font-size:18px">→</span>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px;padding-top:12px">
+      <span style="font-weight:400;font-size:13px;color:#5F6066">Mostrando {{ count }} de {{ total }} proyectos</span>
+      <div style="display:flex;gap:8px">
+        <button style="width:44px;height:44px;border:1px solid #26272B;background:#26272B;color:#fff;cursor:pointer;font-size:13px">1</button>
+        <button style="width:44px;height:44px;border:1px solid rgba(38,39,43,.22);background:transparent;color:#26272B;cursor:pointer;font-size:13px" style-hover="border-color:#26272B">2</button>
+        <button style="width:44px;height:44px;border:1px solid rgba(38,39,43,.22);background:transparent;color:#26272B;cursor:pointer;font-size:16px" style-hover="border-color:#26272B">→</button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;font-weight:400;font-size:13px;color:#5F6066"><span style="width:28px;height:1px;background:#B8502C"></span>Más trabajos en <a href="https://www.instagram.com/pircas_coronda" style="color:#26272B">@pircas_coronda</a></div>
+  </div>
+</section>
+
+<dc-import name="SiteFooter" hint-size="100%,520px" style="display:block"></dc-import>
+</div>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#26272B"/><path d="M34 26 H55 A14 14 0 0 1 55 54 H45 V74 H34 Z" fill="#B8502C"/></svg></template>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { filter: 'TODOS' };
+  renderVals() {
+    const T = '#B8502C', G = '#26272B', M = '#5F6066';
+    const s = this.state;
+    const filterDefs = ['TODOS', 'VENTANAS', 'PUERTAS', 'MAMPARAS', 'MODENA', 'HERRERO'];
+    const filters = filterDefs.map(f => ({ label: f, pick: () => this.setState({ filter: f }), color: s.filter === f ? G : M, border: s.filter === f ? T : 'transparent' }));
+    const projects = [
+      ['Ventanal DVH', 'MODENA', 'Coronda', '4/5', 'Foto: ventanal DVH de piso a techo en living'],
+      ['Puerta de acceso', 'PUERTAS', 'Coronda', '4/5', 'Foto: puerta de aluminio en acceso principal'],
+      ['Corredizas en galería', 'VENTANAS', 'Arocena', '4/5', 'Foto: galería con ventanas corredizas'],
+      ['Mampara angular', 'MAMPARAS', 'Coronda', '4/5', 'Foto: mampara angular en ducha de esquina'],
+      ['Ventana con celosía', 'HERRERO', 'Desvío Arijón', '4/5', 'Foto: ventana con celosía exterior'],
+      ['Frente vidriado', 'MODENA', 'Santa Fe', '4/5', 'Foto: frente vidriado con perfiles finos'],
+      ['Mampara frontal', 'MAMPARAS', 'Coronda', '4/5', 'Foto: mampara frontal sobre bañera'],
+      ['Ventanas con reja', 'HERRERO', 'Coronda', '4/5', 'Foto: ventanas con rejas de hierro'],
+      ['Puerta Modena premium', 'MODENA', 'Coronda', '4/5', 'Foto: puerta corrediza Modena negra']
+    ].map(([name, cat, place, ratio, photo], i) => ({ name, cat, place, ratio, photo, slot: 'pj-' + (i + 1) }));
+    const visible = projects.filter(p => s.filter === 'TODOS' || p.cat === s.filter);
+    return { filters, visible, count: visible.length, total: projects.length };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#FAF9F7;font-family:Montserrat,Helvetica,Arial,sans-serif;color:#26272B;-webkit-font-smoothing:antialiased}a{color:#26272B}a:hover{color:#B8502C}*{box-sizing:border-box}</style>
+</helmet>
+<div style="container-type:inline-size;background:#FAF9F7;color:#26272B;font-family:Montserrat,Helvetica,Arial,sans-serif;font-weight:500;min-height:100vh;padding:clamp(36px,5cqw,80px) clamp(20px,5cqw,72px)">
+  <div style="max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(30px,4cqw,56px)">
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div style="display:flex;align-items:center;gap:12px"><div style="width:22px;height:30px;background:#B8502C;clip-path:path('M0 0 H13 A9 9 0 0 1 13 18 H7 V30 H0 Z')"></div><div style="display:flex;flex-direction:column;line-height:1"><span style="font-size:17px;letter-spacing:.22em;font-weight:600">PIRCAS</span><span style="font-size:8.5px;letter-spacing:.32em;margin-top:4px">ABERTURAS</span></div></div>
+      <h1 style="margin:0;font-weight:500;font-size:clamp(30px,4cqw,58px);line-height:1.02;letter-spacing:-.03em;max-width:20ch">Sitio web · mapa de páginas</h1>
+      <p style="margin:0;font-weight:400;font-size:15px;line-height:1.7;color:#5F6066;max-width:70ch">Sitio multi-página responsive (desktop 1440 / tablet / mobile 390) con sistema de diseño compartido: header y footer reutilizables, plantilla de línea con tres variantes, plantillas de producto y proyecto, cotizador autogestionable de 5 pasos con carrito. Todas las fotos son slots — arrastrá una imagen encima para cargarla. Tipografía Montserrat; terracota #B8502C, grafito #26272B, gris #ECEAE6, off-white #FAF9F7.</p>
+    </div>
+    <a href="./Sitio Mobile.dc.html" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:26px 24px;background:#26272B;color:#fff;text-decoration:none" style-hover="background:#B8502C">
+      <span style="display:flex;flex-direction:column;gap:6px"><span style="font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:#E39A7E">Versión mobile</span><span style="font-size:19px;letter-spacing:-.015em">Ver las 12 páginas a 390 px</span></span>
+      <span style="font-size:11px;letter-spacing:.18em;text-transform:uppercase">Abrir →</span>
+    </a>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:10px">
+      <sc-for list="{{ pages }}" as="p" hint-placeholder-count="12">
+        <a href="{{ p.href }}" style="display:flex;flex-direction:column;gap:10px;padding:26px 22px;background:#fff;border:1px solid rgba(38,39,43,.12);text-decoration:none;color:#26272B;min-height:150px;transition:transform .25s,border-color .25s" style-hover="transform:translateY(-4px);border-color:#26272B">
+          <span style="font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:#B8502C">{{ p.n }}</span>
+          <span style="font-size:19px;line-height:1.2;letter-spacing:-.015em">{{ p.name }}</span>
+          <span style="font-weight:400;font-size:13px;line-height:1.55;color:#5F6066">{{ p.desc }}</span>
+          <span style="margin-top:auto;font-size:11px;letter-spacing:.18em;text-transform:uppercase">Abrir →</span>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+</div>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#26272B"/><path d="M34 26 H55 A14 14 0 0 1 55 54 H45 V74 H34 Z" fill="#B8502C"/></svg></template>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      pages: [
+        ['01', 'Home', 'Hero, statement, líneas, soluciones, proceso, asesor, mamparas, proyectos.', './Home.dc.html'],
+        ['02', 'Productos', 'Descubrimiento con filtros por categoría y tarjetas de producto.', './Productos.dc.html'],
+        ['03', 'Herrero Económica', 'Página de línea: beneficios, técnica, aplicaciones, FAQ.', './Linea-Economica.dc.html'],
+        ['04', 'Herrero Reforzada', 'Misma plantilla de línea, contenido propio.', './Linea-Reforzada.dc.html'],
+        ['05', 'Modena', 'Línea alta gama con DVH y cierre Premium.', './Linea-Modena.dc.html'],
+        ['06', 'Producto individual', 'Plantilla reutilizable: galería, configuraciones, acordeones.', './Producto.dc.html'],
+        ['07', 'Mamparas', 'Frontal y angular, técnica, medición, entrega.', './Mamparas.dc.html'],
+        ['08', 'Proyectos', 'Portfolio con filtros y paginación.', './Proyectos.dc.html'],
+        ['09', 'Proyecto individual', 'Caso de estudio: datos, texto, galería, puntos técnicos.', './Proyecto.dc.html'],
+        ['10', 'Nosotros', 'Filosofía, cinco pilares y el taller.', './Nosotros.dc.html'],
+        ['11', 'Cotizador', 'Cinco pasos + carrito y ajuste con vendedor.', './Cotizador.dc.html'],
+        ['12', 'Contacto', 'Datos del local y formulario de consulta.', './Contacto.dc.html']
+      ].map(([n, name, desc, href]) => ({ n, name, desc, href }))
+    };
+  }
+}
+</script>
+</body>
+</html>

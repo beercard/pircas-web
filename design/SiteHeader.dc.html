@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div ref="{{ rootRef }}" style="container-type:inline-size;position:sticky;top:0;z-index:60;transition:background .35s,color .35s,box-shadow .35s;background:{{ bg }};color:{{ fg }};box-shadow:{{ shadow }};backdrop-filter:{{ blur }};font-family:Montserrat,Helvetica,Arial,sans-serif;font-weight:500">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 clamp(20px,5cqw,72px);height:84px;max-width:1440px;margin:0 auto">
+    <a href="./Home.dc.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;flex:none">
+      <div style="width:22px;height:30px;background:#B8502C;clip-path:path('M0 0 H13 A9 9 0 0 1 13 18 H7 V30 H0 Z')"></div>
+      <div style="display:flex;flex-direction:column;line-height:1">
+        <span style="font-size:17px;letter-spacing:.22em;font-weight:600">PIRCAS</span>
+        <span style="font-size:8.5px;letter-spacing:.32em;margin-top:4px;opacity:.85">ABERTURAS</span>
+      </div>
+    </a>
+    <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+      <nav style="display:flex;align-items:stretch;height:84px;gap:clamp(14px,2.2cqw,32px);font-size:11px;letter-spacing:.18em;text-transform:uppercase">
+        <a href="./Home.dc.html" style="display:flex;align-items:center;text-decoration:none;color:{{ cInicio }};border-bottom:1px solid {{ bInicio }}" style-hover="color:#B8502C">Inicio</a>
+        <div onMouseEnter="{{ openMega }}" onMouseLeave="{{ closeMega }}" style="display:flex;align-items:center">
+          <a href="./Productos.dc.html" style="display:flex;align-items:center;gap:8px;height:84px;text-decoration:none;color:{{ cProductos }};border-bottom:1px solid {{ bProductos }}" style-hover="color:#B8502C">Productos <span style="font-size:8px;opacity:.7">▾</span></a>
+        </div>
+        <a href="./Linea-Reforzada.dc.html" style="display:flex;align-items:center;text-decoration:none;color:{{ cLineas }};border-bottom:1px solid {{ bLineas }}" style-hover="color:#B8502C">Líneas</a>
+        <a href="./Mamparas.dc.html" style="display:flex;align-items:center;text-decoration:none;color:{{ cMamparas }};border-bottom:1px solid {{ bMamparas }}" style-hover="color:#B8502C">Mamparas</a>
+        <a href="./Proyectos.dc.html" style="display:flex;align-items:center;text-decoration:none;color:{{ cProyectos }};border-bottom:1px solid {{ bProyectos }}" style-hover="color:#B8502C">Proyectos</a>
+        <a href="./Nosotros.dc.html" style="display:flex;align-items:center;text-decoration:none;color:{{ cNosotros }};border-bottom:1px solid {{ bNosotros }}" style-hover="color:#B8502C">Nosotros</a>
+        <a href="./Contacto.dc.html" style="display:flex;align-items:center;text-decoration:none;color:{{ cContacto }};border-bottom:1px solid {{ bContacto }}" style-hover="color:#B8502C">Contacto</a>
+      </nav>
+      <div style="display:flex;align-items:center;gap:14px;flex:none">
+        <a href="https://wa.me/5493425903814" style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;color:inherit;padding:14px 0" style-hover="color:#B8502C">WhatsApp</a>
+        <a href="./Cotizador.dc.html" style="display:inline-flex;align-items:center;gap:12px;padding:15px 24px;background:#B8502C;color:#fff;font-size:11px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-radius:0 999px 999px 0;transition:background .25s;white-space:nowrap" style-hover="background:#26272B">Solicitar presupuesto</a>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ toggleMenu }}" aria-label="Menú" style="display:flex;flex-direction:column;justify-content:center;gap:6px;width:48px;height:48px;background:transparent;border:0;cursor:pointer;padding:10px;color:inherit">
+        <span style="display:block;height:1.5px;background:currentColor;width:100%"></span>
+        <span style="display:block;height:1.5px;background:currentColor;width:{{ barW }}"></span>
+      </button>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ megaOpen }}" hint-placeholder-val="{{ false }}">
+    <div onMouseEnter="{{ openMega }}" onMouseLeave="{{ closeMega }}" style="position:absolute;left:0;right:0;top:84px;background:#FAF9F7;color:#26272B;border-top:1px solid rgba(38,39,43,.12);box-shadow:0 20px 40px -24px rgba(38,39,43,.28)">
+      <div style="max-width:1440px;margin:0 auto;padding:44px clamp(20px,5cqw,72px) 48px;display:grid;grid-template-columns:1.2fr 1fr 1fr 1.1fr;gap:48px">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <span style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#B8502C">Líneas de aberturas</span>
+          <a href="./Linea-Economica.dc.html" style="text-decoration:none;color:#26272B;font-size:18px;letter-spacing:-.01em" style-hover="color:#B8502C">Herrero Económica</a>
+          <a href="./Linea-Reforzada.dc.html" style="text-decoration:none;color:#26272B;font-size:18px;letter-spacing:-.01em" style-hover="color:#B8502C">Herrero Reforzada</a>
+          <a href="./Linea-Modena.dc.html" style="text-decoration:none;color:#26272B;font-size:18px;letter-spacing:-.01em" style-hover="color:#B8502C">Modena</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <span style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#5F6066">Productos</span>
+          <a href="./Producto.dc.html" style="text-decoration:none;color:#26272B;font-size:14px" style-hover="color:#B8502C">Ventanas</a>
+          <a href="./Producto.dc.html" style="text-decoration:none;color:#26272B;font-size:14px" style-hover="color:#B8502C">Puertas</a>
+          <a href="./Mamparas.dc.html" style="text-decoration:none;color:#26272B;font-size:14px" style-hover="color:#B8502C">Mamparas</a>
+          <a href="./Productos.dc.html" style="text-decoration:none;color:#26272B;font-size:14px" style-hover="color:#B8502C">Rejas</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <span style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#5F6066">Vidrios</span>
+          <a href="./Productos.dc.html" style="text-decoration:none;color:#26272B;font-size:14px" style-hover="color:#B8502C">DVH</a>
+          <a href="./Productos.dc.html" style="text-decoration:none;color:#26272B;font-size:14px" style-hover="color:#B8502C">Laminado</a>
+          <a href="./Productos.dc.html" style="text-decoration:none;color:#26272B;font-size:14px" style-hover="color:#B8502C">Stopsol</a>
+          <a href="./Productos.dc.html" style="text-decoration:none;color:#26272B;font-size:14px" style-hover="color:#B8502C">Otras soluciones</a>
+        </div>
+        <a href="./Cotizador.dc.html" style="position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:24px;padding:28px;background:#26272B;color:#fff;text-decoration:none;overflow:hidden" style-hover="background:#B8502C">
+          <div style="position:absolute;right:-20px;bottom:-40px;width:120px;aspect-ratio:480/680;background:rgba(255,255,255,.08);mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');mask-size:100% 100%;mask-repeat:no-repeat;mask-position:center;-webkit-mask-image:url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20480%20680%22%20preserveAspectRatio=%22none%22%3E%3Cpath%20d=%22M0%200%20H280%20A200%20200%200%200%201%20280%20400%20H160%20V680%20H0%20Z%22%20fill=%22black%22/%3E%3C/svg%3E');-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;"></div>
+          <span style="font-size:16px;line-height:1.35;position:relative">Armá tu presupuesto online y ajustalo con un vendedor.</span>
+          <span style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;position:relative">Ir al cotizador →</span>
+        </a>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:70;background:#26272B;color:#fff;display:flex;flex-direction:column;overflow:auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:84px;flex:none;border-bottom:1px solid rgba(255,255,255,.12)">
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:22px;height:30px;background:#B8502C;clip-path:path('M0 0 H13 A9 9 0 0 1 13 18 H7 V30 H0 Z')"></div><div style="display:flex;flex-direction:column;line-height:1"><span style="font-size:17px;letter-spacing:.22em;font-weight:600">PIRCAS</span><span style="font-size:8.5px;letter-spacing:.32em;margin-top:4px;opacity:.85">ABERTURAS</span></div></div>
+        <button onClick="{{ toggleMenu }}" aria-label="Cerrar" style="width:48px;height:48px;background:transparent;border:0;color:#fff;font-size:22px;cursor:pointer">×</button>
+      </div>
+      <nav style="display:flex;flex-direction:column;padding:16px 20px 24px;font-size:26px;letter-spacing:-.01em">
+        <a onClick="{{ closeMenu }}" href="./Home.dc.html" style="color:#fff;text-decoration:none;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.1)">Inicio</a>
+        <a onClick="{{ closeMenu }}" href="./Productos.dc.html" style="color:#fff;text-decoration:none;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.1)">Productos</a>
+        <a onClick="{{ closeMenu }}" href="./Linea-Reforzada.dc.html" style="color:#fff;text-decoration:none;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.1)">Líneas</a>
+        <a onClick="{{ closeMenu }}" href="./Mamparas.dc.html" style="color:#fff;text-decoration:none;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.1)">Mamparas</a>
+        <a onClick="{{ closeMenu }}" href="./Proyectos.dc.html" style="color:#fff;text-decoration:none;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.1)">Proyectos</a>
+        <a onClick="{{ closeMenu }}" href="./Nosotros.dc.html" style="color:#fff;text-decoration:none;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.1)">Nosotros</a>
+        <a onClick="{{ closeMenu }}" href="./Contacto.dc.html" style="color:#fff;text-decoration:none;padding:18px 0">Contacto</a>
+      </nav>
+      <div style="display:flex;flex-direction:column;gap:12px;padding:0 20px 40px;margin-top:auto">
+        <a href="./Cotizador.dc.html" style="display:flex;align-items:center;justify-content:center;height:60px;background:#B8502C;color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-radius:0 999px 999px 0">Solicitar presupuesto</a>
+        <a href="https://wa.me/5493425903814" style="display:flex;align-items:center;justify-content:center;height:60px;border:1px solid rgba(255,255,255,.4);color:#fff;font-size:12px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none">WhatsApp</a>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;inicio&quot;,&quot;productos&quot;,&quot;lineas&quot;,&quot;mamparas&quot;,&quot;proyectos&quot;,&quot;nosotros&quot;,&quot;contacto&quot;,&quot;&quot;],&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;overHero&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { isMobile: false, menuOpen: false, megaOpen: false, scrolled: false };
+  rootRef = React.createRef();
+  componentDidMount() {
+    const win = window;
+    this.win = win;
+    this.onResize = () => { const m = win.innerWidth < 1040; if (m !== this.state.isMobile) this.setState({ isMobile: m, menuOpen: false, megaOpen: false }); };
+    this.onScroll = () => { const s = (win.scrollY || document.documentElement.scrollTop || 0) > 40; if (s !== this.state.scrolled) this.setState({ scrolled: s }); };
+    win.addEventListener('resize', this.onResize);
+    win.addEventListener('scroll', this.onScroll, { passive: true });
+    this.onResize();
+    this.onScroll();
+  }
+  componentWillUnmount() { this.win.removeEventListener('resize', this.onResize); this.win.removeEventListener('scroll', this.onScroll); }
+  renderVals() {
+    const T = '#B8502C', G = '#26272B';
+    const s = this.state, p = this.props;
+    const active = (p.active || '').toLowerCase();
+    const overHero = !!p.overHero && !s.scrolled && !s.megaOpen;
+    const fg = overHero ? '#fff' : G;
+    const item = key => ({ c: active === key ? T : fg, b: active === key ? T : 'transparent' });
+    const keys = ['inicio', 'productos', 'lineas', 'mamparas', 'proyectos', 'nosotros', 'contacto'];
+    const out = {};
+    keys.forEach(k => { const i = item(k); out['c' + k.charAt(0).toUpperCase() + k.slice(1)] = i.c; out['b' + k.charAt(0).toUpperCase() + k.slice(1)] = i.b; });
+    return {
+      rootRef: this.rootRef,
+      isMobile: s.isMobile, isDesktop: !s.isMobile,
+      menuOpen: s.menuOpen, megaOpen: s.megaOpen && !s.isMobile,
+      toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }), closeMenu: () => this.setState({ menuOpen: false }),
+      openMega: () => this.setState({ megaOpen: true }), closeMega: () => this.setState({ megaOpen: false }),
+      bg: overHero ? 'transparent' : 'rgba(250,249,247,.94)',
+      fg, shadow: overHero ? 'none' : '0 1px 0 rgba(38,39,43,.1)', blur: overHero ? 'none' : 'blur(14px)',
+      barW: '70%', ...out
+    };
+  }
+}
+</script>
+</body>
+</html>
