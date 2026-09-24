@@ -65,6 +65,15 @@ export function absoluteUrl(path: string, base = getSiteUrl()): string {
 const SITE_URL_KEY = 'NEXT_PUBLIC_SITE_URL'
 
 export function getSiteUrl(): string {
-  const url = process.env[SITE_URL_KEY] || 'http://localhost:3000'
+  const url = process.env[SITE_URL_KEY] || vercelUrl() || 'http://localhost:3000'
   return url.replace(/\/+$/, '')
+}
+
+/** En Vercel sin NEXT_PUBLIC_SITE_URL: dominio de producción o la URL propia de cada preview. */
+function vercelUrl(): string | null {
+  const host =
+    process.env.VERCEL_ENV === 'production'
+      ? process.env.VERCEL_PROJECT_PRODUCTION_URL
+      : process.env.VERCEL_BRANCH_URL || process.env.VERCEL_URL
+  return host ? `https://${host}` : null
 }

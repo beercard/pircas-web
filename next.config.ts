@@ -24,6 +24,8 @@ const nextConfig: NextConfig = {
     deviceSizes: [375, 414, 640, 768, 1024, 1280, 1440, 1920],
     imageSizes: [64, 128, 256, 384],
     localPatterns: [{ pathname: '/api/media/file/**' }, { pathname: '/brand/**' }],
+    // Medios en Vercel Blob (producción en Vercel).
+    remotePatterns: [{ protocol: 'https', hostname: '*.public.blob.vercel-storage.com' }],
     minimumCacheTTL: 60 * 60 * 24 * 30,
   },
   async headers() {

@@ -1,5 +1,6 @@
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import type { GenerateDescription, GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import type { Field, Plugin } from 'payload'
 
@@ -105,5 +106,17 @@ export const plugins: Plugin[] = [
         ],
       },
     },
+  }),
+  // Vercel no tiene disco persistente: con BLOB_READ_WRITE_TOKEN los medios van a Vercel Blob.
+  // Sin token (local, Docker) se siguen guardando en disco (MEDIA_DIR / public/media).
+  vercelBlobStorage({
+    enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+    token: process.env.BLOB_READ_WRITE_TOKEN,
+    collections: {
+      // URL pública directa del CDN de Blob (los medios son públicos igual).
+      media: { disablePayloadAccessControl: true },
+    },
+    // Sube directo desde el navegador: evita el límite de 4,5 MB por request de Vercel.
+    clientUploads: true,
   }),
 ]

@@ -41,6 +41,13 @@ if (
 }
 
 const siteUrl = getSiteUrl()
+// En Vercel cada deploy además responde en su propia URL (*.vercel.app): el panel debe funcionar ahí también.
+const allowedOrigins = [
+  siteUrl,
+  ...[process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL]
+    .filter(Boolean)
+    .map((host) => `https://${host}`),
+]
 
 export default buildConfig({
   serverURL: siteUrl,
@@ -99,7 +106,11 @@ export default buildConfig({
   ],
   editor: defaultEditor,
   db: postgresAdapter({
-    pool: { connectionString: process.env.DATABASE_URL || '' },
+    pool: {
+      connectionString: process.env.DATABASE_URL || '',
+      // En Vercel hay muchas instancias chicas: pocas conexiones por instancia (Neon usa pooler).
+      ...(process.env.VERCEL ? { max: 5, idleTimeoutMillis: 10_000 } : {}),
+    },
     // El esquema se cambia SIEMPRE con migraciones versionadas (src/migrations).
     push: false,
     migrationDir: path.resolve(dirname, 'migrations'),
@@ -110,8 +121,8 @@ export default buildConfig({
   sharp,
   plugins,
   graphQL: { disable: true },
-  cors: [siteUrl],
-  csrf: [siteUrl],
+  cors: allowedOrigins,
+  csrf: allowedOrigins,
   upload: {
     limits: { fileSize: 15 * 1024 * 1024 }, // 15 MB por archivo
   },

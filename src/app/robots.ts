@@ -9,7 +9,9 @@ export const dynamic = 'force-dynamic'
 export default function robots(): MetadataRoute.Robots {
   const isProduction =
     process.env.NODE_ENV === 'production' &&
-    !/localhost|127\.0\.0\.1|staging|test/.test(getSiteUrl())
+    (!process.env.VERCEL_ENV || process.env.VERCEL_ENV === 'production') &&
+    // *.vercel.app es la dirección técnica: solo se indexa el dominio propio.
+    !/localhost|127\.0\.0\.1|staging|test|vercel\.app/.test(getSiteUrl())
   if (!isProduction) {
     return { rules: [{ userAgent: '*', disallow: '/' }] }
   }

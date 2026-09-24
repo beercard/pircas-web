@@ -22,7 +22,8 @@
     "seed": "cross-env NODE_OPTIONS=--no-deprecation payload run src/seed/run.ts",
     "test": "pnpm run test:unit && pnpm run test:e2e",
     "test:unit": "cross-env NODE_OPTIONS=--no-deprecation vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "build:vercel": "cross-env NODE_OPTIONS=--no-deprecation payload migrate && pnpm run build"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -33,6 +34,7 @@
     "@payloadcms/plugin-redirects": "3.90.2",
     "@payloadcms/plugin-seo": "3.90.2",
     "@payloadcms/richtext-lexical": "3.90.2",
+    "@payloadcms/storage-vercel-blob": "3.90.2",
     "@payloadcms/translations": "3.90.2",
     "@payloadcms/ui": "3.90.2",
     "@radix-ui/react-dialog": "^1.1.23",
