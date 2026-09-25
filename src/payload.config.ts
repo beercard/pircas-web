@@ -60,13 +60,28 @@ export default buildConfig({
       icons: [{ rel: 'icon', url: '/brand/favicon.png' }],
       robots: 'noindex, nofollow',
     },
+    // Tema claro de marca (colores, tipografía y componentes: src/app/(payload)/custom.scss).
+    theme: 'light',
+    // Iniciales en lugar de Gravatar (no se envía el email a servicios externos).
+    avatar: { Component: '@/components/admin/AdminAvatar#AdminAvatar' },
     components: {
       graphics: {
         Logo: '@/components/admin/AdminLogo#AdminLogo',
         Icon: '@/components/admin/AdminIcon#AdminIcon',
       },
-      beforeDashboard: ['@/components/admin/Dashboard#Dashboard'],
+      // Menú lateral por tareas y pantalla de inicio propia (estilo Shopify / Tiendanube).
+      Nav: '@/components/admin/nav/Nav#PircasNav',
+      views: {
+        dashboard: { Component: '@/components/admin/dashboard/DashboardView#DashboardView' },
+      },
+      beforeLogin: ['@/components/admin/login/LoginIntro#LoginIntro'],
+      afterLogin: ['@/components/admin/login/LoginNote#LoginNote'],
     },
+    // Solo desarrollo local: entra automáticamente con PAYLOAD_DEV_AUTOLOGIN_EMAIL (sin
+    // contraseña). Nunca se activa en producción.
+    ...(process.env.NODE_ENV !== 'production' && process.env.PAYLOAD_DEV_AUTOLOGIN_EMAIL
+      ? { autoLogin: { email: process.env.PAYLOAD_DEV_AUTOLOGIN_EMAIL } }
+      : {}),
     livePreview: {
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 390, height: 844 },

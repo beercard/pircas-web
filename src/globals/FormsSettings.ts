@@ -25,7 +25,7 @@ export const FormsSettings: GlobalConfig = {
   admin: {
     group: 'Configuración',
     description:
-      'Opciones del cotizador, cálculo del precio estimado, mensajes y emails. Los precios por m² se editan en cada línea y producto (pestaña "Cotizador").',
+      'Opciones del cotizador, cálculo del precio estimado, mensajes y emails. Los precios por m² se editan en cada línea y producto (sección "Cotizador online").',
   },
   // Solo el panel lo lee vía API; el sitio lo lee del lado del servidor (los emails de aviso nunca se exponen).
   access: { read: authenticated, update: authenticated },

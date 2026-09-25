@@ -8,6 +8,8 @@ export const Footer: GlobalConfig = {
   slug: 'footer',
   label: 'Pie de página (footer)',
   admin: {
+    // El pie de página se gestiona por código, no desde el panel.
+    hidden: true,
     group: 'Configuración',
     description:
       'Franja final de llamado a la acción, columnas de enlaces y copyright. Dirección, teléfono y horarios se toman de "Datos del negocio".',

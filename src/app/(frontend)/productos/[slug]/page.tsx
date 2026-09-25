@@ -63,7 +63,7 @@ export default async function ProductPage({ params }: Props) {
   const line = isPopulated(product.line) ? product.line : null
   const path = pathFor('products', product.slug)
 
-  const images = toGalleryImages([{ image: product.featuredImage }, ...(product.gallery ?? [])])
+  const images = toGalleryImages([product.featuredImage, ...(product.gallery ?? [])])
   const panels = [
     ...specPanels(product.technicalSpecifications ?? []).map(([title, rows]) => ({ title, rows })),
     ...(site.productInfoPanels ?? []).map((p) => ({ title: p.title, rows: p.rows ?? [] })),

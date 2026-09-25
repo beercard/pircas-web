@@ -243,9 +243,7 @@ export async function seedCatalog(payload: Payload) {
         'Foto: detalle de herraje y perfil',
         'Foto: interior con luz natural',
         'Foto: detalle de cierre / encuentro de hojas',
-      ].map(async (d) => ({
-        image: await seedMedia(payload, `${d} (${l.name})`),
-      })),
+      ].map((d) => seedMedia(payload, `${d} (${l.name})`)),
     )
     const doc = await payload.create({
       collection: 'product-lines',
@@ -480,7 +478,7 @@ export async function seedCatalog(payload: Payload) {
                   'Foto: detalle del riel y las hojas',
                   'Foto: detalle de cierre y manija',
                   'Foto: ventana instalada con mosquitero',
-                ].map(async (d) => ({ image: await seedMedia(payload, d, 'light') })),
+                ].map((d) => seedMedia(payload, d, 'light')),
               ),
             }
           : {}),
@@ -626,7 +624,7 @@ export async function seedCatalog(payload: Payload) {
                   'Foto: detalle del encuentro marco–mampostería',
                   'Foto: detalle de herraje y cierre Premium',
                   'Foto: vista nocturna del frente iluminado',
-                ].map(async (d) => ({ image: await seedMedia(payload, d) })),
+                ].map((d) => seedMedia(payload, d)),
               ),
             }
           : {}),

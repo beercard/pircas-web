@@ -1,66 +1,103 @@
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
-import { seoPlugin } from '@payloadcms/plugin-seo'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
-import type { GenerateDescription, GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
-import type { Field, Plugin } from 'payload'
+import type { Block, Field, GroupField, Plugin } from 'payload'
 
 import { authenticated, anyone } from '@/access'
 import { revalidate } from '@/hooks/revalidate'
+import { imagesOnly } from '@/fields/gallery'
 import { CACHE_TAGS } from '@/lib/cache-tags'
-import { absoluteUrl, pathFor, type RoutableCollection } from '@/lib/routes'
 
-type SeoDoc = {
-  title?: string
-  name?: string
-  slug?: string
-  shortDescription?: string
-  summary?: string
+/**
+ * SEO por documento (título, descripción, imagen, canonical, noindex). Se gestiona por código,
+ * no desde el panel: el grupo está oculto en el admin pero se conserva en la base y lo usa
+ * buildMetadata. Si está vacío, el sitio genera título y descripción a partir del contenido.
+ * (Reemplaza a @payloadcms/plugin-seo con los mismos campos: la base no cambia.)
+ */
+const SEO_COLLECTIONS = ['pages', 'products', 'product-lines', 'product-categories', 'projects']
+const SEO_GLOBALS = ['homepage']
+
+const seoMetaField: GroupField = {
+  name: 'meta',
+  label: 'SEO',
+  type: 'group',
+  admin: { hidden: true },
+  fields: [
+    { name: 'title', type: 'text', localized: true },
+    { name: 'description', type: 'textarea', localized: true },
+    { name: 'image', type: 'upload', relationTo: 'media', localized: true },
+    {
+      name: 'canonicalURL',
+      type: 'text',
+      validate: (v: string | null | undefined) =>
+        !v || /^https?:\/\//.test(v) || 'Debe ser una URL completa (https://…).',
+    },
+    { name: 'noIndex', type: 'checkbox', defaultValue: false },
+  ],
 }
 
-const SEO_COLLECTIONS = ['pages', 'products', 'product-lines', 'product-categories', 'projects']
+const seoMetaPlugin: Plugin = (config) => ({
+  ...config,
+  collections: (config.collections ?? []).map((c) =>
+    SEO_COLLECTIONS.includes(c.slug) ? { ...c, fields: [...c.fields, seoMetaField] } : c,
+  ),
+  globals: (config.globals ?? []).map((g) =>
+    SEO_GLOBALS.includes(g.slug) ? { ...g, fields: [...g.fields, seoMetaField] } : g,
+  ),
+})
 
-const generateTitle: GenerateTitle<SeoDoc> = ({ doc }) => doc?.title || doc?.name || ''
+/**
+ * Campos de foto: solo muestran imágenes al elegir de la biblioteca (Medios también guarda
+ * PDFs). Se aplica a todos los campos de subida a "media" que no definan su propio filtro,
+ * salvo los que aceptan documentos.
+ */
+const DOCUMENT_FIELDS = new Set(['datasheet', 'datasheetFile', 'file'])
 
-const generateDescription: GenerateDescription<SeoDoc> = ({ doc }) =>
-  (doc?.shortDescription || doc?.summary || '').slice(0, 160)
+function withImageFilter(fields: Field[]): Field[] {
+  return fields.map((field) => {
+    if (field.type === 'upload') {
+      const isMediaImage =
+        field.relationTo === 'media' && !field.filterOptions && !DOCUMENT_FIELDS.has(field.name)
+      return isMediaImage ? { ...field, filterOptions: imagesOnly } : field
+    }
+    if (field.type === 'tabs')
+      return {
+        ...field,
+        tabs: field.tabs.map((t) => ({ ...t, fields: withImageFilter(t.fields) })),
+      }
+    if (field.type === 'blocks')
+      return {
+        ...field,
+        blocks: (field.blocks ?? []).map((b: Block) => ({
+          ...b,
+          fields: withImageFilter(b.fields),
+        })),
+      }
+    if ('fields' in field && Array.isArray(field.fields))
+      return { ...field, fields: withImageFilter(field.fields) } as Field
+    return field
+  })
+}
 
-const generateURL: GenerateURL<SeoDoc> = ({ doc, collectionConfig }) =>
-  collectionConfig && doc?.slug
-    ? absoluteUrl(pathFor(collectionConfig.slug as RoutableCollection, doc.slug))
-    : absoluteUrl('/')
+const imageFieldsPlugin: Plugin = (config) => ({
+  ...config,
+  collections: (config.collections ?? []).map((c) => ({ ...c, fields: withImageFilter(c.fields) })),
+  globals: (config.globals ?? []).map((g) => ({ ...g, fields: withImageFilter(g.fields) })),
+})
 
-/** Campos SEO extra: canonical y exclusión de buscadores por documento. */
-const extraSeoFields: Field[] = [
-  {
-    name: 'canonicalURL',
-    label: 'URL canónica (opcional)',
-    type: 'text',
-    admin: {
-      description:
-        'Solo si este contenido está duplicado en otra URL. Vacío = se usa la URL propia de la página.',
-    },
-    validate: (v: string | null | undefined) =>
-      !v || /^https?:\/\//.test(v) || 'Debe ser una URL completa (https://…).',
-  },
-  {
-    name: 'noIndex',
-    label: 'Ocultar de buscadores (noindex)',
-    type: 'checkbox',
-    defaultValue: false,
-  },
-]
+/** Panel simple: sin la pestaña técnica "API" en los documentos. */
+const simplePanelPlugin: Plugin = (config) => ({
+  ...config,
+  collections: (config.collections ?? []).map((c) => ({
+    ...c,
+    admin: { ...c.admin, hideAPIURL: true },
+  })),
+  globals: (config.globals ?? []).map((g) => ({ ...g, admin: { ...g.admin, hideAPIURL: true } })),
+})
 
 export const plugins: Plugin[] = [
-  seoPlugin({
-    collections: SEO_COLLECTIONS,
-    globals: ['homepage'],
-    uploadsCollection: 'media',
-    tabbedUI: true,
-    generateTitle,
-    generateDescription,
-    generateURL,
-    fields: ({ defaultFields }) => [...defaultFields, ...extraSeoFields],
-  }),
+  seoMetaPlugin,
+  imageFieldsPlugin,
+  simplePanelPlugin,
   redirectsPlugin({
     collections: ['pages', 'products', 'product-lines', 'projects'],
     redirectTypes: ['301', '302'],
@@ -74,6 +111,8 @@ export const plugins: Plugin[] = [
     overrides: {
       labels: { singular: 'Redirección', plural: 'Redirecciones' },
       admin: {
+        // Se gestionan por código (como el resto del SEO): fuera del panel.
+        hidden: true,
         group: 'SEO',
         description:
           'Redirigí URLs viejas o cambiadas a su nueva dirección para no perder visitas ni posicionamiento. Los cambios se aplican en hasta 1 minuto.',

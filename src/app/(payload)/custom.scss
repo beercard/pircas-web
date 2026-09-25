@@ -1,122 +1,1663 @@
-// Estilos del panel de administración (dashboard personalizado).
+// =============================================================================
+// Panel de PIRCAS — tema de marca sobre el admin de Payload.
+// Manual de marca: terracota #B8502C · grafito #26272B · neutros cálidos
+// (#FAF9F7, #F3F1ED, #ECEAE6) · Montserrat · forma "puerta" en botones.
+//
+// Payload define sus estilos dentro de `@layer payload-default`; estas reglas (sin
+// capa) tienen prioridad, así que se pueden ajustar componentes sin `!important`.
+// =============================================================================
+
 :root {
-  --pircas-brand: #c4622a;
+  // --- Tokens de marca -----------------------------------------------------------
+  --p-brand: #b8502c;
+  --p-brand-ink: #a9471f;
+  --p-brand-soft: #e39a7e;
+  --p-brand-tint: #f6e7df;
+  --p-ink: #26272b;
+  --p-muted: #5f6066;
+  --p-soft: #8a8781;
+  --p-paper: #faf9f7;
+  --p-stone: #f3f1ed;
+  --p-gray: #eceae6;
+  --p-line: #e6e2dc;
+  --p-line-strong: #d6d1c9;
+  --p-success: #2f6b3f;
+  --p-success-tint: #e6f1e9;
+  --p-warning: #8a5300;
+  --p-warning-tint: #fbefd9;
+  --p-danger: #b42318;
+  --p-danger-tint: #fbe9e7;
+  --p-info: #3a5a78;
+  --p-info-tint: #e8eef4;
+  --p-radius: 14px;
+  --p-radius-s: 10px;
+  --p-door: 0 999px 999px 0; // botones con forma de puerta (como el sitio)
+  --p-shadow-sm: 0 1px 2px rgb(38 39 43 / 6%);
+  --p-shadow: 0 1px 2px rgb(38 39 43 / 5%), 0 10px 30px -18px rgb(38 39 43 / 25%);
+  --p-ring: 0 0 0 3px rgb(184 80 44 / 18%);
+
+  // --- Escala de neutros cálidos (reemplaza los grises de Payload) ----------------
+  --color-base-0: #ffffff;
+  --color-base-50: #faf9f7;
+  --color-base-100: #f3f1ed;
+  --color-base-150: #eceae6;
+  --color-base-200: #e1ded8;
+  --color-base-250: #d5d1ca;
+  --color-base-300: #c7c3bc;
+  --color-base-350: #b6b2ab;
+  --color-base-400: #a3a09a;
+  --color-base-450: #908d88;
+  --color-base-500: #7d7b77;
+  --color-base-550: #6b6a67;
+  --color-base-600: #5f6066;
+  --color-base-650: #515257;
+  --color-base-700: #444549;
+  --color-base-750: #37383c;
+  --color-base-800: #26272b;
+  --color-base-850: #202124;
+  --color-base-900: #19191c;
+  --color-base-950: #111113;
+  --color-base-1000: #09090a;
+
+  // Éxito (verde), advertencia (ámbar) y error (rojo) en tonos de la marca.
+  --color-success-50: #f1f7f2;
+  --color-success-100: #e6f1e9;
+  --color-success-150: #d2e6d8;
+  --color-success-200: #bcdac5;
+  --color-success-250: #a4cdb1;
+  --color-success-300: #8abf9c;
+  --color-success-350: #70b087;
+  --color-success-400: #57a072;
+  --color-success-450: #45905f;
+  --color-success-500: #3a7d51;
+  --color-success-550: #336f48;
+  --color-success-600: #2f6b3f;
+  --color-success-650: #295d37;
+  --color-success-700: #234f2f;
+  --color-success-750: #1d4227;
+  --color-success-800: #183620;
+  --color-success-850: #132b19;
+  --color-success-900: #0e2013;
+  --color-success-950: #09150c;
+
+  --color-warning-50: #fdf7ec;
+  --color-warning-100: #fbefd9;
+  --color-warning-150: #f8e2b8;
+  --color-warning-200: #f4d396;
+  --color-warning-250: #efc273;
+  --color-warning-300: #e9b051;
+  --color-warning-350: #df9c33;
+  --color-warning-400: #cf8719;
+  --color-warning-450: #b8760d;
+  --color-warning-500: #a06606;
+  --color-warning-550: #8a5300;
+  --color-warning-600: #764700;
+  --color-warning-650: #633c00;
+  --color-warning-700: #523200;
+  --color-warning-750: #432900;
+  --color-warning-800: #362100;
+  --color-warning-850: #2a1a00;
+  --color-warning-900: #1f1300;
+  --color-warning-950: #150d00;
+
+  // --- Variables del tema de Payload ------------------------------------------------
+  --theme-bg: var(--p-paper);
+  --theme-input-bg: #ffffff;
+  --theme-text: var(--p-ink);
+  --font-body:
+    var(--font-montserrat), 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --style-radius-s: 8px;
+  --style-radius-m: 10px;
+  --style-radius-l: 14px;
+  --accessibility-outline: 2px solid var(--p-brand);
+  --accessibility-outline-offset: 2px;
 }
 
-.pircas-dash {
-  margin-bottom: calc(var(--base) * 2);
+// El panel usa siempre el tema claro de la marca.
+html[data-theme='light'],
+html {
+  color-scheme: light;
+}
 
-  &__title {
-    margin: 0 0 var(--base);
-  }
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
 
-  &__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: calc(var(--base) / 2);
-    margin-bottom: var(--base);
-  }
+::selection {
+  background: var(--p-brand-tint);
+  color: var(--p-ink);
+}
 
-  &__action {
-    padding: 0.55rem 1rem;
-    border-radius: 999px;
-    background: var(--pircas-brand);
+a {
+  text-underline-offset: 3px;
+}
+
+// Títulos de las vistas.
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-body);
+  letter-spacing: -0.02em;
+}
+
+// =============================================================================
+// Botones
+// =============================================================================
+.btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    color 0.15s ease;
+}
+
+.btn--style-primary {
+  --bg-color: var(--p-brand);
+  --hover-bg: var(--p-brand-ink);
+  --color: #ffffff;
+  --hover-color: #ffffff;
+  background-color: var(--p-brand);
+  color: #fff;
+  border-radius: var(--p-door);
+  box-shadow: none;
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--p-brand-ink);
     color: #fff;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.875rem;
-
-    &:hover,
-    &:focus-visible {
-      filter: brightness(0.92);
-    }
   }
 
-  &__stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: var(--base);
-    margin-bottom: var(--base);
+  &.btn--disabled,
+  &:disabled {
+    background-color: var(--p-line-strong);
+    color: #fff;
+  }
+}
+
+.btn--style-secondary {
+  --bg-color: #ffffff;
+  --hover-bg: var(--p-stone);
+  background-color: #fff;
+  color: var(--p-ink);
+  box-shadow: inset 0 0 0 1px var(--p-line-strong);
+  border-radius: var(--p-door);
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--p-stone);
+    box-shadow: inset 0 0 0 1px var(--p-soft);
+  }
+}
+
+// =============================================================================
+// Menú lateral (src/components/admin/nav)
+// =============================================================================
+.pircas-nav {
+  background: var(--p-stone);
+  border-right: 1px solid var(--p-line);
+
+  .nav__scroll {
+    padding: 0 12px 14px;
+    gap: 0;
   }
 
-  &__card {
-    border: 1px solid var(--theme-elevation-150);
-    border-radius: 8px;
-    padding: var(--base);
-    background: var(--theme-elevation-0);
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
+}
 
-  &__stat {
+.pircas-nav__brand {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: var(--app-header-height);
+  // Deja lugar al botón de abrir/cerrar menú de Payload (arriba a la izquierda).
+  padding-left: calc(var(--gutter-h) - 6px);
+  margin-bottom: 8px;
+}
+
+.pircas-nav__brand-link {
+  display: inline-flex;
+  text-decoration: none;
+  border-radius: 8px;
+}
+
+.pircas-nav__menu {
+  flex: 1;
+  width: 100%;
+
+  > ul {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-    text-decoration: none;
-    color: inherit;
+    gap: 2px;
+  }
+}
 
-    strong {
-      font-size: 2rem;
-      line-height: 1;
-      color: var(--pircas-brand);
-    }
+.pircas-nav__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 12px;
+  border-radius: var(--p-radius-s);
+  color: var(--p-ink);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    background: rgb(38 39 43 / 5%);
   }
 
-  &__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-    gap: var(--base);
-  }
+  .is-active > & {
+    background: #fff;
+    box-shadow:
+      var(--p-shadow-sm),
+      inset 0 0 0 1px var(--p-line);
+    font-weight: 600;
 
-  &__card-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: calc(var(--base) / 2);
-
-    h3 {
-      margin: 0;
-    }
-  }
-
-  &__empty {
-    color: var(--theme-elevation-500);
-  }
-
-  &__table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-
-    th,
-    td {
-      text-align: left;
-      padding: 0.4rem 0.5rem;
-      border-bottom: 1px solid var(--theme-elevation-100);
-    }
-  }
-
-  &__status {
-    padding: 0.1rem 0.5rem;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    background: var(--theme-elevation-100);
-
-    &--new {
-      background: #fde7da;
-      color: #8a3b12;
-    }
-    &--won {
-      background: #dcf3e2;
-      color: #1d6b35;
-    }
-    &--lost {
-      background: #eee;
-      color: #666;
+    .pircas-nav__icon {
+      color: var(--p-brand);
     }
   }
 }
 
-@media (max-width: 600px) {
-  .pircas-dash__grid {
+.pircas-nav__icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--p-muted);
+}
+
+.pircas-nav__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pircas-nav__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--p-brand);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.pircas-nav__sub {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 4px 0 8px;
+  padding-left: 44px !important;
+}
+
+.pircas-nav__subitem {
+  display: block;
+  padding: 7px 12px;
+  border-radius: 8px;
+  color: var(--p-muted);
+  font-size: 13.5px;
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--p-ink);
+    background: rgb(38 39 43 / 5%);
+  }
+
+  &[aria-current='page'] {
+    color: var(--p-brand-ink);
+    background: var(--p-brand-tint);
+    font-weight: 600;
+  }
+}
+
+.pircas-nav__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--p-line);
+}
+
+.pircas-nav__item--site {
+  color: var(--p-muted);
+  font-size: 13.5px;
+  min-height: 38px;
+}
+
+.pircas-nav__user {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  .nav__log-out {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--p-radius-s);
+    color: var(--p-muted);
+
+    &:hover {
+      background: #fff;
+      color: var(--p-brand);
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+.pircas-nav__user-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  padding: 7px 8px;
+  border-radius: 12px;
+  color: var(--p-ink);
+  text-decoration: none;
+
+  &:hover {
+    background: #fff;
+  }
+}
+
+.pircas-nav__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: var(--p-ink);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pircas-nav__user-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.pircas-nav__user-name {
+  overflow: hidden;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pircas-nav__user-role {
+  color: var(--p-muted);
+  font-size: 12px;
+}
+
+// Logotipo del panel.
+.pircas-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--p-ink);
+
+  &--light {
+    color: #fff;
+  }
+}
+
+.pircas-wordmark__mark {
+  width: 22px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.pircas-wordmark__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.pircas-wordmark__name {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+}
+
+.pircas-wordmark__tagline {
+  margin-top: 4px;
+  font-size: 8.5px;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  opacity: 0.8;
+}
+
+// Botón abrir/cerrar menú de Payload.
+.template-default__nav-toggler {
+  color: var(--p-ink);
+}
+
+// =============================================================================
+// Encabezado de la app y migas de pan
+// =============================================================================
+.app-header {
+  border-bottom: 1px solid var(--p-line);
+  background: rgb(250 249 247 / 88%);
+  backdrop-filter: saturate(1.2) blur(10px);
+}
+
+.step-nav {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--p-muted);
+
+  a {
+    color: var(--p-muted);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--p-ink);
+    }
+  }
+}
+
+// =============================================================================
+// Listados (tablas)
+// =============================================================================
+.collection-list,
+.list-view {
+  h1 {
+    font-weight: 600;
+  }
+}
+
+.table {
+  overflow: hidden;
+  border: 1px solid var(--p-line);
+  border-radius: var(--p-radius);
+  background: #fff;
+  box-shadow: var(--p-shadow-sm);
+
+  table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  thead th {
+    background: var(--p-stone);
+    color: var(--p-muted);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--p-line);
+  }
+
+  tbody tr {
+    transition: background-color 0.12s ease;
+
+    &:hover {
+      background: #fcfbf9;
+    }
+
+    td {
+      border-bottom: 1px solid var(--p-gray);
+    }
+
+    &:last-child td {
+      border-bottom: 0;
+    }
+  }
+
+  td a {
+    font-weight: 600;
+    color: var(--p-ink);
+  }
+}
+
+// Filtros y búsqueda de los listados.
+.list-controls {
+  .search-filter {
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: inset 0 0 0 1px var(--p-line-strong);
+  }
+}
+
+.pill {
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+// =============================================================================
+// Edición de documentos y campos
+// =============================================================================
+.doc-header__title,
+.render-title {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.doc-controls {
+  border-bottom: 1px solid var(--p-line);
+  background: rgb(250 249 247 / 92%);
+  backdrop-filter: saturate(1.2) blur(10px);
+}
+
+.field-label {
+  color: var(--p-ink);
+  font-weight: 600;
+}
+
+.field-description {
+  color: var(--p-muted);
+}
+
+.field-type {
+  input:not([type='checkbox']):not([type='radio']),
+  textarea {
+    border-color: var(--p-line-strong);
+    border-radius: var(--p-radius-s);
+    box-shadow: var(--p-shadow-sm);
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+
+    &:hover {
+      border-color: var(--p-soft);
+    }
+
+    &:focus,
+    &:focus-visible {
+      border-color: var(--p-brand);
+      box-shadow: var(--p-ring);
+      outline: none;
+    }
+  }
+}
+
+.rs__control {
+  border-color: var(--p-line-strong) !important;
+  border-radius: var(--p-radius-s) !important;
+  box-shadow: var(--p-shadow-sm) !important;
+}
+
+.rs__control--is-focused {
+  border-color: var(--p-brand) !important;
+  box-shadow: var(--p-ring) !important;
+}
+
+.checkbox-input__input {
+  border-radius: 6px;
+}
+
+.checkbox-input--checked .checkbox-input__input,
+.checkbox-input__input:checked {
+  background-color: var(--p-brand);
+  border-color: var(--p-brand);
+}
+
+// Pestañas (Contenido / SEO / …)
+.tabs-field__tab-button {
+  font-weight: 600;
+
+  &--active {
+    color: var(--p-ink);
+    box-shadow: inset 0 -2px 0 var(--p-brand);
+  }
+}
+
+// Grupos plegables, filas de listas y bloques.
+.collapsible,
+.array-field__row,
+.blocks-field__row {
+  border-radius: var(--p-radius-s);
+}
+
+.collapsible {
+  border-color: var(--p-line);
+  background: #fff;
+  box-shadow: var(--p-shadow-sm);
+}
+
+.collapsible__toggle-wrap {
+  border-radius: var(--p-radius-s) var(--p-radius-s) 0 0;
+}
+
+// Carga de archivos.
+.dropzone {
+  border-radius: var(--p-radius);
+  border-color: var(--p-line-strong);
+  background: #fff;
+
+  &.dragging {
+    border-color: var(--p-brand);
+    background: var(--p-brand-tint);
+  }
+}
+
+// Avisos.
+.payload-toast-item {
+  border-radius: 12px;
+  font-family: var(--font-body);
+}
+
+// =============================================================================
+// Ingreso (login, primer usuario, recuperar contraseña)
+// =============================================================================
+.template-minimal {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 88% 12%, rgb(184 80 44 / 22%), transparent 42%), var(--p-ink);
+
+  // La P-puerta de la marca como gran forma de fondo.
+  &::before {
+    content: '';
+    position: absolute;
+    right: -5vw;
+    bottom: -14vh;
+    width: min(46vw, 560px);
+    aspect-ratio: 480 / 680;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 680'%3E%3Cpath d='M0 0 H280 A200 200 0 0 1 280 400 H160 V680 H0 Z' fill='%23B8502C'/%3E%3C/svg%3E")
+      no-repeat center / contain;
+    opacity: 0.95;
+    pointer-events: none;
+  }
+
+  .template-minimal__wrap {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 440px);
+    padding: 40px 36px 32px;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 30px 80px -30px rgb(0 0 0 / 55%);
+  }
+
+  @media (max-width: 600px) {
+    &::before {
+      width: 70vw;
+      right: -22vw;
+      bottom: -10vh;
+      opacity: 0.35;
+    }
+
+    .template-minimal__wrap {
+      padding: 32px 22px 26px;
+      border-radius: 16px;
+    }
+  }
+}
+
+.pircas-login-intro {
+  margin: 4px 0 22px;
+
+  h1 {
+    margin: 0 0 6px;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  p {
+    margin: 0;
+    color: var(--p-muted);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+.pircas-login-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 22px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--p-stone);
+  color: var(--p-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: var(--p-success);
+  }
+}
+
+// =============================================================================
+// Inicio (src/components/admin/dashboard)
+// =============================================================================
+.pd {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-top: 28px;
+  padding-bottom: 64px;
+  max-width: 1320px;
+}
+
+.pd-h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.pd-muted {
+  margin: 4px 0 0;
+  color: var(--p-muted);
+  font-size: 13px;
+}
+
+.pd-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--p-brand-ink);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.pd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 20px;
+  border-radius: var(--p-door);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &--primary {
+    background: var(--p-brand);
+    color: #fff;
+
+    &:hover {
+      background: var(--p-brand-ink);
+    }
+  }
+
+  &--ghost {
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 40%);
+
+    &:hover {
+      background: rgb(255 255 255 / 10%);
+    }
+  }
+
+  &--small {
+    min-height: 34px;
+    padding: 0 14px;
+    background: var(--p-ink);
+    color: #fff;
+    font-size: 13px;
+
+    &:hover {
+      background: #000;
+    }
+  }
+}
+
+// Bienvenida
+.pd-hero {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px 32px;
+  overflow: hidden;
+  padding: clamp(24px, 4vw, 40px);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 92% 0%, rgb(184 80 44 / 28%), transparent 50%), var(--p-ink);
+  color: #fff;
+}
+
+.pd-hero__door {
+  position: absolute;
+  right: 3%;
+  top: -18%;
+  width: clamp(120px, 16vw, 210px);
+  height: auto;
+  color: rgb(255 255 255 / 5%);
+  pointer-events: none;
+}
+
+.pd-hero__text {
+  position: relative;
+  max-width: 640px;
+}
+
+.pd-hero__date {
+  margin: 0 0 10px;
+  color: var(--p-brand-soft);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.pd-hero__title {
+  margin: 0;
+  font-size: clamp(26px, 3.2vw, 36px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: #fff;
+}
+
+.pd-hero__lead {
+  margin: 10px 0 0;
+  color: rgb(255 255 255 / 75%);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.pd-hero__actions {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+// Tareas frecuentes
+.pd-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pd-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  gap: 12px;
+}
+
+.pd-action {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--p-line);
+  border-radius: var(--p-radius);
+  background: #fff;
+  color: var(--p-ink);
+  text-decoration: none;
+  box-shadow: var(--p-shadow-sm);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover {
+    border-color: var(--p-line-strong);
+    box-shadow: var(--p-shadow);
+    transform: translateY(-1px);
+
+    .pd-action__icon {
+      background: var(--p-brand);
+      color: #fff;
+    }
+
+    .pd-action__chevron {
+      color: var(--p-brand);
+    }
+  }
+}
+
+.pd-action__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--p-brand-tint);
+  color: var(--p-brand-ink);
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.pd-action__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+
+  strong {
+    font-size: 14.5px;
+    font-weight: 600;
+  }
+
+  span {
+    color: var(--p-muted);
+    font-size: 13px;
+  }
+}
+
+.pd-action__chevron {
+  flex-shrink: 0;
+  color: var(--p-soft);
+}
+
+// Grilla principal
+.pd-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+
+  @media (max-width: 1100px) {
     grid-template-columns: 1fr;
   }
+}
+
+.pd-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pd-card {
+  padding: 20px 22px;
+  border: 1px solid var(--p-line);
+  border-radius: var(--p-radius);
+  background: #fff;
+  box-shadow: var(--p-shadow-sm);
+}
+
+.pd-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 14px;
+}
+
+.pd-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 32px 16px;
+  color: var(--p-soft);
+  text-align: center;
+
+  p {
+    max-width: 38ch;
+    margin: 0;
+    color: var(--p-muted);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+// Consultas
+.pd-leads {
+  list-style: none;
+  margin: 0 -10px;
+  padding: 0;
+}
+
+.pd-lead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 10px;
+  border-radius: 12px;
+  color: var(--p-ink);
+  text-decoration: none;
+
+  &:hover {
+    background: var(--p-paper);
+  }
+}
+
+.pd-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: var(--p-stone);
+  color: var(--p-ink);
+  font-size: 14px;
+  font-weight: 600;
+
+  &--small {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+}
+
+.pd-lead__main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.pd-lead__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 14.5px;
+  font-weight: 600;
+}
+
+.pd-lead__meta {
+  overflow: hidden;
+  color: var(--p-muted);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pd-lead__side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+
+  time {
+    color: var(--p-soft);
+    font-size: 12px;
+  }
+}
+
+.pd-tag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--p-stone);
+  color: var(--p-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+
+  &--quotation {
+    background: var(--p-brand-tint);
+    color: var(--p-brand-ink);
+  }
+
+  &--project {
+    background: var(--p-ink);
+    color: #fff;
+  }
+}
+
+.pd-status {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--p-stone);
+  color: var(--p-muted);
+  font-size: 12px;
+  font-weight: 600;
+
+  &--new {
+    background: var(--p-brand);
+    color: #fff;
+  }
+
+  &--contacted,
+  &--qualified {
+    background: var(--p-info-tint);
+    color: var(--p-info);
+  }
+
+  &--quoted {
+    background: var(--p-warning-tint);
+    color: var(--p-warning);
+  }
+
+  &--won {
+    background: var(--p-success-tint);
+    color: var(--p-success);
+  }
+}
+
+// Actividad
+.pd-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+  margin: 0 0 18px;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  dt {
+    color: var(--p-muted);
+    font-size: 12.5px;
+    font-weight: 500;
+  }
+
+  dd {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 0;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+}
+
+.pd-stats__money {
+  font-size: 19px !important;
+}
+
+.pd-trend {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+
+  &--up {
+    color: var(--p-success);
+  }
+
+  &--down {
+    color: var(--p-muted);
+  }
+}
+
+.pd-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 72px;
+  padding-top: 4px;
+  border-bottom: 1px solid var(--p-line);
+}
+
+.pd-chart__bar {
+  flex: 1;
+  min-width: 0;
+  border-radius: 4px 4px 0 0;
+  background: var(--p-brand);
+
+  &[data-empty] {
+    background: var(--p-gray);
+  }
+}
+
+.pd-chart__legend {
+  margin: 8px 0 0;
+  color: var(--p-soft);
+  font-size: 12px;
+}
+
+// Contenido
+.pd-counts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  a {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: var(--p-paper);
+    color: var(--p-muted);
+    font-size: 13px;
+    text-decoration: none;
+
+    &:hover {
+      background: var(--p-stone);
+    }
+  }
+
+  strong {
+    color: var(--p-ink);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+}
+
+.pd-note {
+  margin: 12px 0 0;
+  color: var(--p-warning);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+// Guía de configuración
+.pd-progress {
+  width: min(100%, 220px);
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--p-gray);
+
+  span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--p-brand);
+  }
+}
+
+.pd-setup__list {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0 -10px;
+  padding: 0;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 10px;
+    border-radius: 12px;
+
+    & + li {
+      border-top: 1px solid var(--p-gray);
+    }
+
+    &.is-done {
+      .pd-setup__text strong {
+        color: var(--p-muted);
+        text-decoration: line-through;
+        text-decoration-color: var(--p-line-strong);
+      }
+    }
+  }
+}
+
+.pd-setup__icon {
+  flex-shrink: 0;
+  color: var(--p-line-strong);
+
+  .is-done > & {
+    color: var(--p-success);
+  }
+}
+
+.pd-setup__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+
+  strong {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  span {
+    color: var(--p-muted);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+}
+
+.pd-chip {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--p-stone);
+  color: var(--p-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+// Seguridad
+.pd-security__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 16px 32px;
+}
+
+.pd-security__rules {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: var(--p-ink);
+    font-size: 13.5px;
+    line-height: 1.45;
+
+    svg {
+      flex-shrink: 0;
+      margin-top: 1px;
+      color: var(--p-success);
+    }
+
+    &.is-warning {
+      color: var(--p-warning);
+
+      svg {
+        color: var(--p-warning);
+      }
+    }
+  }
+}
+
+.pd-users {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+
+    & + li {
+      border-top: 1px solid var(--p-gray);
+    }
+  }
+}
+
+.pd-users__main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 13.5px;
+
+  span {
+    color: var(--p-muted);
+    font-size: 12.5px;
+  }
+}
+
+.pd-users__last {
+  color: var(--p-soft);
+  font-size: 12.5px;
+  text-align: right;
+}
+
+// Mobile: el inicio se apila y los números se achican.
+@media (max-width: 600px) {
+  .pd {
+    gap: 22px;
+    padding-top: 18px;
+  }
+
+  .pd-hero__actions {
+    width: 100%;
+
+    .pd-btn {
+      flex: 1;
+    }
+  }
+
+  .pd-card {
+    padding: 16px;
+  }
+
+  .pd-lead__side time {
+    display: none;
+  }
+
+  .pd-users__last {
+    display: none;
+  }
+}
+
+// =============================================================================
+// Fotos: campos de subida (foto principal y galerías) y miniaturas de listados
+// =============================================================================
+.upload-field-card {
+  border: 1px solid var(--p-line);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: var(--p-shadow-sm);
+}
+
+.upload-relationship-details__thumbnail {
+  flex-shrink: 0;
+  width: 76px;
+  height: 57px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--p-stone);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+// Foto única (principal / portada): miniatura grande para reconocerla de un vistazo.
+.upload--has-one .upload-relationship-details__thumbnail,
+.upload-field-card--size-medium .upload-relationship-details__thumbnail {
+  width: 136px;
+  height: 102px;
+}
+
+.upload-relationship-details__filename {
+  font-size: 13.5px;
+  font-weight: 500;
+
+  a {
+    color: var(--p-ink);
+    text-decoration: none;
+  }
+}
+
+.upload-relationship-details__meta {
+  color: var(--p-muted);
+  font-size: 12px;
+}
+
+.upload--has-many__draggable-rows {
+  gap: 8px;
+}
+
+// Zona para soltar archivos / elegir de la biblioteca.
+.upload__dropzoneAndUpload .dropzone {
+  min-height: 64px;
+  padding: 14px 16px;
+  border: 1.5px dashed var(--p-line-strong);
+  border-radius: 12px;
+  background: #fff;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+
+  &:hover {
+    border-color: var(--p-brand);
+    background: #fffdfb;
+  }
+}
+
+// Miniatura en listados (src/components/admin/ThumbnailCell.tsx).
+.pircas-thumb {
+  display: block;
+  width: 56px;
+  height: 42px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--p-stone);
+  box-shadow: inset 0 0 0 1px var(--p-line);
+
+  &--empty {
+    background:
+      linear-gradient(
+        135deg,
+        transparent 47%,
+        var(--p-line-strong) 48%,
+        var(--p-line-strong) 52%,
+        transparent 53%
+      ),
+      var(--p-stone);
+  }
+}
+
+// Etiqueta de cada sección en el editor de páginas (src/components/admin/BlockLabel.tsx).
+.pircas-block-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: var(--p-muted);
+  font-weight: 500;
+}
+
+.pircas-block-label__empty {
+  color: var(--p-soft);
+  font-style: italic;
+}
+
+.pircas-block-label__hidden {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--p-warning-tint);
+  color: var(--p-warning);
+  font-size: 11px;
+  font-weight: 600;
+  font-style: normal;
+}
+
+// Avatar del encabezado (src/components/admin/AdminAvatar.tsx).
+.pircas-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--p-ink);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+// Con el menú abierto el logo ya está en el menú: el isotipo del encabezado sobra.
+.template-default--nav-open .step-nav__home,
+.template-default--nav-open .step-nav__home + span {
+  display: none;
+}
+
+// Botón cerrar del menú (solo mobile, donde el menú ocupa toda la pantalla).
+.pircas-nav__close {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  border: 0;
+  border-radius: var(--p-radius-s);
+  background: transparent;
+  color: var(--p-ink);
+  cursor: pointer;
+
+  &:hover {
+    background: rgb(38 39 43 / 6%);
+  }
+}
+
+@media (max-width: 768px) {
+  .pircas-nav__brand {
+    padding-left: 6px;
+    padding-right: 4px;
+  }
+
+  .pircas-nav__close {
+    display: inline-flex;
+  }
+
+  .pircas-nav__item {
+    min-height: 48px;
+    font-size: 15px;
+  }
+}
+
+// Enlaces de las tablas: sin subrayado permanente (solo al pasar el mouse).
+.table td a {
+  text-decoration: none;
+
+  &:hover {
+    color: var(--p-brand-ink);
+    text-decoration: underline;
+  }
+}
+
+// Payload agrega un borde oscuro al botón secundario: se usa solo el contorno suave de marca.
+.btn--style-secondary {
+  border: 0;
 }

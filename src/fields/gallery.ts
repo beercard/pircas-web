@@ -1,21 +1,56 @@
-import type { ArrayField } from 'payload'
+import type { ArrayField, UploadField, Where } from 'payload'
 
-export const galleryField = (overrides: Partial<ArrayField> = {}): ArrayField =>
+/** Solo imágenes en los campos de foto (Medios también guarda PDFs). */
+export const imagesOnly: Where = { mimeType: { contains: 'image' } }
+
+/**
+ * Galería: se eligen o suben varias fotos de una vez y se ordenan arrastrando.
+ * El epígrafe de cada foto se edita en la propia foto (Fotos y archivos → Epígrafe).
+ */
+export const galleryField = (overrides: Partial<UploadField> = {}): UploadField =>
   ({
     name: 'gallery',
     label: 'Galería',
-    type: 'array',
-    labels: { singular: 'Imagen', plural: 'Imágenes' },
+    type: 'upload',
+    relationTo: 'media',
+    hasMany: true,
+    filterOptions: imagesOnly,
     admin: {
-      description: 'Arrastrá las filas para cambiar el orden de las imágenes.',
-      initCollapsed: true,
+      description:
+        'Elegí o subí varias fotos a la vez (podés arrastrarlas desde tu computadora). Arrastrá para cambiar el orden.',
+      isSortable: true,
     },
-    fields: [
-      { name: 'image', label: 'Imagen', type: 'upload', relationTo: 'media', required: true },
-      { name: 'caption', label: 'Epígrafe', type: 'text', localized: true },
-    ],
     ...overrides,
-  }) as ArrayField
+  }) as UploadField
+
+/** Campo de una foto con sugerencia de formato. */
+export const imageField = ({
+  name,
+  label,
+  required,
+  hint = 'Foto horizontal, idealmente de 1600 px de ancho o más.',
+  listThumbnail,
+}: {
+  name: string
+  label: string
+  required?: boolean
+  hint?: string
+  /** Muestra la foto como miniatura en la columna del listado. */
+  listThumbnail?: boolean
+}): UploadField => ({
+  name,
+  label,
+  type: 'upload',
+  relationTo: 'media',
+  required,
+  filterOptions: imagesOnly,
+  admin: {
+    description: hint,
+    ...(listThumbnail
+      ? { components: { Cell: '@/components/admin/ThumbnailCell#ThumbnailCell' } }
+      : {}),
+  },
+})
 
 /** Lista simple de textos (beneficios, aplicaciones, materiales, etc.). */
 export const bulletListField = (name: string, label: string, singular = 'Ítem'): ArrayField => ({

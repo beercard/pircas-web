@@ -20,6 +20,7 @@ export const Homepage: GlobalConfig = {
     {
       name: 'sections',
       label: 'Secciones',
+      labels: { singular: 'Sección', plural: 'Secciones' },
       type: 'blocks',
       blocks: ALL_BLOCKS,
       admin: { initCollapsed: true },

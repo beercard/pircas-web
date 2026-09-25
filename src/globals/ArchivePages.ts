@@ -28,14 +28,17 @@ const archiveTab = (name: string, label: string, defaults: { title: string; intr
     {
       name: 'after',
       label: 'Secciones debajo del listado',
+      labels: { singular: 'Sección', plural: 'Secciones' },
       type: 'blocks',
       blocks: ALL_BLOCKS,
       admin: { initCollapsed: true, description: 'Ej: un llamado a cotizar.' },
     },
     {
+      // SEO de los listados: se gestiona por código (oculto en el panel).
       name: 'seo',
       label: 'SEO',
       type: 'group',
+      admin: { hidden: true },
       fields: [
         { name: 'title', label: 'Meta título', type: 'text', localized: true, maxLength: 70 },
         {
@@ -57,7 +60,7 @@ export const ArchivePages: GlobalConfig = {
   label: 'Páginas de listados',
   admin: {
     group: 'Contenido',
-    description: 'Encabezados y SEO de /productos, /lineas y /proyectos.',
+    description: 'Títulos, bajadas y secciones de /productos, /lineas y /proyectos.',
   },
   access: { read: anyone, update: authenticated },
   fields: [

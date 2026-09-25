@@ -8,9 +8,11 @@ export const SeoDefaults: GlobalConfig = {
   slug: 'seo-defaults',
   label: 'SEO general',
   admin: {
+    // El SEO se gestiona por código, no desde el panel.
+    hidden: true,
     group: 'SEO',
     description:
-      'Valores por defecto para buscadores y redes sociales. Cada producto, línea, proyecto o página puede sobrescribirlos en su pestaña SEO.',
+      'Valores por defecto para buscadores y redes sociales. Cada documento puede sobrescribirlos en su grupo "meta" (oculto en el panel).',
   },
   access: { read: anyone, update: authenticated },
   fields: [

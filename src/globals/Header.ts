@@ -8,6 +8,8 @@ export const Header: GlobalConfig = {
   slug: 'header',
   label: 'Menú (header)',
   admin: {
+    // El diseño del menú se gestiona por código (src/seed/content.ts y scripts), no desde el panel.
+    hidden: true,
     group: 'Configuración',
     description:
       'Menú principal. Un ítem puede tener un menú desplegable grande (columnas de enlaces + recuadro destacado). Arrastrá para reordenar.',

@@ -16,12 +16,14 @@ export function fileUrl(media: Media | number | null | undefined): string | null
   return media && typeof media === 'object' ? mediaSrc(media.url) : null
 }
 
-/** Convierte filas de galería del CMS en imágenes serializables para el componente cliente. */
+/**
+ * Convierte fotos del CMS (galerías con varias fotos) en imágenes serializables para el
+ * componente cliente. El epígrafe es el de cada foto (Fotos y archivos → Epígrafe).
+ */
 export function toGalleryImages(
-  rows: { image: Media | number | null | undefined; caption?: string | null }[] | null | undefined,
+  items: (Media | number | null | undefined)[] | null | undefined,
 ): GalleryImage[] {
-  return (rows ?? []).flatMap((row) => {
-    const m = row.image
+  return (items ?? []).flatMap((m) => {
     const url = m && typeof m === 'object' ? mediaSrc(m.url) : null
     if (!m || typeof m !== 'object' || !url) return []
     return [
@@ -30,7 +32,7 @@ export function toGalleryImages(
         alt: m.alt ?? '',
         width: m.width ?? 1200,
         height: m.height ?? 900,
-        caption: row.caption ?? m.caption,
+        caption: m.caption,
         focal:
           typeof m.focalX === 'number' && typeof m.focalY === 'number'
             ? `${m.focalX}% ${m.focalY}%`

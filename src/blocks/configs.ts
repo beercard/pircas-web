@@ -15,7 +15,21 @@ import { defaultEditor } from '@/fields/richText'
 
 const withSettings = (block: Block): Block => ({
   ...block,
-  fields: [...block.fields, blockSettingsField],
+  admin: {
+    ...block.admin,
+    disableBlockName: true,
+    components: { ...block.admin?.components, Label: '@/components/admin/BlockLabel#BlockLabel' },
+  },
+  fields: [
+    ...block.fields,
+    // Fondo, espaciado, ocultar…: plegado para que el editor de la sección quede limpio.
+    {
+      type: 'collapsible',
+      label: 'Ajustes de la sección (fondo, espaciado, ocultar)',
+      admin: { initCollapsed: true },
+      fields: [{ ...blockSettingsField, label: false }],
+    },
+  ],
 })
 
 /**

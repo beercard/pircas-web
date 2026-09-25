@@ -3,6 +3,7 @@ import * as migration_20260924_021647_vercel_blob from './20260924_021647_vercel
 import * as migration_20260924_023829_remove_header_whatsapp from './20260924_023829_remove_header_whatsapp';
 import * as migration_20260925_174803_audiences_projects from './20260925_174803_audiences_projects';
 import * as migration_20260925_181019_separate_block_tables from './20260925_181019_separate_block_tables';
+import * as migration_20260925_194517_admin_galleries_security from './20260925_194517_admin_galleries_security';
 
 export const migrations = [
   {
@@ -29,5 +30,10 @@ export const migrations = [
     up: migration_20260925_181019_separate_block_tables.up,
     down: migration_20260925_181019_separate_block_tables.down,
     name: '20260925_181019_separate_block_tables',
+  },
+  {
+    up: migration_20260925_194517_admin_galleries_security.up,
+    down: migration_20260925_194517_admin_galleries_security.down,
+    name: '20260925_194517_admin_galleries_security',
   },
 ];

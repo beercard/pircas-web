@@ -162,19 +162,23 @@ export interface UserAuthOperations {
 export interface Product {
   id: number;
   name: string;
-  category: number | ProductCategory;
   /**
-   * Opcional (ej: vidrios o rejas no pertenecen a una línea).
-   */
-  line?: (number | null) | ProductLine;
-  /**
-   * Una oración para tarjetas, listados y SEO.
+   * Se muestra en tarjetas, listados y buscadores.
    */
   shortDescription: string;
   /**
-   * Ej: "Duchas lineales y bañeras". Se muestra en tarjetas grandes.
+   * La que se ve en tarjetas y listados. Horizontal, idealmente 1600 px de ancho.
    */
-  audience?: string | null;
+  featuredImage: number | Media;
+  /**
+   * Elegí o subí varias fotos a la vez (podés arrastrarlas desde tu computadora). Arrastrá para cambiar el orden.
+   */
+  gallery?: (number | Media)[] | null;
+  category: number | ProductCategory;
+  /**
+   * Opcional (vidrios o rejas no pertenecen a una línea).
+   */
+  line?: (number | null) | ProductLine;
   description?: {
     root: {
       type: string;
@@ -190,6 +194,7 @@ export interface Product {
     };
     [k: string]: unknown;
   } | null;
+  audience?: string | null;
   /**
    * Ej: "2–4" → "Hojas". Máximo 3.
    */
@@ -201,22 +206,11 @@ export interface Product {
       }[]
     | null;
   /**
-   * Ej: "2 hojas", "Con mosquitero", "Con reja". El cliente puede elegir una al consultar.
+   * Ej: "2 hojas", "Con mosquitero", "Con reja".
    */
   configurations?:
     | {
         text: string;
-        id?: string | null;
-      }[]
-    | null;
-  featuredImage: number | Media;
-  /**
-   * Arrastrá las filas para cambiar el orden de las imágenes.
-   */
-  gallery?:
-    | {
-        image: number | Media;
-        caption?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -233,6 +227,9 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Foto horizontal, idealmente de 1600 px de ancho o más.
+   */
   applicationImage?: (number | null) | Media;
   /**
    * Ej: "Espesor de vidrio" → "4 mm". Se muestra como tabla (acordeón en mobile).
@@ -263,19 +260,6 @@ export interface Product {
      */
     fixedDescription?: string | null;
   };
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    /**
-     * Solo si este contenido está duplicado en otra URL. Vacío = se usa la URL propia de la página.
-     */
-    canonicalURL?: string | null;
-    noIndex?: boolean | null;
-  };
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -292,52 +276,19 @@ export interface Product {
    * Menor número = aparece primero.
    */
   order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * Ventanas, Puertas, Mamparas, Vidrios, Rejas… Se usan como filtros del catálogo.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "product-categories".
- */
-export interface ProductCategory {
-  id: number;
-  name: string;
-  description?: string | null;
-  image?: (number | null) | Media;
   meta?: {
     title?: string | null;
     description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
     image?: (number | null) | Media;
-    /**
-     * Solo si este contenido está duplicado en otra URL. Vacío = se usa la URL propia de la página.
-     */
     canonicalURL?: string | null;
     noIndex?: boolean | null;
   };
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  /**
-   * Parte final de la dirección web. Se genera sola a partir del nombre. Si la cambiás en un contenido publicado, creá una redirección desde la URL anterior.
-   */
-  slug: string;
-  /**
-   * Menor número = aparece primero.
-   */
-  order?: number | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Biblioteca central de imágenes. Las imágenes grandes se reducen automáticamente y se generan versiones optimizadas (WebP) para cada dispositivo.
+ * Arrastrá fotos desde tu computadora (podés subir varias a la vez). Se optimizan solas para cada dispositivo.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
@@ -345,9 +296,12 @@ export interface ProductCategory {
 export interface Media {
   id: number;
   /**
-   * Describe la imagen para personas con lector de pantalla y para Google. Ej: "Ventana corrediza Modena en living".
+   * Qué muestra la foto (para Google y lectores de pantalla). Si lo dejás vacío, se completa solo con el nombre del archivo.
    */
-  alt: string;
+  alt?: string | null;
+  /**
+   * Opcional. Se muestra debajo de la foto en las galerías.
+   */
   caption?: string | null;
   credit?: string | null;
   prefix?: string | null;
@@ -415,6 +369,40 @@ export interface Media {
   };
 }
 /**
+ * Ventanas, Puertas, Mamparas, Vidrios, Rejas… Se usan como filtros del catálogo.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-categories".
+ */
+export interface ProductCategory {
+  id: number;
+  name: string;
+  description?: string | null;
+  image?: (number | null) | Media;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  /**
+   * Parte final de la dirección web. Se genera sola a partir del nombre. Si la cambiás en un contenido publicado, creá una redirección desde la URL anterior.
+   */
+  slug: string;
+  /**
+   * Menor número = aparece primero.
+   */
+  order?: number | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: (number | null) | Media;
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
  * Líneas de aberturas (Herrero Económica, Herrero Reforzada, Modena). Cada una tiene su página en /lineas/…
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -423,19 +411,31 @@ export interface Media {
 export interface ProductLine {
   id: number;
   name: string;
+  tagline: string;
+  /**
+   * Se muestra en tarjetas, listados y buscadores.
+   */
+  shortDescription: string;
+  /**
+   * Foto horizontal, idealmente de 1600 px de ancho o más.
+   */
+  heroImage: number | Media;
+  /**
+   * Foto horizontal, idealmente de 1600 px de ancho o más.
+   */
+  applicationImage?: (number | null) | Media;
+  /**
+   * Elegí o subí varias fotos a la vez (podés arrastrarlas desde tu computadora). Arrastrá para cambiar el orden.
+   */
+  gallery?: (number | Media)[] | null;
   /**
    * Ej: "Económica", "Más elegida", "Alta gama".
    */
   positioning?: string | null;
   /**
-   * Para la línea recomendada (ej: "Más elegida").
+   * Para la línea recomendada.
    */
   badge?: boolean | null;
-  /**
-   * Ej: "La más pedida. Aguanta el uso de todos los días."
-   */
-  tagline: string;
-  shortDescription: string;
   /**
    * Frase grande al inicio de la página de la línea.
    */
@@ -466,7 +466,7 @@ export interface ProductLine {
       }[]
     | null;
   /**
-   * 3 puntos cortos que se muestran en la tarjeta de la línea (home).
+   * 3 puntos cortos que se muestran en la tarjeta de la línea.
    */
   cardHighlights?:
     | {
@@ -475,18 +475,6 @@ export interface ProductLine {
       }[]
     | null;
   idealFor?: string | null;
-  heroImage: number | Media;
-  applicationImage?: (number | null) | Media;
-  /**
-   * Arrastrá las filas para cambiar el orden de las imágenes.
-   */
-  gallery?:
-    | {
-        image: number | Media;
-        caption?: string | null;
-        id?: string | null;
-      }[]
-    | null;
   features?:
     | {
         title: string;
@@ -541,19 +529,6 @@ export interface ProductLine {
         }[]
       | null;
   };
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    /**
-     * Solo si este contenido está duplicado en otra URL. Vacío = se usa la URL propia de la página.
-     */
-    canonicalURL?: string | null;
-    noIndex?: boolean | null;
-  };
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -566,6 +541,13 @@ export interface ProductLine {
    * Menor número = aparece primero.
    */
   order?: number | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: (number | null) | Media;
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -579,20 +561,25 @@ export interface ProductLine {
 export interface Project {
   id: number;
   title: string;
-  category?: (number | ProjectCategory)[] | null;
   /**
-   * Ej: Coronda, Santa Fe.
-   */
-  location?: string | null;
-  year?: number | null;
-  openingsCount?: number | null;
-  /**
-   * Una o dos oraciones para tarjetas y SEO.
+   * Se muestra en tarjetas y listados.
    */
   summary?: string | null;
   /**
-   * Ej: "Querían mucha luz sin pasar frío. Lo resolvimos así."
+   * La que se ve en la tarjeta del trabajo. Horizontal, idealmente 1600 px de ancho.
    */
+  coverImage: number | Media;
+  /**
+   * Elegí o subí varias fotos a la vez (podés arrastrarlas desde tu computadora). Arrastrá para cambiar el orden.
+   */
+  gallery?: (number | Media)[] | null;
+  /**
+   * Para los filtros. "Obras" lo muestra en Obras y profesionales.
+   */
+  category?: (number | ProjectCategory)[] | null;
+  location?: string | null;
+  year?: number | null;
+  openingsCount?: number | null;
   introHeadline?: string | null;
   description?: {
     root: {
@@ -609,17 +596,6 @@ export interface Project {
     };
     [k: string]: unknown;
   } | null;
-  coverImage: number | Media;
-  /**
-   * Arrastrá las filas para cambiar el orden de las imágenes.
-   */
-  gallery?:
-    | {
-        image: number | Media;
-        caption?: string | null;
-        id?: string | null;
-      }[]
-    | null;
   line?: (number | null) | ProductLine;
   productsUsed?: (number | Product)[] | null;
   /**
@@ -632,19 +608,6 @@ export interface Project {
         id?: string | null;
       }[]
     | null;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    /**
-     * Solo si este contenido está duplicado en otra URL. Vacío = se usa la URL propia de la página.
-     */
-    canonicalURL?: string | null;
-    noIndex?: boolean | null;
-  };
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -661,6 +624,13 @@ export interface Project {
    * Menor número = aparece primero.
    */
   order?: number | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: (number | null) | Media;
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -723,19 +693,6 @@ export interface Page {
     | VideoBlock
     | SpacerBlock
   )[];
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    /**
-     * Solo si este contenido está duplicado en otra URL. Vacío = se usa la URL propia de la página.
-     */
-    canonicalURL?: string | null;
-    noIndex?: boolean | null;
-  };
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -748,6 +705,13 @@ export interface Page {
    * Útil en páginas que ya son un formulario (Cotizador, Contacto).
    */
   hideFooterCta?: boolean | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: (number | null) | Media;
+    canonicalURL?: string | null;
+    noIndex?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -1488,15 +1452,9 @@ export interface GalleryBlock {
   title?: string | null;
   intro?: string | null;
   /**
-   * Arrastrá las filas para cambiar el orden de las imágenes.
+   * Elegí o subí varias fotos a la vez (podés arrastrarlas desde tu computadora). Arrastrá para cambiar el orden.
    */
-  images?:
-    | {
-        image: number | Media;
-        caption?: string | null;
-        id?: string | null;
-      }[]
-    | null;
+  images?: (number | Media)[] | null;
   /**
    * Fondo, espaciado y en qué dispositivos se muestra.
    */
@@ -1947,7 +1905,7 @@ export interface Lead {
   createdAt: string;
 }
 /**
- * Personas con acceso al panel. Solo un super-admin puede crear usuarios y cambiar roles.
+ * Personas con acceso al panel. Solo un super administrador puede crear usuarios y cambiar roles.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
@@ -1956,9 +1914,10 @@ export interface User {
   id: number;
   name: string;
   /**
-   * Editor: contenido, catálogo, proyectos, imágenes, SEO y consultas. Super administrador: además usuarios, analítica y configuración del sistema.
+   * Editor: contenido, productos, trabajos, fotos y consultas. Super administrador: además usuarios, analítica y configuración.
    */
   role: 'super-admin' | 'editor';
+  lastLoginAt?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -2131,11 +2090,13 @@ export interface PayloadMigration {
  */
 export interface ProductsSelect<T extends boolean = true> {
   name?: T;
+  shortDescription?: T;
+  featuredImage?: T;
+  gallery?: T;
   category?: T;
   line?: T;
-  shortDescription?: T;
-  audience?: T;
   description?: T;
+  audience?: T;
   facts?:
     | T
     | {
@@ -2147,14 +2108,6 @@ export interface ProductsSelect<T extends boolean = true> {
     | T
     | {
         text?: T;
-        id?: T;
-      };
-  featuredImage?: T;
-  gallery?:
-    | T
-    | {
-        image?: T;
-        caption?: T;
         id?: T;
       };
   benefits?:
@@ -2190,6 +2143,10 @@ export interface ProductsSelect<T extends boolean = true> {
         secondSide?: T;
         fixedDescription?: T;
       };
+  generateSlug?: T;
+  slug?: T;
+  featured?: T;
+  order?: T;
   meta?:
     | T
     | {
@@ -2199,10 +2156,6 @@ export interface ProductsSelect<T extends boolean = true> {
         canonicalURL?: T;
         noIndex?: T;
       };
-  generateSlug?: T;
-  slug?: T;
-  featured?: T;
-  order?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -2213,10 +2166,13 @@ export interface ProductsSelect<T extends boolean = true> {
  */
 export interface ProductLinesSelect<T extends boolean = true> {
   name?: T;
-  positioning?: T;
-  badge?: T;
   tagline?: T;
   shortDescription?: T;
+  heroImage?: T;
+  applicationImage?: T;
+  gallery?: T;
+  positioning?: T;
+  badge?: T;
   introHeadline?: T;
   description?: T;
   facts?:
@@ -2233,15 +2189,6 @@ export interface ProductLinesSelect<T extends boolean = true> {
         id?: T;
       };
   idealFor?: T;
-  heroImage?: T;
-  applicationImage?: T;
-  gallery?:
-    | T
-    | {
-        image?: T;
-        caption?: T;
-        id?: T;
-      };
   features?:
     | T
     | {
@@ -2283,6 +2230,9 @@ export interface ProductLinesSelect<T extends boolean = true> {
               id?: T;
             };
       };
+  generateSlug?: T;
+  slug?: T;
+  order?: T;
   meta?:
     | T
     | {
@@ -2292,9 +2242,6 @@ export interface ProductLinesSelect<T extends boolean = true> {
         canonicalURL?: T;
         noIndex?: T;
       };
-  generateSlug?: T;
-  slug?: T;
-  order?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -2307,6 +2254,9 @@ export interface ProductCategoriesSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   image?: T;
+  generateSlug?: T;
+  slug?: T;
+  order?: T;
   meta?:
     | T
     | {
@@ -2316,9 +2266,6 @@ export interface ProductCategoriesSelect<T extends boolean = true> {
         canonicalURL?: T;
         noIndex?: T;
       };
-  generateSlug?: T;
-  slug?: T;
-  order?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -2329,21 +2276,15 @@ export interface ProductCategoriesSelect<T extends boolean = true> {
  */
 export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
+  summary?: T;
+  coverImage?: T;
+  gallery?: T;
   category?: T;
   location?: T;
   year?: T;
   openingsCount?: T;
-  summary?: T;
   introHeadline?: T;
   description?: T;
-  coverImage?: T;
-  gallery?:
-    | T
-    | {
-        image?: T;
-        caption?: T;
-        id?: T;
-      };
   line?: T;
   productsUsed?: T;
   facts?:
@@ -2353,6 +2294,10 @@ export interface ProjectsSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
+  generateSlug?: T;
+  slug?: T;
+  featured?: T;
+  order?: T;
   meta?:
     | T
     | {
@@ -2362,10 +2307,6 @@ export interface ProjectsSelect<T extends boolean = true> {
         canonicalURL?: T;
         noIndex?: T;
       };
-  generateSlug?: T;
-  slug?: T;
-  featured?: T;
-  order?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -2412,6 +2353,9 @@ export interface PagesSelect<T extends boolean = true> {
         video?: T | VideoBlockSelect<T>;
         spacer?: T | SpacerBlockSelect<T>;
       };
+  generateSlug?: T;
+  slug?: T;
+  hideFooterCta?: T;
   meta?:
     | T
     | {
@@ -2421,9 +2365,6 @@ export interface PagesSelect<T extends boolean = true> {
         canonicalURL?: T;
         noIndex?: T;
       };
-  generateSlug?: T;
-  slug?: T;
-  hideFooterCta?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -2833,13 +2774,7 @@ export interface GalleryBlockSelect<T extends boolean = true> {
   eyebrow?: T;
   title?: T;
   intro?: T;
-  images?:
-    | T
-    | {
-        image?: T;
-        caption?: T;
-        id?: T;
-      };
+  images?: T;
   settings?:
     | T
     | {
@@ -3236,6 +3171,7 @@ export interface LeadsSelect<T extends boolean = true> {
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
   role?: T;
+  lastLoginAt?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -3346,13 +3282,7 @@ export interface Homepage {
   meta?: {
     title?: string | null;
     description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
     image?: (number | null) | Media;
-    /**
-     * Solo si este contenido está duplicado en otra URL. Vacío = se usa la URL propia de la página.
-     */
     canonicalURL?: string | null;
     noIndex?: boolean | null;
   };
@@ -3361,7 +3291,7 @@ export interface Homepage {
   createdAt?: string | null;
 }
 /**
- * Encabezados y SEO de /productos, /lineas y /proyectos.
+ * Títulos, bajadas y secciones de /productos, /lineas y /proyectos.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "archive-pages".
@@ -3960,7 +3890,7 @@ export interface Advisor {
   createdAt?: string | null;
 }
 /**
- * Opciones del cotizador, cálculo del precio estimado, mensajes y emails. Los precios por m² se editan en cada línea y producto (pestaña "Cotizador").
+ * Opciones del cotizador, cálculo del precio estimado, mensajes y emails. Los precios por m² se editan en cada línea y producto (sección "Cotizador online").
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "forms-settings".
@@ -4058,7 +3988,7 @@ export interface Analytics {
   createdAt?: string | null;
 }
 /**
- * Valores por defecto para buscadores y redes sociales. Cada producto, línea, proyecto o página puede sobrescribirlos en su pestaña SEO.
+ * Valores por defecto para buscadores y redes sociales. Cada documento puede sobrescribirlos en su grupo "meta" (oculto en el panel).
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "seo-defaults".

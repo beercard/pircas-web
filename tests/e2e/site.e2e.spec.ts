@@ -182,3 +182,19 @@ test.describe('SEO técnico', () => {
     )
   })
 })
+
+test.describe('panel', () => {
+  test('pantalla de ingreso con la marca, sin indexar', async ({ page }) => {
+    const res = await page.goto('/admin/login')
+    expect(res?.headers()['x-robots-tag']).toContain('noindex')
+    await expect(page.getByRole('heading', { name: 'Panel de gestión' })).toBeVisible()
+    await expect(page.getByText(/5 intentos fallidos/)).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Iniciar sesión' })).toBeVisible()
+    await noHorizontalOverflow(page)
+  })
+
+  test('las consultas no son públicas', async ({ request }) => {
+    expect((await request.get('/api/leads')).status()).toBe(403)
+    expect((await request.get('/api/users')).status()).toBe(403)
+  })
+})

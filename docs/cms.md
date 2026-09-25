@@ -1,128 +1,134 @@
-# Guía del panel (CMS)
+# Guía del panel
 
-Panel: **`https://pircas.com.ar/admin`**. Todo lo que se ve en el sitio se edita acá, sin tocar código.
+Panel: **`/admin`** (hoy `https://pircas-web.vercel.app/admin`). Está pensado como Tiendanube o Shopify: un menú con tareas, un inicio que muestra qué hay que atender y fichas simples para cargar productos y trabajos.
+
+## El panel de un vistazo
+
+Menú lateral (en celular se abre con ☰):
+
+| Sección | Qué hay |
+|---|---|
+| **Inicio** | Saludo, consultas pendientes, accesos a lo más frecuente, actividad de los últimos 30 días, guía **"Dejá tu sitio listo"** y (super administrador) el estado de seguridad. |
+| **Consultas** | Contactos, cotizaciones y consultas de obra. El número terracota indica las nuevas. |
+| **Productos** | Productos, Líneas y Categorías. |
+| **Trabajos** | Trabajos realizados (portfolio) y sus categorías. |
+| **Páginas del sitio** | Página de inicio, otras páginas (Nosotros, Contacto, Mamparas, Para tu casa, Obras y profesionales…) y listados. |
+| **Fotos y archivos** | Biblioteca de fotos y PDFs. |
+| **Configuración** | Datos del negocio, formularios y cotizador, asesor virtual, analítica y usuarios. |
+
+Abajo del menú: **Ver el sitio**, tu usuario (datos de la cuenta) y **cerrar sesión**.
+
+**No están en el panel** (se gestionan por código, ver al final): SEO, redirecciones, menú del sitio y pie de página.
 
 ## Roles
 
 | Rol | Puede |
 |---|---|
-| **Super administrador** | Todo: usuarios y roles, analítica, destinatarios de emails, borrar consultas, más todo lo del editor. |
-| **Editor** | Productos, líneas, categorías, proyectos, páginas, home, imágenes, SEO, redirecciones, menú, footer, datos del negocio, asesor, cotizador, consultas (ver, cambiar estado, notas, exportar). |
-
-Usuarios: **Sistema → Usuarios** (solo super-admin). Tras 5 intentos fallidos la cuenta se bloquea 15 minutos.
+| **Super administrador** | Todo: usuarios y roles, analítica, destinatarios de emails, borrar consultas y todo lo del editor. |
+| **Editor** | Productos, líneas, trabajos, páginas, fotos, datos del negocio, asesor, cotizador y consultas (ver, cambiar estado, notas, exportar). |
 
 ## Conceptos básicos
 
-- **Borrador y publicado**: los cambios se guardan como borrador automáticamente. El sitio muestra solo lo **publicado**. Botón **Publicar** para que se vea.
-- **Vista previa**: botón **Vista previa** (o el panel de vista en vivo con tamaños Mobile / Tablet / Desktop) muestra el borrador tal cual se verá, sin publicarlo.
-- **Versiones**: pestaña **Versiones** de cada documento → comparar y **restaurar** una versión anterior.
-- **Orden**: en listas (galerías, beneficios, secciones de la home) arrastrá las filas desde el ícono ⋮⋮. En listados (productos, líneas, proyectos) usá el campo **Orden** (menor = primero).
-- **Actualización del sitio**: al publicar, el sitio se actualiza en la próxima visita. No hace falta pedir un deploy.
+- **Borrador y publicado**: los cambios se guardan solos como borrador. El sitio muestra solo lo **publicado**: botón **Publicar cambios**.
+- **Vista previa**: el ícono del ojo muestra el borrador tal cual se verá (mobile / tablet / desktop), sin publicarlo.
+- **Versiones**: pestaña **Versiones** de cada ficha → comparar y **restaurar** una versión anterior.
+- **Orden**: en listas (fotos, beneficios, secciones de una página) arrastrá desde el ícono ⋮⋮. En los listados de productos y trabajos usá el campo **Orden** (menor = primero).
+- **Actualización del sitio**: al publicar, el sitio se actualiza en la próxima visita. No hace falta pedir nada.
+
+## Fotos
+
+- **Subir varias a la vez**: en **Fotos y archivos → Subida en lotes**, o arrastrando las fotos desde la computadora a cualquier campo de fotos.
+- **Galerías** (productos, líneas, trabajos, sección Galería): se eligen o suben **varias fotos de una vez** y se ordenan arrastrando.
+- **Texto alternativo**: opcional. Si queda vacío se completa solo con el nombre del archivo (conviene nombrar los archivos con lo que muestran: `ventana-corrediza-living.jpg`).
+- **Epígrafe**: se escribe en la propia foto (Fotos y archivos → abrir la foto) y se muestra en todas las galerías donde aparece.
+- **Punto focal**: al abrir una foto, marcá lo importante para que los recortes en celular no lo corten.
+- Los campos de foto solo muestran imágenes (los PDF quedan para las fichas técnicas). Las fotos grandes se reducen solas y se generan versiones optimizadas para cada dispositivo.
+- En **Inicio → Dejá tu sitio listo** se cuentan las fotos de ejemplo que falta reemplazar (el botón **Resolver** filtra la biblioteca).
 
 ## Crear un producto
 
-1. **Catálogo → Productos → Crear nuevo**.
-2. **Información principal**: nombre, categoría, línea (si corresponde), descripción corta (tarjetas y Google), descripción completa, *Pensado para* (ej. "Duchas lineales y bañeras"), **datos destacados** (hasta 3, ej. "65 mm" · "Parantes") y **configuraciones** (chips: "2 hojas", "Con mosquitero"…).
-3. **Imágenes**: imagen principal + galería (arrastrar para ordenar). Cada imagen necesita **texto alternativo** (qué se ve en la foto).
-4. **Características**: beneficios, "Dónde funciona mejor", aplicaciones e imagen de aplicación.
-5. **Información técnica**: filas *Característica → Valor*. El campo **Grupo** arma los paneles desplegables ("Características técnicas", "Materiales", "Medidas y fabricación"). El panel "Entrega e instalación" es común a todos y se edita en **Configuración → Datos del negocio → Info común de productos**.
-6. **Cotizador** (opcional): *Ofrecer en el cotizador* y cómo se calcula el precio (según la línea, o precio propio por m² como las mamparas), multiplicador (ej. puertas 1.3) y si pide "lado 2".
-7. **SEO**: título y descripción para Google (con vista previa). Si se dejan vacíos se usan nombre y descripción corta.
-8. **Destacado** (lateral) para que aparezca en la home. **Publicar**.
+**Productos → Crear**. Arriba lo esencial:
+1. **Nombre** y **descripción corta** (tarjetas, listados y buscadores).
+2. **Fotos**: la **foto principal** (la de las tarjetas) y **más fotos** para la galería.
+3. A la derecha: **categoría**, **línea** (si corresponde), **destacado** (aparece en la home), dirección web (se genera sola) y orden.
 
-> Imágenes: subí JPG/PNG/WebP de buena calidad (idealmente ≥ 1920 px de ancho para portadas). El sistema reduce las muy grandes y genera versiones optimizadas; elegí el **punto focal** para que el recorte en mobile no corte lo importante.
+Plegado, para cuando haga falta:
+- **Descripción y detalles**: descripción completa, *Pensado para*, datos destacados (hasta 3) y configuraciones ("2 hojas", "Con mosquitero"…).
+- **Beneficios y usos**: beneficios, dónde funciona mejor, aplicaciones y foto de aplicación.
+- **Ficha técnica**: filas *Característica → Valor*; el campo **Grupo** arma los paneles desplegables. "Entrega e instalación" es común a todos y se edita en Datos del negocio.
+- **Cotizador online**: ofrecerlo en el cotizador y cómo se calcula el precio (según la línea o precio propio por m², multiplicador, "lado 2").
 
-## Líneas (Herrero Económica, Reforzada, Modena)
+**Publicar cambios**.
 
-**Catálogo → Líneas**. Cada línea tiene su página `/lineas/<slug>` con: hero (etiqueta, nombre, frase), introducción + datos, beneficios clave, información técnica, aplicaciones, galería, preguntas frecuentes y "otras líneas". También:
-- **Destacar etiqueta en terracota** para la recomendada ("Más elegida").
-- **Puntos para la tarjeta** (3) que se ven en la home.
-- **Cotizador**: precio de referencia por m² y opciones de vidrio con su multiplicador (Float 1 · Laminado 1.25 · DVH 1.45).
-- **Información técnica → Ficha técnica descargable (PDF)**: aparece como "Descargar ficha técnica" en la página de la línea y en Obras y profesionales. (Medios acepta PDF.)
+## Líneas
 
-## Proyectos
+**Productos → Líneas**: nombre, frase corta, descripción, fotos (principal, aplicaciones y galería); a la derecha la **etiqueta** ("Más elegida") y si se destaca en terracota. Plegado: presentación, beneficios y preguntas frecuentes, **ficha técnica** (con **PDF descargable**, que aparece en la página de la línea y en Obras y profesionales) y **cotizador** (precio por m² y vidrios con su multiplicador: Float 1 · Laminado 1.25 · DVH 1.45).
 
-**Proyectos → Proyectos**: título, categorías (filtros del portfolio), ubicación, año, cantidad de aberturas, frase principal, descripción, portada, galería, línea principal, **productos utilizados** (se enlazan solos) y **Qué llevó** (datos técnicos grandes). Categorías del filtro en **Proyectos → Categorías de proyectos**.
+## Trabajos
 
-Para mostrar **antecedentes de obra** en *Obras y profesionales*, asigná a esos proyectos la categoría **Obras**. Mientras ningún proyecto la tenga, esa sección no se muestra.
+**Trabajos → Trabajos realizados → Crear**: título, resumen, **foto de portada** y **fotos de la obra**; a la derecha categorías, ubicación, año y cantidad de aberturas. Plegado: la historia de la obra (frase principal y descripción) y productos/datos técnicos (línea, productos usados, "Qué llevó").
+
+Para mostrar **antecedentes** en *Obras y profesionales*, asigná la categoría **Obras**. Mientras ningún trabajo la tenga, esa sección no se muestra.
 
 ## Dos ambientes: "Para tu casa" y "Obras y profesionales"
 
-El sitio se orienta a dos públicos:
 - **Para tu casa** (`/para-tu-casa`): quien construye o reforma. Productos, líneas, medición e instalación, asesor, ejemplos, preguntas frecuentes.
 - **Obras y profesionales** (`/obras-y-profesionales`): arquitectos, constructoras y desarrolladores. Interlocutor responsable, cómo cotizamos y coordinamos entregas, líneas, **documentación técnica**, antecedentes y un **formulario de obra** (empresa, rol, obra y ubicación, etapa, cantidad de aberturas, entrega estimada y enlace a planos).
 
-Son páginas normales (**Contenido → Páginas**): se editan con bloques. En la home, el bloque **Para quién (casas / obras)** muestra las dos tarjetas. Conviene completar en *Obras y profesionales* el nombre y contacto del responsable (bloque "Un solo responsable…").
+Son páginas normales (**Páginas del sitio → Otras páginas**). En la home, la sección **Para quién** muestra las dos tarjetas. Conviene completar en *Obras y profesionales* el nombre y contacto del responsable.
 
-## Home y páginas (bloques)
+## Páginas y secciones
 
-**Contenido → Home** y **Contenido → Páginas** se arman con **secciones (bloques)**:
+**Páginas del sitio → Página de inicio / Otras páginas** se arman con **secciones**. Cada sección se ve en la lista con su título; se abre para editarla y se arrastra para reordenarla.
 
-| Bloque | Para qué |
+| Sección | Para qué |
 |---|---|
-| Hero | Portada: foto a pantalla completa (header transparente), editorial o solo texto. Botones y "compromisos". |
+| Hero | Portada: foto a pantalla completa, editorial o solo texto. Botones y "compromisos". |
 | Frase de marca | "Medimos. Fabricamos. Colocamos." o frase + texto. |
 | Texto + imagen | Foto a media pantalla o contenida, con etiquetas, puntos, datos y botones. |
-| Beneficios / características | Grilla con formas de marca o íconos, o grilla simple con borde. |
-| Líneas de producto | Tarjetas de las líneas (todas o elegidas). |
-| Categorías / soluciones | Mosaicos "También hacemos". |
-| Grilla de productos | Destacados, por categoría, por línea o elegidos; diseño tarjetas o grande (mamparas). |
-| Pasos / pilares | Línea de tiempo, pilares o lista numerada con texto e imagen. |
-| Asesor virtual | Preguntas y recomendación (se configura aparte, ver abajo). |
-| Llamado a la acción | Franja terracota o recuadro. |
-| Grilla de proyectos | Destacados, recientes, de una categoría o elegidos. |
-| Para quién (casas / obras) | Tarjetas de los dos públicos, cada una con su página. |
-| Documentación técnica | Líneas con enlace a su ficha y PDF, más archivos sueltos para descargar. |
-| Galería · FAQ · Texto enriquecido · Video · Espaciador | Contenido libre. |
-| Contacto · Cotizador | Formularios (sus opciones se editan en Configuración → Formularios). El bloque Contacto tiene la opción **Formulario: Obras y profesionales**. |
+| Beneficios | Grilla con formas de marca o íconos. |
+| Líneas de producto · Categorías · Grilla de productos | Catálogo. |
+| Pasos / pilares | Línea de tiempo, pilares o lista numerada. |
+| Asesor virtual · Cotizador · Contacto | Herramientas (opciones en Configuración). El Contacto tiene la opción **Formulario: Obras y profesionales**. |
+| Para quién (casas / obras) | Tarjetas de los dos públicos. |
+| Documentación técnica | Líneas con su ficha y PDF, más archivos sueltos. |
+| Llamado a la acción · Grilla de trabajos · Galería · Preguntas frecuentes · Texto · Video · Espaciador | Contenido libre. |
 
-En cada bloque, **Ajustes de la sección**: *Ocultar esta sección* (sin borrarla), fondo, espaciado, ancla (`/pagina#ancla`) y **Ocultar en** mobile / tablet / desktop.
+Cada sección tiene **Ajustes de la sección** (plegado): ocultarla sin borrarla, fondo, espaciado, ancla y ocultarla en mobile / tablet / desktop. Una sección oculta se marca **Oculta** en la lista.
 
-Páginas protegidas (no se pueden borrar ni cambiar su URL porque están enlazadas desde todo el sitio): **nosotros, contacto, cotizador, mamparas**. Se puede editar todo su contenido. En Cotizador y Contacto está activado *Ocultar la franja final*.
+Páginas protegidas (no se pueden borrar ni cambiar su dirección): **nosotros, contacto, cotizador, mamparas**. Sí se puede editar su contenido.
 
-Listados (**Contenido → Páginas de listados**): título, bajada, SEO y secciones debajo de `/productos`, `/lineas` y `/proyectos`.
+## Datos del negocio
 
-## Menú, footer y datos del negocio
-
-- **Configuración → Menú (header)**: ítems (arrastrar para ordenar), menú desplegable grande con columnas y recuadro destacado, botón "Solicitar presupuesto", acceso a WhatsApp.
-- **Configuración → Pie de página**: franja final, columnas de enlaces, copyright (`{year}` = año actual).
-- **Configuración → Datos del negocio**: nombre, logos, favicon, teléfono, **WhatsApp** (número único para todo el sitio + mensaje predefinido + botón flotante/barra mobile), dirección, mapa, horarios, zona de cobertura y redes.
+**Configuración → Datos del negocio**: nombre, logos, teléfono, **WhatsApp** (número único para todo el sitio, mensaje predefinido, botón flotante y barra en celular), dirección y enlace a Google Maps, horarios, zona de cobertura y redes.
 
 ## Asesor virtual
 
-**Configuración → Asesor virtual**: preguntas (en orden), respuestas y **puntos por línea** de cada respuesta. Gana la línea con más puntos; en empate, la "línea de desempate". Textos de recomendación por línea.
-
-Ejemplo: "¿Qué priorizás? → Precio" suma 5 a Económica y 2 a Reforzada.
+**Configuración → Asesor virtual**: preguntas, respuestas y **puntos por línea** de cada respuesta. Gana la línea con más puntos; en empate, la "línea de desempate". Ejemplo: "¿Qué priorizás? → Precio" suma 5 a Económica y 2 a Reforzada.
 
 ## Cotizador y formularios
 
-**Configuración → Formularios y cotizador**:
-- Paso 1 (¿Qué necesitás?): opciones, qué categorías ofrece cada una y producto preseleccionado.
-- Tipos de proyecto (cotizador y contacto), texto de "medición en obra".
-- **Precio estimado**: mostrar/ocultar precios, superficie mínima, redondeo, medidas mín./máx. y aclaración.
-- Mensajes de éxito, destinatarios de avisos (super-admin) y email de confirmación al cliente.
+**Configuración → Formularios y cotizador**: opciones del paso 1, tipos de proyecto, texto de "medición en obra", **precio estimado** (mostrar/ocultar, superficie mínima, redondeo, medidas mín./máx. y aclaración), mensajes, destinatarios de avisos (super administrador) y email de confirmación al cliente. Los precios por m² se editan en cada **línea** y en los productos con precio propio; el servidor siempre recalcula el precio.
 
-Los precios por m² se editan en cada **línea** y en los productos con precio propio. El servidor siempre recalcula el precio: nadie puede enviar un monto falso.
+## Consultas
 
-## Consultas (leads)
+**Consultas**: nombre, tipo (contacto / cotización / obra), contacto, producto, origen, estado y fecha, con filtros y búsqueda. Cada consulta muestra todo lo que envió la persona (aberturas con medidas y estimado, datos de la obra, página de llegada y campaña). Cambiá el **Estado** (Nueva → Contactada → Calificada → Presupuestada → Ganada/Perdida), sumá **Notas internas** y usá **Exportar CSV** (respeta los filtros; abre en Excel).
 
-**Consultas → Consultas**:
-- Columnas: nombre, tipo (contacto / cotización / obra-profesional), email, teléfono, tipo de proyecto, producto, origen, estado, fecha. Filtros, búsqueda y orden.
-- Abrí una consulta para ver todo: aberturas pedidas con medidas y estimado, medición en obra, página de llegada y campaña (UTM). Las consultas de obra tienen la pestaña **Obra** (empresa, etapa, aberturas, entrega, planos).
-- Cambiá el **Estado** (Nueva → Contactada → Calificada → Presupuestada → Ganada/Perdida) y sumá **Notas internas** (firma y fecha automáticas).
-- **Exportar CSV** (respeta los filtros aplicados; abre en Excel).
+## Seguridad
 
-El inicio del panel muestra las últimas cotizaciones y consultas, contadores y accesos rápidos.
+- **Contraseñas fuertes**: mínimo 10 caracteres, con letras y números; no se aceptan contraseñas obvias ni que contengan el email. Se aplica al crear usuarios, al cambiarla y al restablecerla.
+- **Bloqueos**: 5 intentos fallidos bloquean la cuenta 15 minutos; además hay un límite de intentos por dirección IP.
+- **Sesiones**: vencen a las 8 horas; *cerrar sesión* las invalida en el servidor. La cookie es segura (HttpOnly, solo HTTPS en producción) y el token no viaja en las respuestas.
+- **Último acceso** de cada usuario visible en Usuarios y en el Inicio (super administrador).
+- El panel no se indexa en buscadores ni se guarda en cachés compartidas, y el avatar no usa servicios externos (Gravatar).
+- Solo un super administrador crea usuarios y asigna roles.
 
-## SEO
+## Gestionado por código (developers)
 
-- Cada producto, línea, categoría, proyecto, página y la home tiene pestaña **SEO**: título, descripción, imagen para compartir, URL canónica (opcional) y *ocultar de buscadores*. Incluye vista previa del resultado en Google.
-- **SEO → SEO general**: nombre del sitio, formato de títulos, textos e imagen por defecto, tipo de negocio (datos estructurados).
-- Sitemap (`/sitemap.xml`) y datos estructurados (Organización/Negocio local, sitio, migas de pan, producto, FAQ) se generan solos.
-
-## Redirecciones
-
-**SEO → Redirecciones → Crear**: *Desde* (URL vieja, ej. `/ventanas-modena`) → *Hacia* (contenido del sitio o URL) y tipo **301** (permanente, recomendado) o **302** (temporal). Se aplica en hasta 1 minuto. Si cambiás el slug de algo publicado, creá una redirección desde la URL anterior.
+- **SEO**: los campos `meta` (título, descripción, imagen, canonical, noindex) de productos, líneas, categorías, trabajos, páginas y home siguen en la base pero están ocultos en el panel; si están vacíos, el sitio genera título y descripción desde el contenido. `SEO general` (global `seo-defaults`) y el SEO de los listados también están ocultos. Se editan con scripts/seed (API local de Payload).
+- **Redirecciones** (colección `redirects`): ocultas en el panel; se crean por script. El proxy las aplica (301/302) en hasta 1 minuto.
+- **Menú y pie de página** (globals `header` y `footer`): ocultos en el panel; su contenido está en `src/seed/content.ts` / `src/seed/audiences.ts`.
+- **Entrar al panel en desarrollo sin contraseña**: definir `PAYLOAD_DEV_AUTOLOGIN_EMAIL` con el email de un usuario local (nunca se activa en producción).
 
 ## Agregar un idioma (developers)
 

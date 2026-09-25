@@ -40,6 +40,7 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               label: 'Secciones',
+              labels: { singular: 'Sección', plural: 'Secciones' },
               type: 'blocks',
               blocks: ALL_BLOCKS,
               required: true,

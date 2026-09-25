@@ -32,6 +32,14 @@ const nextConfig: NextConfig = {
     return [
       { source: '/:path*', headers: securityHeaders },
       {
+        // El panel nunca se indexa ni se cachea en proxies/navegadores compartidos.
+        source: '/admin/:path*',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+          { key: 'Cache-Control', value: 'no-store' },
+        ],
+      },
+      {
         // Uploaded SVGs must never execute scripts when opened directly.
         source: '/api/media/file/:file*.svg',
         headers: [{ key: 'Content-Security-Policy', value: "script-src 'none'; sandbox" }],

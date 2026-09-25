@@ -82,10 +82,9 @@ export function breadcrumbJsonLd(items: Crumb[]): Json {
 
 /** Producto sin precio (se cotiza a medida): no se declara `offers` para no generar datos falsos. */
 export function productJsonLd(product: Product, path: string, brandName: string): Json {
-  const images = [
-    img(product.featuredImage),
-    ...(product.gallery ?? []).map((g) => img(g.image)),
-  ].filter(Boolean)
+  const images = [img(product.featuredImage), ...(product.gallery ?? []).map((g) => img(g))].filter(
+    Boolean,
+  )
   const category = typeof product.category === 'object' ? product.category?.name : undefined
   return compact({
     '@context': 'https://schema.org',
