@@ -23,7 +23,7 @@ export function ExportLeadsButton() {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
-      <Button el="anchor" url={href} buttonStyle="secondary" size="small" newTab={false}>
+      <Button el="anchor" url={href} buttonStyle="secondary" size="large" newTab={false}>
         Exportar CSV
       </Button>
     </div>

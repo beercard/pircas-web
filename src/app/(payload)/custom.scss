@@ -106,6 +106,8 @@
   --theme-text: var(--p-ink);
   --font-body:
     var(--font-montserrat), 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  // El editor de texto enriquecido usa la misma letra que el sitio (Payload trae Georgia).
+  --font-serif: var(--font-body);
   --style-radius-s: 8px;
   --style-radius-m: 10px;
   --style-radius-l: 14px;
@@ -201,6 +203,11 @@ h4 {
 .pircas-nav {
   background: var(--p-stone);
   border-right: 1px solid var(--p-line);
+
+  // Recibe el foco al abrirse como cajón (para seguir con Tab); no necesita recuadro.
+  &:focus {
+    outline: none;
+  }
 
   .nav__scroll {
     padding: 0 12px 14px;
@@ -493,6 +500,25 @@ h4 {
   }
 }
 
+// Migas de pan largas (p. ej. el nombre de un producto): se acorta la última con "…" en vez
+// de empujar el avatar fuera de la pantalla en celular.
+.app-header__wrapper,
+.app-header__step-nav-wrapper,
+.step-nav {
+  min-width: 0;
+}
+
+.step-nav {
+  > * {
+    flex-shrink: 0;
+  }
+
+  > .step-nav__last {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+}
+
 // =============================================================================
 // Listados (tablas)
 // =============================================================================
@@ -504,7 +530,9 @@ h4 {
 }
 
 .table {
-  overflow: hidden;
+  // Las columnas que no entran (celular, tablet) se ven deslizando la tabla hacia el costado.
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
   border: 1px solid var(--p-line);
   border-radius: var(--p-radius);
   background: #fff;
@@ -547,6 +575,93 @@ h4 {
   }
 }
 
+@media (max-width: 1024px) {
+  // Payload lleva las tablas de borde a borde de la pantalla; como acá son tarjetas,
+  // quedan dentro de los márgenes y se deslizan por dentro.
+  .collection-list .table,
+  .collection-folder-list .table,
+  .folder-list .table,
+  .versions .table {
+    display: block;
+    left: 0;
+    width: auto;
+    padding-left: 0;
+
+    &::after {
+      content: none;
+    }
+  }
+}
+
+// Columna de la miniatura: ordenar por foto no sirve, así que no lleva flechas.
+.table {
+  #heading-featuredImage,
+  #heading-coverImage,
+  #heading-heroImage {
+    .sort-column__buttons {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  // En celular la columna de la miniatura es angosta y sin título (como en Shopify), para
+  // que se vean foto y nombre juntos; los títulos largos pasan a dos líneas.
+  .table {
+    .sort-column__label {
+      white-space: normal;
+    }
+
+    #heading-featuredImage,
+    #heading-coverImage,
+    #heading-heroImage,
+    .cell-featuredImage,
+    .cell-coverImage,
+    .cell-heroImage {
+      width: 1%;
+      min-width: 0;
+    }
+
+    #heading-featuredImage,
+    #heading-coverImage,
+    #heading-heroImage {
+      .sort-column__label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+    }
+  }
+
+  // Biblioteca: los nombres de archivo largos ocupan como mucho dos renglones.
+  .cell-filename .file__filename {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow-wrap: anywhere;
+  }
+}
+
+// Barra de acciones de la selección (fija abajo): sin selección no se muestra.
+.collection-list__list-selection:not(:has(.collection-list__list-selection-actions > *)) {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  // Ocupa el ancho de la pantalla sin salirse por la derecha.
+  .collection-list__list-selection {
+    left: 0;
+    right: 0;
+    width: auto;
+    padding: 12px var(--gutter-h);
+    border-top: 1px solid var(--p-line);
+  }
+}
+
 // Filtros y búsqueda de los listados.
 .list-controls {
   .search-filter {
@@ -574,6 +689,32 @@ h4 {
   border-bottom: 1px solid var(--p-line);
   background: rgb(250 249 247 / 92%);
   backdrop-filter: saturate(1.2) blur(10px);
+}
+
+@media (max-width: 1024px) {
+  // En tablet y celular Payload sube la barra fija 56 px para esconder la franja de estado.
+  // Donde no hay estado (p. ej. Datos del negocio) esa franja mide menos y el botón Guardar
+  // quedaba cortado arriba: sin estado, no hay franja y la barra queda en su lugar.
+  .doc-controls.gutter:has(.doc-controls__meta:empty) {
+    top: 0;
+
+    .doc-controls__content {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  // Estado y última modificación entran en una línea en celular (la barra fija de Payload
+  // espera una sola línea): sin la palabra "Estado:" ni la fecha de creación (está en
+  // Versiones).
+  .doc-controls__meta {
+    .status__label,
+    .doc-controls__value-wrap + .doc-controls__value-wrap,
+    .doc-controls__list-item:has(> .autosave:empty) {
+      display: none;
+    }
+  }
 }
 
 .field-label {
@@ -654,6 +795,28 @@ h4 {
 
 .collapsible__toggle-wrap {
   border-radius: var(--p-radius-s) var(--p-radius-s) 0 0;
+}
+
+// Encabezado de listas y secciones ("Contraer todo" / "Mostrar todo"): en celular las acciones
+// bajan debajo del título en vez de partirse en dos renglones.
+@media (max-width: 768px) {
+  .array-field__header-wrap,
+  .blocks-field__header-wrap {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+  }
+
+  .array-field__header-actions,
+  .blocks-field__header-actions {
+    align-items: center;
+    white-space: nowrap;
+
+    > li:first-child > .array-field__header-action,
+    > li:first-child > .blocks-field__header-action {
+      margin-left: 0;
+    }
+  }
 }
 
 // Carga de archivos.
@@ -1548,6 +1711,7 @@ h4 {
 .pircas-thumb {
   display: block;
   width: 56px;
+  max-width: none;
   height: 42px;
   border-radius: 8px;
   object-fit: cover;
@@ -1592,6 +1756,12 @@ h4 {
   font-style: normal;
 }
 
+// Cuenta: "Configuración de Payload" solo ofrece el idioma (hay uno) y el tema (fijo), y sus
+// divisores desbordan la pantalla en celular. No se muestra.
+.payload-settings {
+  display: none;
+}
+
 // Avatar del encabezado (src/components/admin/AdminAvatar.tsx).
 .pircas-avatar {
   display: inline-flex;
@@ -1606,13 +1776,16 @@ h4 {
   font-weight: 600;
 }
 
-// Con el menú abierto el logo ya está en el menú: el isotipo del encabezado sobra.
-.template-default--nav-open .step-nav__home,
-.template-default--nav-open .step-nav__home + span {
-  display: none;
+// Con el menú lateral abierto (desktop) el logo ya está en el menú: el isotipo del encabezado
+// sobra. En tablet y celular el menú es un cajón y el encabezado no cambia.
+@media (min-width: 1025px) {
+  .template-default--nav-open .step-nav__home,
+  .template-default--nav-open .step-nav__home + span {
+    display: none;
+  }
 }
 
-// Botón cerrar del menú (solo mobile, donde el menú ocupa toda la pantalla).
+// Botón cerrar y fondo del cajón (solo tablet y celular).
 .pircas-nav__close {
   display: none;
   align-items: center;
@@ -1631,7 +1804,99 @@ h4 {
   }
 }
 
-@media (max-width: 768px) {
+.pircas-nav__backdrop {
+  display: none;
+}
+
+// -----------------------------------------------------------------------------
+// Tablet y celular (hasta 1024 px): el menú es un cajón que se desliza SOBRE la
+// página, con fondo oscuro. Payload, en cambio, abre el menú como una columna de
+// la grilla (en celular de 100vw) y el contenido queda en una columna de 0 px que
+// desborda hacia la derecha: la página se ensancha y el celular la achica.
+// -----------------------------------------------------------------------------
+@media (max-width: 1024px) {
+  // La página ocupa siempre todo el ancho, con el menú abierto o cerrado.
+  .template-default {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .template-default .template-default__wrap {
+    min-width: 0;
+  }
+
+  .pircas-nav {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 1200; // sobre el encabezado y los degradés de las pestañas (z-index 1111)
+    width: min(320px, calc(100vw - 56px));
+    height: auto;
+    border-right: 0;
+    opacity: 1;
+    visibility: hidden;
+    transform: translateX(-100%);
+    box-shadow: none;
+
+    &.nav--nav-animate {
+      transition:
+        transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1),
+        visibility 0s linear 0.24s,
+        box-shadow 0.24s ease;
+    }
+
+    &.nav--nav-open {
+      visibility: visible;
+      transform: none;
+      box-shadow: 0 24px 60px -12px rgb(17 17 19 / 35%);
+
+      &.nav--nav-animate {
+        transition:
+          transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1),
+          visibility 0s,
+          box-shadow 0.24s ease;
+      }
+    }
+
+    .nav__scroll {
+      padding-bottom: max(14px, env(safe-area-inset-bottom));
+      overscroll-behavior: contain;
+    }
+  }
+
+  .pircas-nav__backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1199;
+    background: rgb(17 17 19 / 45%);
+    opacity: 0;
+    visibility: hidden;
+    touch-action: none;
+    transition:
+      opacity 0.24s ease,
+      visibility 0s linear 0.24s;
+
+    // Solo después de hidratar: el servidor puede mandar el menú "abierto" (preferencia de
+    // desktop) y Payload recién lo cierra en el navegador.
+    .nav--nav-open.nav--nav-hydrated + & {
+      opacity: 1;
+      visibility: visible;
+      transition:
+        opacity 0.24s ease,
+        visibility 0s;
+    }
+  }
+
+  // Con el cajón abierto la página de atrás no se desplaza.
+  html.pircas-nav-locked,
+  html.pircas-nav-locked body {
+    overflow: hidden;
+  }
+
+  // El cajón tiene su propio botón de cerrar: se oculta el de Payload (arriba a la izquierda).
+  .template-default__nav-toggler.nav-toggler--is-open {
+    visibility: hidden;
+  }
+
   .pircas-nav__brand {
     padding-left: 6px;
     padding-right: 4px;
@@ -1640,7 +1905,16 @@ h4 {
   .pircas-nav__close {
     display: inline-flex;
   }
+}
 
+@media (prefers-reduced-motion: reduce) {
+  .pircas-nav,
+  .pircas-nav__backdrop {
+    transition: none !important;
+  }
+}
+
+@media (max-width: 768px) {
   .pircas-nav__item {
     min-height: 48px;
     font-size: 15px;

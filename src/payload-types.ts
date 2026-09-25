@@ -660,7 +660,7 @@ export interface ProjectCategory {
   createdAt: string;
 }
 /**
- * Páginas armadas con bloques (Nosotros, Contacto, Cotizador y cualquier página nueva). La home se edita en Configuración > Home.
+ * Páginas armadas con secciones (Nosotros, Contacto, Cotizador y cualquier página nueva). La portada se edita en Páginas del sitio → Página de inicio.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pages".

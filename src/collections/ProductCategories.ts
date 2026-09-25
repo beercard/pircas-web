@@ -24,19 +24,9 @@ export const ProductCategories: CollectionConfig<'product-categories'> = {
     delete: authenticated,
   },
   fields: [
-    {
-      type: 'tabs',
-      tabs: [
-        {
-          label: 'Información principal',
-          fields: [
-            { name: 'name', label: 'Nombre', type: 'text', required: true, localized: true },
-            { name: 'description', label: 'Descripción', type: 'textarea', localized: true },
-            { name: 'image', label: 'Imagen', type: 'upload', relationTo: 'media' },
-          ],
-        },
-      ],
-    },
+    { name: 'name', label: 'Nombre', type: 'text', required: true, localized: true },
+    { name: 'description', label: 'Descripción', type: 'textarea', localized: true },
+    { name: 'image', label: 'Imagen', type: 'upload', relationTo: 'media' },
     slug('name'),
     orderField,
   ],

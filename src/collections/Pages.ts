@@ -18,7 +18,7 @@ export const Pages: CollectionConfig<'pages'> = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', '_status', 'updatedAt'],
     description:
-      'Páginas armadas con bloques (Nosotros, Contacto, Cotizador y cualquier página nueva). La home se edita en Configuración > Home.',
+      'Páginas armadas con secciones (Nosotros, Contacto, Cotizador y cualquier página nueva). La portada se edita en Páginas del sitio → Página de inicio.',
     livePreview: { url: ({ data }) => previewPathFor('pages', data?.slug as string) },
     preview: (doc) => previewPathFor('pages', doc?.slug as string),
   },
@@ -30,30 +30,20 @@ export const Pages: CollectionConfig<'pages'> = {
     delete: authenticated,
   },
   fields: [
+    { name: 'title', label: 'Título', type: 'text', required: true, localized: true },
     {
-      type: 'tabs',
-      tabs: [
-        {
-          label: 'Contenido',
-          fields: [
-            { name: 'title', label: 'Título', type: 'text', required: true, localized: true },
-            {
-              name: 'layout',
-              label: 'Secciones',
-              labels: { singular: 'Sección', plural: 'Secciones' },
-              type: 'blocks',
-              blocks: ALL_BLOCKS,
-              required: true,
-              minRows: 1,
-              admin: {
-                initCollapsed: true,
-                description:
-                  'Agregá, reordená (arrastrando) u ocultá secciones. Usá un bloque "Hero" como primera sección.',
-              },
-            },
-          ],
-        },
-      ],
+      name: 'layout',
+      label: 'Secciones',
+      labels: { singular: 'Sección', plural: 'Secciones' },
+      type: 'blocks',
+      blocks: ALL_BLOCKS,
+      required: true,
+      minRows: 1,
+      admin: {
+        initCollapsed: true,
+        description:
+          'Agregá, reordená (arrastrando) u ocultá secciones. Usá un bloque "Hero" como primera sección.',
+      },
     },
     slug('title'),
     {

@@ -4,7 +4,7 @@ Panel: **`/admin`** (hoy `https://pircas-web.vercel.app/admin`). Está pensado c
 
 ## El panel de un vistazo
 
-Menú lateral (en celular se abre con ☰):
+Menú lateral (en celular y tablet se abre con ☰ sobre la página y se cierra tocando afuera, con la ✕ o al elegir una sección; en los listados, las columnas que no entran se ven deslizando la tabla hacia el costado):
 
 | Sección | Qué hay |
 |---|---|

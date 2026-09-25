@@ -19,8 +19,10 @@ const PAGES = [
 ]
 
 async function noHorizontalOverflow(page: Page) {
+  // clientWidth y no innerWidth: en celular, si algo desborda, el navegador agranda el
+  // viewport (innerWidth) hasta el ancho del contenido y la resta daría 0.
   const overflow = await page.evaluate(
-    () => document.documentElement.scrollWidth - window.innerWidth,
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   )
   expect(overflow, 'no debe haber scroll horizontal').toBeLessThanOrEqual(1)
 }
@@ -196,5 +198,37 @@ test.describe('panel', () => {
   test('las consultas no son públicas', async ({ request }) => {
     expect((await request.get('/api/leads')).status()).toBe(403)
     expect((await request.get('/api/users')).status()).toBe(403)
+  })
+
+  test('mobile/tablet: el menú es un cajón que no ensancha la página', async ({ page }, info) => {
+    test.skip(info.project.name === 'desktop', 'En desktop el menú es una columna fija')
+    const nav = page.locator('aside.pircas-nav')
+    const login = page.getByRole('button', { name: 'Iniciar sesión' })
+    const openMenu = () => page.locator('button.nav-toggler:visible').first().click()
+    const { width } = page.viewportSize()!
+
+    await page.goto('/admin')
+    // Necesita sesión: en desarrollo, PAYLOAD_DEV_AUTOLOGIN_EMAIL entra sin contraseña.
+    await expect(nav.or(login)).toBeAttached()
+    test.skip(await login.isVisible(), 'Requiere sesión en el panel')
+
+    // Que React ya esté escuchando los toques (la clase aparece 100 ms después de hidratar).
+    await expect(nav).toHaveClass(/nav--nav-animate/)
+    await openMenu()
+    await expect(nav).toHaveClass(/nav--nav-open/)
+    await expect.poll(async () => (await nav.boundingBox())?.x).toBe(0)
+    expect((await nav.boundingBox())!.width).toBeLessThan(width)
+    await noHorizontalOverflow(page)
+
+    // Tocar afuera lo cierra.
+    await page.mouse.click(width - 12, 400)
+    await expect(nav).not.toHaveClass(/nav--nav-open/)
+
+    // Elegir una sección navega y lo cierra.
+    await openMenu()
+    await nav.getByRole('link', { name: 'Productos' }).click()
+    await expect(page).toHaveURL(/\/admin\/collections\/products/)
+    await expect(nav).not.toHaveClass(/nav--nav-open/)
+    await noHorizontalOverflow(page)
   })
 })
