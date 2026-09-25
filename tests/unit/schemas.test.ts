@@ -60,6 +60,36 @@ describe('formulario de contacto', () => {
   })
 })
 
+describe('formulario de obras y profesionales', () => {
+  const pro = {
+    ...validContact,
+    audience: 'professional' as const,
+    project: { location: 'Edificio 12 unidades, Santa Fe', plansUrl: 'https://example.com/planos' },
+  }
+
+  it('acepta una consulta de obra completa', () => {
+    expect(contactSchema.safeParse(pro).success).toBe(true)
+  })
+
+  it('exige la obra y su ubicación', () => {
+    const r = contactSchema.safeParse({ ...pro, project: { location: '' } })
+    expect(r.success).toBe(false)
+    expect(fieldErrors(r.error!)['project.location']).toMatch(/obra/)
+  })
+
+  it('valida el enlace a los planos', () => {
+    const r = contactSchema.safeParse({ ...pro, project: { ...pro.project, plansUrl: 'planos' } })
+    expect(r.success).toBe(false)
+    expect(fieldErrors(r.error!)['project.plansUrl']).toBeDefined()
+  })
+
+  it('no cambia el formulario general', () => {
+    expect(contactSchema.safeParse({ ...validContact, project: { location: '' } }).success).toBe(
+      true,
+    )
+  })
+})
+
 describe('cotización', () => {
   it('acepta un pedido válido', () => {
     expect(quoteSchema.safeParse(validQuote).success).toBe(true)

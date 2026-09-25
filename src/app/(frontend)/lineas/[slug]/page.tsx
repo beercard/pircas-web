@@ -17,7 +17,8 @@ import { Facts } from '@/components/ui/Facts'
 import { Gallery } from '@/components/ui/Gallery'
 import { getProductLineBySlug, getProductLines } from '@/lib/data/catalog'
 import { getSiteSettings } from '@/lib/data/globals'
-import { toGalleryImages } from '@/lib/media'
+import { cn } from '@/lib/cn'
+import { fileUrl, toGalleryImages } from '@/lib/media'
 import { pathFor, ROUTES } from '@/lib/routes'
 import { buildMetadata } from '@/lib/seo/metadata'
 import { getWhatsAppConfig, productWhatsAppMessage, whatsappUrl } from '@/lib/whatsapp'
@@ -42,6 +43,7 @@ const SHAPES = ['rounded-none', 'rounded-door', 'rounded-full', 'rounded-none'] 
 export default async function ProductLinePage({ params }: Props) {
   const line = await getProductLineBySlug((await params).slug)
   if (!line) notFound()
+  const datasheet = fileUrl(line.datasheetFile)
   const [site, allLines] = await Promise.all([getSiteSettings(), getProductLines()])
   const others = allLines.filter((l) => l.id !== line.id)
   const wa = whatsappUrl(getWhatsAppConfig(site), productWhatsAppMessage(`la línea ${line.name}`))
@@ -143,14 +145,26 @@ export default async function ProductLinePage({ params }: Props) {
       )}
 
       {/* Técnico + aplicaciones */}
-      <section className="bg-paper py-section-sm">
+      <section id="ficha-tecnica" className="scroll-mt-28 bg-paper py-section-sm">
         <div className="container-site grid grid-cols-[repeat(auto-fit,minmax(min(100%,21.25rem),1fr))] items-start gap-[clamp(2rem,4vw,5rem)]">
-          {!!line.technicalSpecs?.length && (
+          {(!!line.technicalSpecs?.length || datasheet) && (
             <div className="flex flex-col gap-[22px]">
               <h2 className="text-h3">Información técnica</h2>
-              <div className="border-t border-ink/16">
-                <SpecRows rows={line.technicalSpecs} size="md" />
-              </div>
+              {!!line.technicalSpecs?.length && (
+                <div className="border-t border-ink/16">
+                  <SpecRows rows={line.technicalSpecs} size="md" />
+                </div>
+              )}
+              {datasheet && (
+                <a
+                  href={datasheet}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'self-start')}
+                >
+                  Descargar ficha técnica (PDF) <span aria-hidden="true">↓</span>
+                </a>
+              )}
             </div>
           )}
           {(!!line.applications?.length || line.applicationImage) && (

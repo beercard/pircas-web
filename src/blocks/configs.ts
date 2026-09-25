@@ -18,6 +18,16 @@ const withSettings = (block: Block): Block => ({
   fields: [...block.fields, blockSettingsField],
 })
 
+/**
+ * Nombre corto de tabla POR DUEÑO (pages / homepage / archives y sus versiones), p. ej.
+ * "pages_text_img" y "homepage_text_img". Un nombre fijo haría que páginas, home y listados
+ * compartan la tabla: como todos tienen id 1, guardar uno borraba los bloques del otro.
+ */
+const ownerDbName =
+  (short: string) =>
+  ({ tableName }: { tableName?: string }): string =>
+    `${(tableName ?? 'pages').replace(/^_/, '').replace(/_v$/, '')}_${short}`
+
 const variantField = (
   options: { label: string; value: string }[],
   defaultValue: string,
@@ -139,7 +149,7 @@ export const StatementBlock = withSettings({
 
 export const TextImageBlock = withSettings({
   slug: 'textImage',
-  dbName: 'text_img',
+  dbName: ownerDbName('text_img'),
   interfaceName: 'TextImageBlock',
   labels: { singular: 'Texto + imagen', plural: 'Texto + imagen' },
   fields: [
@@ -222,7 +232,7 @@ export const BenefitsBlock = withSettings({
 
 export const ProductLinesBlock = withSettings({
   slug: 'productLines',
-  dbName: 'prod_lines',
+  dbName: ownerDbName('prod_lines'),
   interfaceName: 'ProductLinesBlock',
   labels: { singular: 'Líneas de producto', plural: 'Líneas de producto' },
   fields: [
@@ -247,7 +257,7 @@ export const ProductLinesBlock = withSettings({
 
 export const ProductCategoriesBlock = withSettings({
   slug: 'productCategories',
-  dbName: 'prod_cats',
+  dbName: ownerDbName('prod_cats'),
   interfaceName: 'ProductCategoriesBlock',
   labels: { singular: 'Categorías / soluciones', plural: 'Categorías / soluciones' },
   fields: [
@@ -270,7 +280,7 @@ export const ProductCategoriesBlock = withSettings({
 
 export const ProductGridBlock = withSettings({
   slug: 'productGrid',
-  dbName: 'prod_grid',
+  dbName: ownerDbName('prod_grid'),
   interfaceName: 'ProductGridBlock',
   labels: { singular: 'Grilla de productos', plural: 'Grillas de productos' },
   fields: [
@@ -390,7 +400,7 @@ export const AdvisorBlock = withSettings({
 
 export const QuoteCtaBlock = withSettings({
   slug: 'quoteCta',
-  dbName: 'quote_cta',
+  dbName: ownerDbName('quote_cta'),
   interfaceName: 'QuoteCtaBlock',
   labels: { singular: 'Llamado a la acción', plural: 'Llamados a la acción' },
   fields: [
@@ -416,7 +426,7 @@ export const QuoteCtaBlock = withSettings({
 
 export const ProjectGridBlock = withSettings({
   slug: 'projectGrid',
-  dbName: 'proj_grid',
+  dbName: ownerDbName('proj_grid'),
   interfaceName: 'ProjectGridBlock',
   labels: { singular: 'Grilla de proyectos', plural: 'Grillas de proyectos' },
   fields: [
@@ -429,8 +439,19 @@ export const ProjectGridBlock = withSettings({
       options: [
         { label: 'Destacados', value: 'featured' },
         { label: 'Más recientes', value: 'latest' },
+        { label: 'De una categoría', value: 'category' },
         { label: 'Elegidos a mano', value: 'manual' },
       ],
+    },
+    {
+      name: 'category',
+      label: 'Categoría',
+      type: 'relationship',
+      relationTo: 'project-categories',
+      admin: {
+        condition: (_, s) => s?.source === 'category',
+        description: 'Si la categoría todavía no tiene proyectos, el bloque no se muestra.',
+      },
     },
     {
       name: 'projects',
@@ -501,12 +522,114 @@ export const ContactBlock = withSettings({
       ],
     },
     { name: 'showMap', label: 'Mostrar mapa', type: 'checkbox', defaultValue: false },
+    {
+      name: 'form',
+      label: 'Formulario',
+      type: 'select',
+      defaultValue: 'general',
+      options: [
+        { label: 'Consulta general', value: 'general' },
+        { label: 'Obras y profesionales (empresa, obra, etapa, planos…)', value: 'professional' },
+      ],
+    },
+  ],
+})
+
+export const AudiencesBlock = withSettings({
+  slug: 'audiences',
+  interfaceName: 'AudiencesBlock',
+  labels: { singular: 'Para quién (casas / obras)', plural: 'Para quién' },
+  fields: [
+    ...sectionHeadingFields,
+    {
+      name: 'items',
+      label: 'Secciones',
+      type: 'array',
+      minRows: 1,
+      maxRows: 3,
+      labels: { singular: 'Sección', plural: 'Secciones' },
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'audience',
+              label: 'Para quién',
+              type: 'text',
+              localized: true,
+              admin: { width: '50%', description: 'Ej: Quien construye o reforma' },
+            },
+            {
+              name: 'tone',
+              label: 'Estilo',
+              type: 'select',
+              defaultValue: 'light',
+              options: [
+                { label: 'Claro', value: 'light' },
+                { label: 'Oscuro', value: 'dark' },
+              ],
+              admin: { width: '50%' },
+            },
+          ],
+        },
+        { name: 'title', label: 'Título', type: 'text', required: true, localized: true },
+        { name: 'text', label: 'Texto', type: 'textarea', localized: true },
+        bulletListField('bullets', 'Qué va a encontrar'),
+        { name: 'image', label: 'Imagen', type: 'upload', relationTo: 'media' },
+        linkField({ name: 'link', label: 'Botón' }),
+      ],
+    },
+  ],
+})
+
+export const DocumentsBlock = withSettings({
+  slug: 'documents',
+  dbName: ownerDbName('docs'),
+  interfaceName: 'DocumentsBlock',
+  labels: { singular: 'Documentación técnica', plural: 'Documentación técnica' },
+  fields: [
+    ...sectionHeadingFields,
+    {
+      name: 'showLines',
+      label: 'Listar las líneas con su información técnica',
+      type: 'checkbox',
+      defaultValue: true,
+      admin: {
+        description:
+          'Muestra cada línea con enlace a su ficha y, si se cargó, el PDF descargable (Líneas → Ficha técnica).',
+      },
+    },
+    {
+      name: 'files',
+      label: 'Otros archivos descargables',
+      type: 'array',
+      labels: { singular: 'Archivo', plural: 'Archivos' },
+      fields: [
+        { name: 'title', label: 'Título', type: 'text', required: true, localized: true },
+        { name: 'description', label: 'Descripción', type: 'text', localized: true },
+        {
+          name: 'file',
+          label: 'Archivo (PDF o imagen)',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+        },
+      ],
+    },
+    {
+      name: 'note',
+      label: 'Nota al pie',
+      type: 'textarea',
+      localized: true,
+      admin: { description: 'Ej: "¿Necesitás detalles de montaje o planillas? Pedínoslos."' },
+    },
+    linkField({ name: 'cta', label: 'Botón al pie (opcional)', requireLabel: false }),
   ],
 })
 
 export const QuoteWizardBlock = withSettings({
   slug: 'quoteWizard',
-  dbName: 'quote_wiz',
+  dbName: ownerDbName('quote_wiz'),
   interfaceName: 'QuoteWizardBlock',
   labels: { singular: 'Cotizador (5 pasos + presupuesto)', plural: 'Cotizadores' },
   fields: [
@@ -520,7 +643,7 @@ export const QuoteWizardBlock = withSettings({
 
 export const RichTextBlock = withSettings({
   slug: 'richText',
-  dbName: 'rich_text',
+  dbName: ownerDbName('rich_text'),
   interfaceName: 'RichTextBlock',
   labels: { singular: 'Texto enriquecido', plural: 'Textos enriquecidos' },
   fields: [
@@ -611,6 +734,8 @@ export const ALL_BLOCKS: Block[] = [
   GalleryBlock,
   FaqBlock,
   ContactBlock,
+  AudiencesBlock,
+  DocumentsBlock,
   QuoteWizardBlock,
   RichTextBlock,
   VideoBlock,

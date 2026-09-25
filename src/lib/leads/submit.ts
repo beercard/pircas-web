@@ -110,11 +110,24 @@ export async function submitContact(payload: Payload, data: ContactData): Promis
     payload.findGlobal({ slug: 'site-settings', depth: 0, overrideAccess: true }),
   ])
 
+  const isProject = data.audience === 'professional'
+  const project = isProject
+    ? {
+        company: data.project?.company || undefined,
+        role: data.project?.role || undefined,
+        location: data.project?.location || undefined,
+        stage: data.project?.stage || undefined,
+        openings: data.project?.openings || undefined,
+        timeline: data.project?.timeline || undefined,
+        plansUrl: data.project?.plansUrl || undefined,
+      }
+    : undefined
   const lead = await payload.create({
     collection: 'leads',
     overrideAccess: true,
     data: {
-      type: 'contact',
+      type: isProject ? 'project' : 'contact',
+      project,
       status: 'new',
       name: data.name,
       lastName: data.lastName || undefined,
@@ -125,7 +138,7 @@ export async function submitContact(payload: Payload, data: ContactData): Promis
       product: data.productId,
       productLine: data.lineId,
       message: data.message,
-      source: 'Formulario de contacto',
+      source: isProject ? 'Formulario obras y profesionales' : 'Formulario de contacto',
       landingPage: data.attribution?.landingPage || undefined,
       referrer: data.attribution?.referrer || undefined,
       utm: utmOf(data.attribution),
@@ -136,14 +149,16 @@ export async function submitContact(payload: Payload, data: ContactData): Promis
   await sendEmails(
     payload,
     {
-      kind: 'contact',
+      kind: isProject ? 'project' : 'contact',
       fullName,
+      project,
       email: data.email,
       phone: data.phone,
       city: data.city,
       projectType: data.projectType,
       message: data.message,
-      source: data.pageUrl || 'Formulario de contacto',
+      source:
+        data.pageUrl || (isProject ? 'Formulario obras y profesionales' : 'Formulario de contacto'),
       utm: utmSummary(data.attribution),
       adminUrl: absoluteUrl(`/admin/collections/leads/${lead.id}`),
     },
@@ -152,7 +167,7 @@ export async function submitContact(payload: Payload, data: ContactData): Promis
     site,
   )
 
-  payload.logger.info({ leadId: lead.id, type: 'contact' }, 'lead created')
+  payload.logger.info({ leadId: lead.id, type: isProject ? 'project' : 'contact' }, 'lead created')
   return { id: lead.id }
 }
 

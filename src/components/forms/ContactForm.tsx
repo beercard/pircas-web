@@ -6,7 +6,13 @@ import { useForm } from 'react-hook-form'
 
 import { Button } from '@/components/ui/Button'
 import { track } from '@/lib/analytics/track'
-import { contactSchema, type ContactData, type ContactInput } from '@/lib/forms/schemas'
+import {
+  contactSchema,
+  PROFESSIONAL_ROLES,
+  PROJECT_STAGES,
+  type ContactData,
+  type ContactInput,
+} from '@/lib/forms/schemas'
 
 import { Honeypot, SelectField, TextAreaField, TextField } from './fields'
 import { submitForm } from './submit'
@@ -19,6 +25,8 @@ type Props = {
   privacyNote?: string | null
   /** Producto/línea desde el que se consulta (opcional). */
   context?: { productId?: number; lineId?: number }
+  /** "professional": pide empresa, obra, etapa y planos (sección Obras y profesionales). */
+  variant?: 'general' | 'professional'
 }
 
 /** Formulario de contacto (campos con línea inferior, como el diseño). */
@@ -28,7 +36,9 @@ export function ContactForm({
   success,
   privacyNote,
   context,
+  variant = 'general',
 }: Props) {
+  const professional = variant === 'professional'
   const [token, setToken] = useState<string | undefined>()
   const [resetSignal, setResetSignal] = useState(0)
   const [status, setStatus] = useState<'idle' | 'sent' | 'error'>('idle')
@@ -52,6 +62,16 @@ export function ContactForm({
       projectType: '',
       message: '',
       website: '',
+      audience: variant,
+      project: {
+        company: '',
+        role: '',
+        location: '',
+        stage: '',
+        openings: '',
+        timeline: '',
+        plansUrl: '',
+      },
     },
   })
 
@@ -59,7 +79,10 @@ export function ContactForm({
     setServerError(null)
     const result = await submitForm('contact', { ...data, ...context, turnstileToken: token })
     if (result.ok) {
-      track('contact_submit', { project_type: data.projectType || undefined })
+      track('contact_submit', {
+        project_type: data.projectType || undefined,
+        audience: professional ? 'professional' : undefined,
+      })
       setStatus('sent')
       reset()
     } else {
@@ -109,14 +132,73 @@ export function ContactForm({
           {...register('phone')}
         />
       </div>
-      <TextField
-        label="Ciudad"
-        autoComplete="address-level2"
-        optional
-        error={errors.city?.message}
-        {...register('city')}
-      />
-      {projectTypes.length > 0 && (
+      {professional ? (
+        <>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,11.875rem),1fr))] gap-[18px]">
+            <TextField
+              label="Empresa o estudio"
+              autoComplete="organization"
+              optional
+              error={errors.project?.company?.message}
+              {...register('project.company')}
+            />
+            <SelectField
+              label="Rol"
+              options={[...PROFESSIONAL_ROLES]}
+              placeholder="Elegí una opción"
+              optional
+              {...register('project.role')}
+            />
+          </div>
+          <TextField
+            label="Obra y ubicación"
+            placeholder="Ej: Edificio de 12 unidades, Santa Fe"
+            error={errors.project?.location?.message}
+            {...register('project.location')}
+          />
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,11.875rem),1fr))] gap-[18px]">
+            <SelectField
+              label="Etapa"
+              options={[...PROJECT_STAGES]}
+              placeholder="Elegí una opción"
+              optional
+              {...register('project.stage')}
+            />
+            <TextField
+              label="Aberturas (aprox.)"
+              inputMode="numeric"
+              optional
+              error={errors.project?.openings?.message}
+              {...register('project.openings')}
+            />
+            <TextField
+              label="Entrega estimada"
+              placeholder="Ej: marzo 2027"
+              optional
+              error={errors.project?.timeline?.message}
+              {...register('project.timeline')}
+            />
+          </div>
+          <TextField
+            label="Planos o planilla de aberturas (enlace)"
+            type="url"
+            inputMode="url"
+            placeholder="Drive, Dropbox, WeTransfer…"
+            optional
+            error={errors.project?.plansUrl?.message}
+            {...register('project.plansUrl')}
+          />
+        </>
+      ) : (
+        <TextField
+          label="Ciudad"
+          autoComplete="address-level2"
+          optional
+          error={errors.city?.message}
+          {...register('city')}
+        />
+      )}
+      {!professional && projectTypes.length > 0 && (
         <SelectField
           label="Tipo de proyecto"
           options={projectTypes}
@@ -126,7 +208,7 @@ export function ContactForm({
         />
       )}
       <TextAreaField
-        label="Mensaje"
+        label={professional ? 'Contanos la obra' : 'Mensaje'}
         rows={4}
         error={errors.message?.message}
         {...register('message')}
@@ -147,7 +229,11 @@ export function ContactForm({
           )}
         </div>
         <Button type="submit" variant="dark" arrow disabled={isSubmitting}>
-          {isSubmitting ? 'Enviando…' : 'Enviar consulta'}
+          {isSubmitting
+            ? 'Enviando…'
+            : professional
+              ? 'Pedir cotización de obra'
+              : 'Enviar consulta'}
         </Button>
       </div>
     </form>

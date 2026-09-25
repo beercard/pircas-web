@@ -14,6 +14,8 @@ const PAGES = [
   { path: '/nosotros', h1: /Hacemos aberturas/ },
   { path: '/contacto', h1: /Escribinos/ },
   { path: '/cotizador', h1: /Cotizá tu proyecto/ },
+  { path: '/para-tu-casa', h1: /Aberturas para tu casa/ },
+  { path: '/obras-y-profesionales', h1: /Aberturas para obras/ },
 ]
 
 async function noHorizontalOverflow(page: Page) {
@@ -121,6 +123,26 @@ test.describe('conversión', () => {
     await page.getByRole('button', { name: /Enviar consulta/ }).click()
     await expect(page.getByText('Ingresá tu nombre.')).toBeVisible()
     await expect(page.getByLabel('Nombre')).toHaveAttribute('aria-invalid', 'true')
+  })
+
+  test('home: separa "Para tu casa" y "Obras y profesionales"', async ({ page }) => {
+    await page.goto('/')
+    const split = page.locator('#para-quien')
+    await expect(split.getByRole('heading', { name: 'Para tu casa' })).toBeVisible()
+    await split.getByRole('link', { name: /Ver servicio para obras/ }).click()
+    await expect(page).toHaveURL(/\/obras-y-profesionales$/)
+  })
+
+  test('obras y profesionales: formulario con datos de la obra', async ({ page }, info) => {
+    test.skip(info.project.name === 'tablet', 'cubierto en desktop y mobile')
+    await page.goto('/obras-y-profesionales')
+    await expect(page.locator('#documentacion')).toContainText('Línea Modena')
+    const form = page.locator('#cotizar form')
+    await expect(form.getByLabel('Obra y ubicación')).toBeVisible()
+    await form.getByLabel('Planos o planilla de aberturas (enlace)').fill('no-es-un-link')
+    await form.getByRole('button', { name: /Pedir cotización de obra/ }).click()
+    await expect(form.getByText('Indicá la obra y dónde es.')).toBeVisible()
+    await expect(form.getByText('Pegá un enlace que empiece con https://')).toBeVisible()
   })
 
   test('los CTA de WhatsApp apuntan al número configurado', async ({ page }) => {

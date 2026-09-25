@@ -12,6 +12,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 
 import { seedCatalog } from './catalog'
+import { seedAudiences } from './audiences'
 import { seedContent } from './content'
 
 const payload = await getPayload({ config })
@@ -27,6 +28,7 @@ if (existing.totalDocs > 0 && process.env.SEED_FORCE !== 'true') {
 payload.logger.info('Cargando contenido inicial…')
 const catalog = await seedCatalog(payload)
 await seedContent(payload, catalog)
+await seedAudiences(payload)
 
 const { SEED_ADMIN_EMAIL: email, SEED_ADMIN_PASSWORD: password } = process.env
 if (email && password) {

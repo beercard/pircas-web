@@ -11,6 +11,11 @@ export function mediaSrc(url: string | null | undefined): string | null {
   return match ? match[1] : url
 }
 
+/** URL de descarga de un archivo del CMS (PDF, imagen) o null si no hay. */
+export function fileUrl(media: Media | number | null | undefined): string | null {
+  return media && typeof media === 'object' ? mediaSrc(media.url) : null
+}
+
 /** Convierte filas de galería del CMS en imágenes serializables para el componente cliente. */
 export function toGalleryImages(
   rows: { image: Media | number | null | undefined; caption?: string | null }[] | null | undefined,

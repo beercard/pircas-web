@@ -20,6 +20,13 @@ const columns: CsvColumn<Lead>[] = [
   { header: 'Tipo de proyecto', value: (l) => l.projectType },
   { header: 'Producto', value: (l) => nameOf(l.product) },
   { header: 'Línea', value: (l) => nameOf(l.productLine) },
+  { header: 'Empresa / estudio', value: (l) => l.project?.company },
+  { header: 'Rol', value: (l) => l.project?.role },
+  { header: 'Obra y ubicación', value: (l) => l.project?.location },
+  { header: 'Etapa', value: (l) => l.project?.stage },
+  { header: 'Aberturas (aprox.)', value: (l) => l.project?.openings },
+  { header: 'Entrega estimada', value: (l) => l.project?.timeline },
+  { header: 'Planos', value: (l) => l.project?.plansUrl },
   { header: 'Qué necesita', value: (l) => l.quote?.need },
   {
     header: 'Aberturas',

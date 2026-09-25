@@ -41,7 +41,14 @@ export const Media: CollectionConfig = {
   upload: {
     // Carpeta de archivos subidos (volumen en Docker). Relativa al directorio de trabajo.
     staticDir: process.env.MEDIA_DIR || path.resolve(process.cwd(), 'public/media'),
-    mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/svg+xml'],
+    mimeTypes: [
+      'image/jpeg',
+      'image/png',
+      'image/webp',
+      'image/avif',
+      'image/svg+xml',
+      'application/pdf',
+    ],
     focalPoint: true,
     crop: true,
     adminThumbnail: 'thumbnail',

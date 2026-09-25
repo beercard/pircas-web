@@ -54,7 +54,7 @@ function button(href: string, label: string): string {
 }
 
 export type LeadSummary = {
-  kind: 'contact' | 'quotation'
+  kind: 'contact' | 'quotation' | 'project'
   fullName: string
   email?: string
   phone?: string
@@ -65,6 +65,15 @@ export type LeadSummary = {
   visitRequested?: boolean
   items?: { title: string; description: string; estimate: string | null }[]
   total?: string | null
+  project?: {
+    company?: string
+    role?: string
+    location?: string
+    stage?: string
+    openings?: string
+    timeline?: string
+    plansUrl?: string
+  }
   source?: string
   utm?: string
   adminUrl: string
@@ -73,13 +82,20 @@ export type LeadSummary = {
 /** Aviso interno al equipo por una consulta o cotización nueva. */
 export function leadNotificationEmail(lead: LeadSummary): EmailContent {
   const isQuote = lead.kind === 'quotation'
-  const subject = `${isQuote ? 'Nueva cotización' : 'Nueva consulta'}: ${lead.fullName}${lead.city ? ` (${lead.city})` : ''}`
+  const subject = `${isQuote ? 'Nueva cotización' : lead.kind === 'project' ? 'Nueva consulta de obra' : 'Nueva consulta'}: ${lead.fullName}${lead.city ? ` (${lead.city})` : ''}`
   const rows: Row[] = [
     ['Nombre', lead.fullName],
     ['Email', lead.email],
     ['Teléfono', lead.phone],
     ['Ciudad', lead.city],
     ['Proyecto', lead.projectType],
+    ['Empresa / estudio', lead.project?.company],
+    ['Rol', lead.project?.role],
+    ['Obra', lead.project?.location],
+    ['Etapa', lead.project?.stage],
+    ['Aberturas (aprox.)', lead.project?.openings],
+    ['Entrega estimada', lead.project?.timeline],
+    ['Planos', lead.project?.plansUrl],
     ['Necesita', lead.need],
     ['Medición en obra', lead.visitRequested ? 'Sí' : undefined],
     ['Mensaje', lead.message],

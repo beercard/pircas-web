@@ -3,8 +3,10 @@ import type { ComponentType } from 'react'
 import type { Page } from '@/payload-types'
 
 import { AdvisorBlock } from './Advisor/Component'
+import { AudiencesBlock } from './Audiences/Component'
 import { BenefitsBlock } from './Benefits/Component'
 import { ContactBlock } from './Contact/Component'
+import { DocumentsBlock } from './Documents/Component'
 import { FaqBlock } from './Faq/Component'
 import { GalleryBlock } from './Gallery/Component'
 import { HeroBlock } from './Hero/Component'
@@ -44,6 +46,8 @@ const COMPONENTS: {
   gallery: GalleryBlock,
   faq: FaqBlock,
   contact: ContactBlock,
+  audiences: AudiencesBlock,
+  documents: DocumentsBlock,
   quoteWizard: QuoteWizardBlock,
   richText: RichTextBlock,
   video: VideoBlock,

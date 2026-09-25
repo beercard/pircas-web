@@ -14,6 +14,7 @@ export type LeadStatus = (typeof LEAD_STATUSES)[number]['value']
 export const LEAD_TYPES = [
   { value: 'contact', label: 'Contacto' },
   { value: 'quotation', label: 'Cotización' },
+  { value: 'project', label: 'Obra / profesional' },
 ] as const
 
 export type LeadType = (typeof LEAD_TYPES)[number]['value']

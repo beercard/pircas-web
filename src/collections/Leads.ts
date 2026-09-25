@@ -143,6 +143,51 @@ export const Leads: CollectionConfig<'leads'> = {
           ],
         },
         {
+          label: 'Obra',
+          admin: { condition: (data) => data?.type === 'project' },
+          fields: [
+            {
+              name: 'project',
+              label: false,
+              type: 'group',
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    ro({
+                      name: 'company',
+                      label: 'Empresa / estudio',
+                      type: 'text',
+                      admin: { width: '50%' },
+                    }),
+                    ro({ name: 'role', label: 'Rol', type: 'text', admin: { width: '50%' } }),
+                  ],
+                },
+                ro({ name: 'location', label: 'Obra y ubicación', type: 'text' }),
+                {
+                  type: 'row',
+                  fields: [
+                    ro({ name: 'stage', label: 'Etapa', type: 'text', admin: { width: '33%' } }),
+                    ro({
+                      name: 'openings',
+                      label: 'Aberturas (aprox.)',
+                      type: 'text',
+                      admin: { width: '33%' },
+                    }),
+                    ro({
+                      name: 'timeline',
+                      label: 'Entrega estimada',
+                      type: 'text',
+                      admin: { width: '33%' },
+                    }),
+                  ],
+                },
+                ro({ name: 'plansUrl', label: 'Planos / planillas (enlace)', type: 'text' }),
+              ],
+            },
+          ],
+        },
+        {
           label: 'Cotización',
           admin: { condition: (data) => data?.type === 'quotation' },
           fields: [

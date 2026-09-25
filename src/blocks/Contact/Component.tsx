@@ -12,7 +12,7 @@ import type { CmsLink as CmsLinkData } from '@/lib/links'
 import { getWhatsAppConfig, whatsappUrl } from '@/lib/whatsapp'
 
 /** Datos del local + recuadro al cotizador + formulario de consulta. */
-export async function ContactBlock({ title, promo, showMap, settings }: ContactBlockData) {
+export async function ContactBlock({ title, promo, showMap, form, settings }: ContactBlockData) {
   const [site, forms] = await Promise.all([getSiteSettings(), getFormsSettings()])
   const wa = whatsappUrl(getWhatsAppConfig(site))
   const a = site.address
@@ -150,6 +150,7 @@ export async function ContactBlock({ title, promo, showMap, settings }: ContactB
           </div>
 
           <ContactForm
+            variant={form === 'professional' ? 'professional' : 'general'}
             projectTypes={(forms.projectTypes ?? []).map((t) => t.label)}
             turnstileSiteKey={turnstileSiteKey()}
             success={{

@@ -31,6 +31,7 @@ export const getProjectCategories = cache(async (): Promise<ProjectCategory[]> =
 
 export type ProjectFilters = {
   category?: string // slug
+  categoryId?: number
   featured?: boolean
   ids?: number[]
   excludeId?: number
@@ -43,6 +44,7 @@ export const getProjects = cache(async (filters: ProjectFilters = {}): Promise<P
   cachedQuery(['projects', JSON.stringify(filters)], TAGS, async ({ payload, draft }) => {
     const and: Where[] = []
     if (filters.category) and.push({ 'category.slug': { equals: filters.category } })
+    if (filters.categoryId) and.push({ category: { contains: filters.categoryId } })
     if (filters.featured) and.push({ featured: { equals: true } })
     if (filters.ids?.length) and.push({ id: { in: filters.ids } })
     if (filters.excludeId) and.push({ id: { not_equals: filters.excludeId } })

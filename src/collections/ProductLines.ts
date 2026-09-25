@@ -154,7 +154,20 @@ export const ProductLines: CollectionConfig<'product-lines'> = {
         },
         {
           label: 'Información técnica',
-          fields: [specsField('technicalSpecs')],
+          fields: [
+            specsField('technicalSpecs'),
+            {
+              name: 'datasheetFile',
+              label: 'Ficha técnica descargable (PDF)',
+              type: 'upload',
+              relationTo: 'media',
+              filterOptions: { mimeType: { equals: 'application/pdf' } },
+              admin: {
+                description:
+                  'Aparece como "Descargar ficha técnica" en la página de la línea y en Obras y profesionales.',
+              },
+            },
+          ],
         },
         {
           label: 'Cotizador',

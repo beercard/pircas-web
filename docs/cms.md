@@ -38,10 +38,21 @@ Usuarios: **Sistema → Usuarios** (solo super-admin). Tras 5 intentos fallidos 
 - **Destacar etiqueta en terracota** para la recomendada ("Más elegida").
 - **Puntos para la tarjeta** (3) que se ven en la home.
 - **Cotizador**: precio de referencia por m² y opciones de vidrio con su multiplicador (Float 1 · Laminado 1.25 · DVH 1.45).
+- **Información técnica → Ficha técnica descargable (PDF)**: aparece como "Descargar ficha técnica" en la página de la línea y en Obras y profesionales. (Medios acepta PDF.)
 
 ## Proyectos
 
 **Proyectos → Proyectos**: título, categorías (filtros del portfolio), ubicación, año, cantidad de aberturas, frase principal, descripción, portada, galería, línea principal, **productos utilizados** (se enlazan solos) y **Qué llevó** (datos técnicos grandes). Categorías del filtro en **Proyectos → Categorías de proyectos**.
+
+Para mostrar **antecedentes de obra** en *Obras y profesionales*, asigná a esos proyectos la categoría **Obras**. Mientras ningún proyecto la tenga, esa sección no se muestra.
+
+## Dos ambientes: "Para tu casa" y "Obras y profesionales"
+
+El sitio se orienta a dos públicos:
+- **Para tu casa** (`/para-tu-casa`): quien construye o reforma. Productos, líneas, medición e instalación, asesor, ejemplos, preguntas frecuentes.
+- **Obras y profesionales** (`/obras-y-profesionales`): arquitectos, constructoras y desarrolladores. Interlocutor responsable, cómo cotizamos y coordinamos entregas, líneas, **documentación técnica**, antecedentes y un **formulario de obra** (empresa, rol, obra y ubicación, etapa, cantidad de aberturas, entrega estimada y enlace a planos).
+
+Son páginas normales (**Contenido → Páginas**): se editan con bloques. En la home, el bloque **Para quién (casas / obras)** muestra las dos tarjetas. Conviene completar en *Obras y profesionales* el nombre y contacto del responsable (bloque "Un solo responsable…").
 
 ## Home y páginas (bloques)
 
@@ -59,9 +70,11 @@ Usuarios: **Sistema → Usuarios** (solo super-admin). Tras 5 intentos fallidos 
 | Pasos / pilares | Línea de tiempo, pilares o lista numerada con texto e imagen. |
 | Asesor virtual | Preguntas y recomendación (se configura aparte, ver abajo). |
 | Llamado a la acción | Franja terracota o recuadro. |
-| Grilla de proyectos | Destacados, recientes o elegidos. |
+| Grilla de proyectos | Destacados, recientes, de una categoría o elegidos. |
+| Para quién (casas / obras) | Tarjetas de los dos públicos, cada una con su página. |
+| Documentación técnica | Líneas con enlace a su ficha y PDF, más archivos sueltos para descargar. |
 | Galería · FAQ · Texto enriquecido · Video · Espaciador | Contenido libre. |
-| Contacto · Cotizador | Formularios (sus opciones se editan en Configuración → Formularios). |
+| Contacto · Cotizador | Formularios (sus opciones se editan en Configuración → Formularios). El bloque Contacto tiene la opción **Formulario: Obras y profesionales**. |
 
 En cada bloque, **Ajustes de la sección**: *Ocultar esta sección* (sin borrarla), fondo, espaciado, ancla (`/pagina#ancla`) y **Ocultar en** mobile / tablet / desktop.
 
@@ -94,8 +107,8 @@ Los precios por m² se editan en cada **línea** y en los productos con precio p
 ## Consultas (leads)
 
 **Consultas → Consultas**:
-- Columnas: nombre, tipo (contacto/cotización), email, teléfono, tipo de proyecto, producto, origen, estado, fecha. Filtros, búsqueda y orden.
-- Abrí una consulta para ver todo: aberturas pedidas con medidas y estimado, medición en obra, página de llegada y campaña (UTM).
+- Columnas: nombre, tipo (contacto / cotización / obra-profesional), email, teléfono, tipo de proyecto, producto, origen, estado, fecha. Filtros, búsqueda y orden.
+- Abrí una consulta para ver todo: aberturas pedidas con medidas y estimado, medición en obra, página de llegada y campaña (UTM). Las consultas de obra tienen la pestaña **Obra** (empresa, etapa, aberturas, entrega, planos).
 - Cambiá el **Estado** (Nueva → Contactada → Calificada → Presupuestada → Ganada/Perdida) y sumá **Notas internas** (firma y fecha automáticas).
 - **Exportar CSV** (respeta los filtros aplicados; abre en Excel).
 

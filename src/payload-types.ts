@@ -521,6 +521,10 @@ export interface ProductLine {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Aparece como "Descargar ficha técnica" en la página de la línea y en Obras y profesionales.
+   */
+  datasheetFile?: (number | null) | Media;
   quote?: {
     /**
      * Vacío = la línea no se ofrece en el cotizador.
@@ -712,6 +716,8 @@ export interface Page {
     | GalleryBlock
     | FaqBlock
     | ContactBlock
+    | AudiencesBlock
+    | DocumentsBlock
     | QuoteWizardBlock
     | RichTextBlock
     | VideoBlock
@@ -1416,7 +1422,11 @@ export interface ProjectGridBlock {
   eyebrow?: string | null;
   title?: string | null;
   intro?: string | null;
-  source?: ('featured' | 'latest' | 'manual') | null;
+  source?: ('featured' | 'latest' | 'category' | 'manual') | null;
+  /**
+   * Si la categoría todavía no tiene proyectos, el bloque no se muestra.
+   */
+  category?: (number | null) | ProjectCategory;
   projects?: (number | Project)[] | null;
   limit?: number | null;
   cta?: {
@@ -1581,6 +1591,7 @@ export interface ContactBlock {
     };
   };
   showMap?: boolean | null;
+  form?: ('general' | 'professional') | null;
   /**
    * Fondo, espaciado y en qué dispositivos se muestra.
    */
@@ -1600,6 +1611,157 @@ export interface ContactBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'contact';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AudiencesBlock".
+ */
+export interface AudiencesBlock {
+  eyebrow?: string | null;
+  title?: string | null;
+  intro?: string | null;
+  items?:
+    | {
+        /**
+         * Ej: Quien construye o reforma
+         */
+        audience?: string | null;
+        tone?: ('light' | 'dark') | null;
+        title: string;
+        text?: string | null;
+        bullets?:
+          | {
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        image?: (number | null) | Media;
+        link: {
+          type?: ('reference' | 'custom' | 'whatsapp') | null;
+          newTab?: boolean | null;
+          label: string;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: number | Page;
+              } | null)
+            | ({
+                relationTo: 'products';
+                value: number | Product;
+              } | null)
+            | ({
+                relationTo: 'product-lines';
+                value: number | ProductLine;
+              } | null)
+            | ({
+                relationTo: 'projects';
+                value: number | Project;
+              } | null);
+          /**
+           * Ruta interna (/cotizador) o URL completa (https://…).
+           */
+          url?: string | null;
+          /**
+           * Opcional. Si queda vacío se usa el mensaje por defecto.
+           */
+          whatsappMessage?: string | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Fondo, espaciado y en qué dispositivos se muestra.
+   */
+  settings?: {
+    /**
+     * La sección no se muestra en el sitio, pero se conserva para usarla después.
+     */
+    hidden?: boolean | null;
+    background?: ('default' | 'muted' | 'dark' | 'brand') | null;
+    spacing?: ('none' | 'sm' | 'md' | 'lg') | null;
+    /**
+     * Opcional. Permite enlazar a la sección con /pagina#ancla.
+     */
+    anchor?: string | null;
+    hideOn?: ('mobile' | 'tablet' | 'desktop')[] | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'audiences';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DocumentsBlock".
+ */
+export interface DocumentsBlock {
+  eyebrow?: string | null;
+  title?: string | null;
+  intro?: string | null;
+  /**
+   * Muestra cada línea con enlace a su ficha y, si se cargó, el PDF descargable (Líneas → Ficha técnica).
+   */
+  showLines?: boolean | null;
+  files?:
+    | {
+        title: string;
+        description?: string | null;
+        file: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Ej: "¿Necesitás detalles de montaje o planillas? Pedínoslos."
+   */
+  note?: string | null;
+  cta?: {
+    type?: ('reference' | 'custom' | 'whatsapp') | null;
+    newTab?: boolean | null;
+    label?: string | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'products';
+          value: number | Product;
+        } | null)
+      | ({
+          relationTo: 'product-lines';
+          value: number | ProductLine;
+        } | null)
+      | ({
+          relationTo: 'projects';
+          value: number | Project;
+        } | null);
+    /**
+     * Ruta interna (/cotizador) o URL completa (https://…).
+     */
+    url?: string | null;
+    /**
+     * Opcional. Si queda vacío se usa el mensaje por defecto.
+     */
+    whatsappMessage?: string | null;
+  };
+  /**
+   * Fondo, espaciado y en qué dispositivos se muestra.
+   */
+  settings?: {
+    /**
+     * La sección no se muestra en el sitio, pero se conserva para usarla después.
+     */
+    hidden?: boolean | null;
+    background?: ('default' | 'muted' | 'dark' | 'brand') | null;
+    spacing?: ('none' | 'sm' | 'md' | 'lg') | null;
+    /**
+     * Opcional. Permite enlazar a la sección con /pagina#ancla.
+     */
+    anchor?: string | null;
+    hideOn?: ('mobile' | 'tablet' | 'desktop')[] | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'documents';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1723,7 +1885,7 @@ export interface SpacerBlock {
 export interface Lead {
   id: number;
   status: 'new' | 'contacted' | 'qualified' | 'quoted' | 'won' | 'lost';
-  type: 'contact' | 'quotation';
+  type: 'contact' | 'quotation' | 'project';
   fullName?: string | null;
   name: string;
   lastName?: string | null;
@@ -1735,6 +1897,15 @@ export interface Lead {
   productLine?: (number | null) | ProductLine;
   measurements?: string | null;
   message?: string | null;
+  project?: {
+    company?: string | null;
+    role?: string | null;
+    location?: string | null;
+    stage?: string | null;
+    openings?: string | null;
+    timeline?: string | null;
+    plansUrl?: string | null;
+  };
   quote?: {
     need?: string | null;
     items?:
@@ -2099,6 +2270,7 @@ export interface ProductLinesSelect<T extends boolean = true> {
         group?: T;
         id?: T;
       };
+  datasheetFile?: T;
   quote?:
     | T
     | {
@@ -2233,6 +2405,8 @@ export interface PagesSelect<T extends boolean = true> {
         gallery?: T | GalleryBlockSelect<T>;
         faq?: T | FaqBlockSelect<T>;
         contact?: T | ContactBlockSelect<T>;
+        audiences?: T | AudiencesBlockSelect<T>;
+        documents?: T | DocumentsBlockSelect<T>;
         quoteWizard?: T | QuoteWizardBlockSelect<T>;
         richText?: T | RichTextBlockSelect<T>;
         video?: T | VideoBlockSelect<T>;
@@ -2626,6 +2800,7 @@ export interface ProjectGridBlockSelect<T extends boolean = true> {
   title?: T;
   intro?: T;
   source?: T;
+  category?: T;
   projects?: T;
   limit?: T;
   cta?:
@@ -2725,6 +2900,93 @@ export interface ContactBlockSelect<T extends boolean = true> {
             };
       };
   showMap?: T;
+  form?: T;
+  settings?:
+    | T
+    | {
+        hidden?: T;
+        background?: T;
+        spacing?: T;
+        anchor?: T;
+        hideOn?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AudiencesBlock_select".
+ */
+export interface AudiencesBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  intro?: T;
+  items?:
+    | T
+    | {
+        audience?: T;
+        tone?: T;
+        title?: T;
+        text?: T;
+        bullets?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        image?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              label?: T;
+              reference?: T;
+              url?: T;
+              whatsappMessage?: T;
+            };
+        id?: T;
+      };
+  settings?:
+    | T
+    | {
+        hidden?: T;
+        background?: T;
+        spacing?: T;
+        anchor?: T;
+        hideOn?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DocumentsBlock_select".
+ */
+export interface DocumentsBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  intro?: T;
+  showLines?: T;
+  files?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        file?: T;
+        id?: T;
+      };
+  note?: T;
+  cta?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        label?: T;
+        reference?: T;
+        url?: T;
+        whatsappMessage?: T;
+      };
   settings?:
     | T
     | {
@@ -2912,6 +3174,17 @@ export interface LeadsSelect<T extends boolean = true> {
   productLine?: T;
   measurements?: T;
   message?: T;
+  project?:
+    | T
+    | {
+        company?: T;
+        role?: T;
+        location?: T;
+        stage?: T;
+        openings?: T;
+        timeline?: T;
+        plansUrl?: T;
+      };
   quote?:
     | T
     | {
@@ -3062,6 +3335,8 @@ export interface Homepage {
         | GalleryBlock
         | FaqBlock
         | ContactBlock
+        | AudiencesBlock
+        | DocumentsBlock
         | QuoteWizardBlock
         | RichTextBlock
         | VideoBlock
@@ -3117,6 +3392,8 @@ export interface ArchivePage {
           | GalleryBlock
           | FaqBlock
           | ContactBlock
+          | AudiencesBlock
+          | DocumentsBlock
           | QuoteWizardBlock
           | RichTextBlock
           | VideoBlock
@@ -3153,6 +3430,8 @@ export interface ArchivePage {
           | GalleryBlock
           | FaqBlock
           | ContactBlock
+          | AudiencesBlock
+          | DocumentsBlock
           | QuoteWizardBlock
           | RichTextBlock
           | VideoBlock
@@ -3189,6 +3468,8 @@ export interface ArchivePage {
           | GalleryBlock
           | FaqBlock
           | ContactBlock
+          | AudiencesBlock
+          | DocumentsBlock
           | QuoteWizardBlock
           | RichTextBlock
           | VideoBlock
@@ -3823,6 +4104,8 @@ export interface HomepageSelect<T extends boolean = true> {
         gallery?: T | GalleryBlockSelect<T>;
         faq?: T | FaqBlockSelect<T>;
         contact?: T | ContactBlockSelect<T>;
+        audiences?: T | AudiencesBlockSelect<T>;
+        documents?: T | DocumentsBlockSelect<T>;
         quoteWizard?: T | QuoteWizardBlockSelect<T>;
         richText?: T | RichTextBlockSelect<T>;
         video?: T | VideoBlockSelect<T>;
@@ -3871,6 +4154,8 @@ export interface ArchivePagesSelect<T extends boolean = true> {
               gallery?: T | GalleryBlockSelect<T>;
               faq?: T | FaqBlockSelect<T>;
               contact?: T | ContactBlockSelect<T>;
+              audiences?: T | AudiencesBlockSelect<T>;
+              documents?: T | DocumentsBlockSelect<T>;
               quoteWizard?: T | QuoteWizardBlockSelect<T>;
               richText?: T | RichTextBlockSelect<T>;
               video?: T | VideoBlockSelect<T>;
@@ -3908,6 +4193,8 @@ export interface ArchivePagesSelect<T extends boolean = true> {
               gallery?: T | GalleryBlockSelect<T>;
               faq?: T | FaqBlockSelect<T>;
               contact?: T | ContactBlockSelect<T>;
+              audiences?: T | AudiencesBlockSelect<T>;
+              documents?: T | DocumentsBlockSelect<T>;
               quoteWizard?: T | QuoteWizardBlockSelect<T>;
               richText?: T | RichTextBlockSelect<T>;
               video?: T | VideoBlockSelect<T>;
@@ -3945,6 +4232,8 @@ export interface ArchivePagesSelect<T extends boolean = true> {
               gallery?: T | GalleryBlockSelect<T>;
               faq?: T | FaqBlockSelect<T>;
               contact?: T | ContactBlockSelect<T>;
+              audiences?: T | AudiencesBlockSelect<T>;
+              documents?: T | DocumentsBlockSelect<T>;
               quoteWizard?: T | QuoteWizardBlockSelect<T>;
               richText?: T | RichTextBlockSelect<T>;
               video?: T | VideoBlockSelect<T>;

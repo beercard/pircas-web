@@ -55,8 +55,37 @@ const requireContact = <T extends { email?: string; phone?: string }>(data: T) =
 const contactIssue = { message: 'Ingresá al menos tu email o teléfono.', path: ['email'] }
 
 // ---------------------------------------------------------------------------
-// Contacto
+// Contacto (general y "Obras y profesionales")
 // ---------------------------------------------------------------------------
+
+export const PROFESSIONAL_ROLES = [
+  'Arquitecto/a o estudio',
+  'Constructora',
+  'Desarrollador/a',
+  'Otro',
+] as const
+export const PROJECT_STAGES = [
+  'Anteproyecto',
+  'Proyecto / documentación',
+  'Licitación / cómputo',
+  'Obra en curso',
+] as const
+
+const urlText = clean(500).refine(
+  (v) => v === '' || /^https?:\/\/\S+$/i.test(v),
+  'Pegá un enlace que empiece con https://',
+)
+
+/** Datos de la obra (solo formulario profesional). */
+export const projectInfoSchema = z.object({
+  company: optionalText(120),
+  role: optionalText(60),
+  location: optionalText(160),
+  stage: optionalText(60),
+  openings: optionalText(40),
+  timeline: optionalText(80),
+  plansUrl: urlText.optional().or(z.literal('')),
+})
 
 export const contactSchema = z
   .object({
@@ -69,9 +98,15 @@ export const contactSchema = z
     productId: z.coerce.number().int().positive().optional(),
     lineId: z.coerce.number().int().positive().optional(),
     message: clean(3000).pipe(z.string().min(5, 'Contanos un poco más.')),
+    audience: z.enum(['general', 'professional']).optional(),
+    project: projectInfoSchema.optional(),
     ...baseFields,
   })
   .refine(requireContact, contactIssue)
+  .refine((d) => d.audience !== 'professional' || Boolean(d.project?.location), {
+    message: 'Indicá la obra y dónde es.',
+    path: ['project', 'location'],
+  })
 
 export type ContactInput = z.input<typeof contactSchema>
 export type ContactData = z.output<typeof contactSchema>

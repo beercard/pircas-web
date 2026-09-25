@@ -13,6 +13,7 @@ export async function ProjectGridBlock({
   title,
   intro,
   source,
+  category,
   projects,
   limit,
   cta,
@@ -25,6 +26,11 @@ export async function ProjectGridBlock({
       : []
   if (source === 'featured') filters.featured = true
   if (source === 'latest') filters.sort = '-createdAt'
+  if (source === 'category') {
+    const categoryId = relId(category)
+    if (categoryId === undefined) return null
+    filters.categoryId = categoryId
+  }
   if (source === 'manual') {
     if (!manualIds.length) return null
     filters.ids = manualIds
