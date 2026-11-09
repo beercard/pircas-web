@@ -42,6 +42,10 @@ export async function getDashboardData(payload: Payload, isSuperAdmin: boolean) 
     analytics,
     drafts,
     users,
+    recentOrders,
+    pendingOrders,
+    orders30,
+    shopProducts,
   ] = await Promise.all([
     payload.find({ collection: 'leads', limit: 6, depth: 1, sort: '-createdAt' }),
     payload.count({ collection: 'leads', where: { status: { equals: 'new' } } }),
@@ -102,6 +106,22 @@ export async function getDashboardData(payload: Payload, isSuperAdmin: boolean) 
           sort: '-lastLoginAt',
         })
       : null,
+    payload.find({ collection: 'orders', limit: 5, depth: 0, sort: '-createdAt' }),
+    payload.count({ collection: 'orders', where: { status: { equals: 'pending' } } }),
+    payload.find({
+      collection: 'orders',
+      where: {
+        and: [
+          { createdAt: { greater_than_equal: since30 } },
+          { status: { not_equals: 'cancelled' } },
+        ],
+      },
+      limit: 2000,
+      depth: 0,
+      pagination: false,
+      select: { total: true, paymentStatus: true },
+    }),
+    payload.count({ collection: 'products', where: { 'shop.enabled': { equals: true } } }),
   ])
 
   // --- Actividad: últimos 30 días + barras de los últimos 14 --------------------------------
@@ -254,6 +274,16 @@ export async function getDashboardData(payload: Payload, isSuperAdmin: boolean) 
       pages: pages.totalDocs,
       media: media.totalDocs,
       drafts: drafts.reduce((sum, d) => sum + d.totalDocs, 0),
+    },
+    shop: {
+      recent: recentOrders.docs,
+      pending: pendingOrders.totalDocs,
+      orders30: orders30.docs.length,
+      sales30: orders30.docs.reduce((sum, o) => sum + (o.total ?? 0), 0),
+      paid30: orders30.docs
+        .filter((o) => o.paymentStatus === 'paid')
+        .reduce((sum, o) => sum + (o.total ?? 0), 0),
+      products: shopProducts.totalDocs,
     },
     setup,
     security: isSuperAdmin

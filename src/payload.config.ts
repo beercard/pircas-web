@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url'
 
 import { Leads } from './collections/Leads'
 import { Media } from './collections/Media'
+import { Orders } from './collections/Orders'
 import { Pages } from './collections/Pages'
 import { ProductCategories } from './collections/ProductCategories'
 import { ProductLines } from './collections/ProductLines'
@@ -23,6 +24,7 @@ import { FormsSettings } from './globals/FormsSettings'
 import { Header } from './globals/Header'
 import { Homepage } from './globals/Homepage'
 import { SeoDefaults } from './globals/SeoDefaults'
+import { ShopSettings } from './globals/ShopSettings'
 import { SiteSettings } from './globals/SiteSettings'
 import { buildEmailAdapter } from './lib/email/transport'
 import { getSiteUrl } from './lib/routes'
@@ -106,6 +108,7 @@ export default buildConfig({
     Pages,
     Media,
     Leads,
+    Orders,
     Users,
   ],
   globals: [
@@ -116,6 +119,7 @@ export default buildConfig({
     Footer,
     Advisor,
     FormsSettings,
+    ShopSettings,
     Analytics,
     SeoDefaults,
   ],

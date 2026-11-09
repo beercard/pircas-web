@@ -11,6 +11,7 @@ import {
   type LucideIcon,
   Package,
   Settings,
+  ShoppingCart,
   X,
 } from 'lucide-react'
 import { usePathname } from 'next/navigation'
@@ -31,6 +32,7 @@ export type ClientNavSection = {
 const ICONS: Record<NavIconName, LucideIcon> = {
   home: House,
   inbox: Inbox,
+  cart: ShoppingCart,
   package: Package,
   briefcase: BriefcaseBusiness,
   layout: LayoutTemplate,

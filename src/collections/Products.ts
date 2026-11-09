@@ -31,6 +31,7 @@ export const Products: CollectionConfig<'products'> = {
     audience: true,
     benefits: true,
     quote: true,
+    shop: true,
   },
   access: {
     read: publishedOrAuthenticated,
@@ -72,6 +73,145 @@ export const Products: CollectionConfig<'products'> = {
           hint: 'La que se ve en tarjetas y listados. Horizontal, idealmente 1600 px de ancho.',
         }),
         galleryField({ label: 'Más fotos' }),
+      ],
+    },
+    // --- Tienda online: precio, colores y stock ------------------------------------------
+    {
+      type: 'collapsible',
+      label: 'Venta online (tienda)',
+      admin: {
+        initCollapsed: false,
+        description:
+          'Activá la venta para que el producto aparezca en la Tienda con precio y botón "Agregar al carrito".',
+      },
+      fields: [
+        {
+          name: 'shop',
+          label: false,
+          type: 'group',
+          fields: [
+            {
+              name: 'enabled',
+              label: 'Vender este producto en la tienda online',
+              type: 'checkbox',
+              defaultValue: false,
+              index: true,
+            },
+            {
+              type: 'row',
+              admin: { condition: (_, s) => Boolean(s?.enabled) },
+              fields: [
+                {
+                  name: 'price',
+                  label: 'Precio de lista (ARS)',
+                  type: 'number',
+                  min: 0,
+                  index: true,
+                  admin: {
+                    width: '50%',
+                    description:
+                      'El precio con Mercado Pago. El precio con transferencia se calcula solo con el descuento.',
+                  },
+                  validate: (
+                    value: number | null | undefined,
+                    { siblingData }: { siblingData: { enabled?: boolean } },
+                  ) =>
+                    !siblingData?.enabled || (typeof value === 'number' && value > 0)
+                      ? true
+                      : 'Ingresá el precio para vender el producto.',
+                },
+                {
+                  name: 'sku',
+                  label: 'Código (SKU)',
+                  type: 'text',
+                  admin: { width: '50%', description: 'Opcional. Tu código interno.' },
+                },
+              ],
+            },
+            {
+              type: 'row',
+              admin: { condition: (_, s) => Boolean(s?.enabled) },
+              fields: [
+                {
+                  name: 'transferDiscount',
+                  label: '% descuento por transferencia',
+                  type: 'number',
+                  min: 0,
+                  max: 90,
+                  admin: { width: '33%', description: 'Vacío = el general de la tienda.' },
+                },
+                {
+                  name: 'mpDiscount',
+                  label: '% descuento con Mercado Pago',
+                  type: 'number',
+                  min: 0,
+                  max: 90,
+                  admin: { width: '33%', description: 'Vacío = el general de la tienda.' },
+                },
+                {
+                  name: 'installments',
+                  label: 'Cuotas sin interés',
+                  type: 'number',
+                  min: 1,
+                  max: 24,
+                  admin: { width: '33%', description: 'Vacío = las generales de la tienda.' },
+                },
+              ],
+            },
+            {
+              name: 'colors',
+              label: 'Colores disponibles',
+              type: 'select',
+              hasMany: true,
+              options: [
+                { label: 'Blanco', value: 'blanco' },
+                { label: 'Negro', value: 'negro' },
+                { label: 'Anodizado natural', value: 'anodizado' },
+                { label: 'Símil madera', value: 'madera' },
+                { label: 'Bronce', value: 'bronce' },
+              ],
+              admin: {
+                condition: (_, s) => Boolean(s?.enabled),
+                description: 'Si cargás colores, el cliente elige uno al comprar.',
+              },
+            },
+            {
+              name: 'measure',
+              label: 'Medida estándar',
+              type: 'text',
+              admin: {
+                condition: (_, s) => Boolean(s?.enabled),
+                placeholder: 'Ej: 0,80 × 2,00 m',
+                description: 'Se muestra en la tarjeta y en el pedido.',
+              },
+            },
+            {
+              type: 'row',
+              admin: { condition: (_, s) => Boolean(s?.enabled) },
+              fields: [
+                {
+                  name: 'trackStock',
+                  label: 'Controlar stock',
+                  type: 'checkbox',
+                  defaultValue: false,
+                  admin: {
+                    width: '50%',
+                    description:
+                      'Si está activo, se descuenta con cada pedido y no se vende sin stock.',
+                  },
+                },
+                {
+                  name: 'stock',
+                  label: 'Unidades en stock',
+                  type: 'number',
+                  min: 0,
+                  defaultValue: 0,
+                  admin: { width: '50%', condition: (_, s) => Boolean(s?.trackStock) },
+                },
+              ],
+            },
+          ],
+        },
       ],
     },
     // --- Organización (columna derecha) ------------------------------------------------

@@ -17,7 +17,7 @@ const BRAND = '#B8502C'
 const INK = '#26272B'
 const MUTED = '#5F6066'
 
-function layout(title: string, body: string, footer: string): string {
+export function layout(title: string, body: string, footer: string): string {
   return `<!doctype html><html lang="es"><body style="margin:0;background:#FAF9F7;font-family:Montserrat,Helvetica,Arial,sans-serif;color:${INK}">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAF9F7;padding:24px 12px"><tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#fff;border:1px solid #ECEAE6">
@@ -31,9 +31,9 @@ ${body}
 </table></td></tr></table></body></html>`
 }
 
-type Row = [label: string, value: unknown]
+export type Row = [label: string, value: unknown]
 
-function table(rows: Row[]): string {
+export function table(rows: Row[]): string {
   const visible = rows.filter(([, v]) => v !== undefined && v !== null && v !== '')
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:14px">${visible
     .map(
@@ -43,13 +43,13 @@ function table(rows: Row[]): string {
     .join('')}</table>`
 }
 
-const textTable = (rows: Row[]) =>
+export const textTable = (rows: Row[]) =>
   rows
     .filter(([, v]) => v !== undefined && v !== null && v !== '')
     .map(([k, v]) => `${k}: ${v}`)
     .join('\n')
 
-function button(href: string, label: string): string {
+export function button(href: string, label: string): string {
   return `<p style="margin:24px 0 0"><a href="${escapeHtml(href)}" style="display:inline-block;background:${BRAND};color:#fff;text-decoration:none;padding:14px 22px;font-size:12px;letter-spacing:2px;text-transform:uppercase;border-radius:0 999px 999px 0">${escapeHtml(label)}</a></p>`
 }
 

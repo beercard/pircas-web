@@ -37,6 +37,12 @@ const buildSitemap = unstable_cache(
         priority: 0.9,
       },
       {
+        url: absoluteUrl(ROUTES.shop),
+        lastModified: now,
+        changeFrequency: 'daily',
+        priority: 0.9,
+      },
+      {
         url: absoluteUrl(ROUTES.lines),
         lastModified: now,
         changeFrequency: 'monthly',

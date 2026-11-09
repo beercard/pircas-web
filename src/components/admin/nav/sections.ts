@@ -6,7 +6,7 @@
  */
 
 export type NavIconName =
-  'home' | 'inbox' | 'package' | 'briefcase' | 'layout' | 'images' | 'settings'
+  'home' | 'inbox' | 'cart' | 'package' | 'briefcase' | 'layout' | 'images' | 'settings'
 
 export type NavEntity = { type: 'collections' | 'globals'; slug: string }
 
@@ -19,7 +19,7 @@ export type NavSectionConfig = {
   /** Sin ítems: enlace directo (Inicio). */
   href?: string
   items?: NavLeaf[]
-  badge?: 'newLeads'
+  badge?: 'newLeads' | 'newOrders'
 }
 
 const c = (slug: string): NavEntity => ({ type: 'collections', slug })
@@ -33,6 +33,13 @@ export const NAV_SECTIONS: NavSectionConfig[] = [
     icon: 'inbox',
     badge: 'newLeads',
     items: [{ label: 'Consultas', entity: c('leads') }],
+  },
+  {
+    key: 'orders',
+    label: 'Pedidos',
+    icon: 'cart',
+    badge: 'newOrders',
+    items: [{ label: 'Pedidos', entity: c('orders') }],
   },
   {
     key: 'catalog',
@@ -75,6 +82,7 @@ export const NAV_SECTIONS: NavSectionConfig[] = [
     icon: 'settings',
     items: [
       { label: 'Datos del negocio', entity: g('site-settings') },
+      { label: 'Tienda online', entity: g('shop-settings') },
       { label: 'Formularios y cotizador', entity: g('forms-settings') },
       { label: 'Asesor virtual', entity: g('advisor') },
       { label: 'Analítica', entity: g('analytics') },

@@ -1948,3 +1948,101 @@ h4 {
 .btn--style-secondary {
   border: 0;
 }
+
+// =============================================================================
+// Tienda online: pedidos
+// =============================================================================
+.pd-stats--shop {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.pd-status {
+  &--order-pending {
+    background: var(--p-brand);
+    color: #fff;
+  }
+
+  &--order-confirmed,
+  &--order-preparing {
+    background: var(--p-info-tint);
+    color: var(--p-info);
+  }
+
+  &--order-ready,
+  &--order-shipped {
+    background: var(--p-warning-tint);
+    color: var(--p-warning);
+  }
+
+  &--order-delivered {
+    background: var(--p-success-tint);
+    color: var(--p-success);
+  }
+
+  &--order-cancelled {
+    background: var(--p-danger-tint);
+    color: var(--p-danger);
+  }
+}
+
+// Acciones del pedido (src/components/admin/orders/OrderActions.tsx).
+.pircas-order-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 16px 18px;
+  border: 1px solid var(--p-line);
+  border-radius: var(--p-radius);
+  background: #fff;
+  box-shadow: var(--p-shadow-sm);
+
+  p {
+    margin: 0;
+    color: var(--p-muted);
+    font-size: 13px;
+  }
+}
+
+.pircas-order-actions__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pircas-order-actions__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--p-door);
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--p-line-strong);
+  color: var(--p-ink);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--p-stone);
+  }
+
+  &--wa {
+    background: #1f8f4e;
+    box-shadow: none;
+    color: #fff;
+
+    &:hover {
+      background: #18753f;
+      color: #fff;
+    }
+  }
+}

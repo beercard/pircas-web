@@ -20,6 +20,9 @@ export type AnalyticsEventName =
   | 'phone_click'
   | 'map_click'
   | 'advisor_complete'
+  | 'add_to_cart'
+  | 'begin_checkout'
+  | 'purchase'
 
 export type AnalyticsParams = Record<string, string | number | boolean | undefined>
 
@@ -52,6 +55,9 @@ const META_STANDARD: Partial<Record<AnalyticsEventName, string>> = {
   contact_submit: 'Contact',
   whatsapp_click: 'Contact',
   phone_click: 'Contact',
+  add_to_cart: 'AddToCart',
+  begin_checkout: 'InitiateCheckout',
+  purchase: 'Purchase',
 }
 
 const LEAD_EVENTS: AnalyticsEventName[] = ['quote_submit', 'contact_submit']

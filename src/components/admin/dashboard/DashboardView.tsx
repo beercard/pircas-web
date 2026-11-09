@@ -12,6 +12,7 @@ import {
   type LucideIcon,
   Package,
   ShieldCheck,
+  ShoppingCart,
   Store,
   Wrench,
 } from 'lucide-react'
@@ -20,6 +21,7 @@ import type { Payload, TypedUser } from 'payload'
 import type { Lead } from '@/payload-types'
 import { labelFor, LEAD_STATUSES } from '@/lib/options'
 import { formatARS } from '@/lib/quote/pricing'
+import { orderStatusLabel, paymentMethodLabel, paymentStatusLabel } from '@/lib/shop/options'
 
 import { getDashboardData } from './data'
 import { greeting, longDate, plural, timeAgo } from './format'
@@ -73,7 +75,18 @@ export async function DashboardView({ payload, user }: Props) {
   const leadsHref = '/admin/collections/leads'
   const newLeadsHref = `${leadsHref}?where[status][equals]=new`
 
+  const ordersHref = '/admin/collections/orders'
+  const pendingOrdersHref = `${ordersHref}?where[status][equals]=pending`
+
   const actions: Action[] = [
+    {
+      title: 'Atender pedidos',
+      text: data.shop.pending
+        ? plural(data.shop.pending, 'pedido nuevo', 'pedidos nuevos')
+        : 'Sin pedidos pendientes',
+      href: data.shop.pending ? pendingOrdersHref : ordersHref,
+      icon: ShoppingCart,
+    },
     {
       title: 'Responder consultas',
       text: data.newLeads
@@ -131,12 +144,26 @@ export async function DashboardView({ payload, user }: Props) {
             {firstName(user) ? `, ${firstName(user)}` : ''}
           </h1>
           <p className="pd-hero__lead">
-            {data.newLeads
-              ? `Tenés ${plural(data.newLeads, 'consulta nueva', 'consultas nuevas')} esperando respuesta.`
-              : 'No hay consultas pendientes. ¡Todo al día!'}
+            {data.shop.pending || data.newLeads
+              ? `Tenés ${[
+                  data.shop.pending
+                    ? plural(data.shop.pending, 'pedido nuevo', 'pedidos nuevos')
+                    : null,
+                  data.newLeads
+                    ? plural(data.newLeads, 'consulta nueva', 'consultas nuevas')
+                    : null,
+                ]
+                  .filter(Boolean)
+                  .join(' y ')} para atender.`
+              : 'No hay pedidos ni consultas pendientes. ¡Todo al día!'}
           </p>
         </div>
         <div className="pd-hero__actions">
+          {data.shop.pending > 0 && (
+            <Link href={pendingOrdersHref} className="pd-btn pd-btn--primary">
+              Ver pedidos nuevos
+            </Link>
+          )}
           {data.newLeads > 0 && (
             <Link href={newLeadsHref} className="pd-btn pd-btn--primary">
               Ver consultas nuevas
@@ -172,6 +199,78 @@ export async function DashboardView({ payload, user }: Props) {
             </Link>
           ))}
         </div>
+      </section>
+
+      {/* Tienda online */}
+      <section className="pd-card" aria-labelledby="pd-shop-title">
+        <header className="pd-card__head">
+          <h2 id="pd-shop-title" className="pd-h2">
+            Tienda online
+          </h2>
+          <Link href={ordersHref} className="pd-link">
+            Ver todos los pedidos
+          </Link>
+        </header>
+        <dl className="pd-stats pd-stats--shop">
+          <div>
+            <dt>Pedidos por atender</dt>
+            <dd>{data.shop.pending}</dd>
+          </div>
+          <div>
+            <dt>Pedidos (30 días)</dt>
+            <dd>{data.shop.orders30}</dd>
+          </div>
+          <div>
+            <dt>Vendido (30 días)</dt>
+            <dd className="pd-stats__money">
+              {data.shop.sales30 ? formatARS(data.shop.sales30) : '—'}
+            </dd>
+          </div>
+          <div>
+            <dt>Cobrado (30 días)</dt>
+            <dd className="pd-stats__money">
+              {data.shop.paid30 ? formatARS(data.shop.paid30) : '—'}
+            </dd>
+          </div>
+        </dl>
+        {data.shop.recent.length === 0 ? (
+          <div className="pd-empty">
+            <ShoppingCart aria-hidden="true" size={28} strokeWidth={1.5} />
+            <p>
+              {data.shop.products
+                ? 'Todavía no hay pedidos. Cuando alguien compre en la tienda, lo vas a ver acá.'
+                : 'Para empezar a vender, abrí un producto y activá "Vender este producto en la tienda online".'}
+            </p>
+          </div>
+        ) : (
+          <ul className="pd-leads">
+            {data.shop.recent.map((order) => (
+              <li key={order.id}>
+                <Link href={`${ordersHref}/${order.id}`} className="pd-lead">
+                  <span className="pd-avatar" aria-hidden="true">
+                    {(order.customerName || '?').slice(0, 1).toUpperCase()}
+                  </span>
+                  <span className="pd-lead__main">
+                    <span className="pd-lead__name">
+                      {order.customerName}
+                      <span className="pd-tag pd-tag--quotation">{order.orderNumber}</span>
+                    </span>
+                    <span className="pd-lead__meta">
+                      {formatARS(order.total ?? 0)} · {paymentMethodLabel(order.paymentMethod)} ·{' '}
+                      {paymentStatusLabel(order.paymentStatus)}
+                    </span>
+                  </span>
+                  <span className="pd-lead__side">
+                    <span className={`pd-status pd-status--order-${order.status}`}>
+                      {orderStatusLabel(order.status)}
+                    </span>
+                    <time dateTime={order.createdAt}>{timeAgo(order.createdAt, now)}</time>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <div className="pd-grid">

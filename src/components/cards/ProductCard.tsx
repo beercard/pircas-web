@@ -40,7 +40,7 @@ export function ProductCard({
           </span>
         )}
         <span className="mt-auto flex items-center justify-between pt-[18px] text-[0.72rem] tracking-[0.18em] uppercase">
-          Ver detalle{' '}
+          {product.shop?.enabled && product.shop.price ? 'Comprar online' : 'Ver detalle'}{' '}
           <span aria-hidden="true" className="text-base text-brand">
             →
           </span>

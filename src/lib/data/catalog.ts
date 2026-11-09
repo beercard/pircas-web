@@ -66,6 +66,8 @@ export type ProductFilters = {
   line?: string // slug
   search?: string
   featured?: boolean
+  /** Solo los que se venden en la tienda online. */
+  shop?: boolean
   categoryId?: number
   lineId?: number
   ids?: number[]
@@ -81,6 +83,7 @@ export const getProducts = cache(async (filters: ProductFilters = {}): Promise<P
     if (filters.categoryId) and.push({ category: { equals: filters.categoryId } })
     if (filters.lineId) and.push({ line: { equals: filters.lineId } })
     if (filters.featured) and.push({ featured: { equals: true } })
+    if (filters.shop) and.push({ 'shop.enabled': { equals: true } })
     if (filters.ids?.length) and.push({ id: { in: filters.ids } })
     if (filters.excludeId) and.push({ id: { not_equals: filters.excludeId } })
     if (filters.search) {

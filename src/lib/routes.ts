@@ -14,6 +14,11 @@ export const ROUTES = {
   quote: '/cotizador',
   contact: '/contacto',
   thanks: '/gracias',
+  shop: '/tienda',
+  cart: '/carrito',
+  checkout: '/checkout',
+  order: '/pedido',
+  tracking: '/seguimiento',
 } as const
 
 export type RoutableCollection =
@@ -31,6 +36,11 @@ export const RESERVED_PAGE_SLUGS = [
   'lineas',
   'proyectos',
   'gracias',
+  'tienda',
+  'carrito',
+  'checkout',
+  'pedido',
+  'seguimiento',
   'sitemap.xml',
   'robots.txt',
 ] as const

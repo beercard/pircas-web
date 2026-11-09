@@ -6,6 +6,10 @@ import { ProductCard } from '@/components/cards/ProductCard'
 import { ProductConfigurator } from '@/components/catalog/ProductConfigurator'
 import { ProductGallery } from '@/components/catalog/ProductGallery'
 import { RichText } from '@/components/cms/RichText'
+import { TrackedAnchor } from '@/components/analytics/TrackedAnchor'
+import { BuyBox } from '@/components/shop/AddToCart'
+import { PriceBlock } from '@/components/shop/Price'
+import { ShopProductCard } from '@/components/shop/ShopProductCard'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { Accordion, SpecRows } from '@/components/ui/Accordion'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
@@ -19,7 +23,8 @@ import { toGalleryImages } from '@/lib/media'
 import { pathFor, ROUTES } from '@/lib/routes'
 import { productJsonLd } from '@/lib/seo/jsonld'
 import { buildMetadata } from '@/lib/seo/metadata'
-import { getWhatsAppConfig } from '@/lib/whatsapp'
+import { getShopConfig, toShopProduct } from '@/lib/shop/config'
+import { getWhatsAppConfig, productWhatsAppMessage, whatsappUrl } from '@/lib/whatsapp'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -51,8 +56,9 @@ export default async function ProductPage({ params }: Props) {
   const product = await getProductBySlug((await params).slug)
   if (!product) notFound()
 
-  const [site, related] = await Promise.all([
+  const [site, shopConfig, related] = await Promise.all([
     getSiteSettings(),
+    getShopConfig(),
     getProducts({
       categoryId: isPopulated(product.category) ? product.category.id : undefined,
       excludeId: product.id,
@@ -60,6 +66,9 @@ export default async function ProductPage({ params }: Props) {
     }),
   ])
   const category = isPopulated(product.category) ? product.category : null
+  // Producto a la venta en la tienda: precio + carrito en lugar del pedido de presupuesto.
+  const shopProduct = shopConfig.enabled ? toShopProduct(product, shopConfig.rules) : null
+  const waConsult = whatsappUrl(getWhatsAppConfig(site), productWhatsAppMessage(product.name))
   const line = isPopulated(product.line) ? product.line : null
   const path = pathFor('products', product.slug)
 
@@ -87,7 +96,16 @@ export default async function ProductPage({ params }: Props) {
         event="product_view"
         params={{ product: product.name, category: category?.name, line: line?.name }}
       />
-      <JsonLd data={productJsonLd(product, path, site.brandName)} />
+      <JsonLd
+        data={productJsonLd(
+          product,
+          path,
+          site.brandName,
+          shopProduct
+            ? { price: shopProduct.price.transfer, inStock: shopProduct.stock !== 0 }
+            : null,
+        )}
+      />
 
       <section className="bg-paper pt-[clamp(2rem,4vw,3.5rem)] pb-[clamp(3.5rem,7vw,6.875rem)]">
         <div className="container-site flex flex-col gap-[clamp(1.75rem,3vw,2.75rem)]">
@@ -111,12 +129,57 @@ export default async function ProductPage({ params }: Props) {
                 </p>
               )}
               <Facts facts={product.facts} />
-              <ProductConfigurator
-                configurations={(product.configurations ?? []).map((c) => c.text)}
-                whatsappNumber={getWhatsAppConfig(site).number}
-                productName={product.name}
-                quoteHref={quoteHref}
-              />
+              {shopProduct ? (
+                <div className="flex flex-col gap-6 border-y border-line py-6">
+                  <PriceBlock price={shopProduct.price} size="detail" />
+                  {shopProduct.measure && (
+                    <p className="text-sm font-normal text-muted">
+                      Medida: <span className="font-medium text-ink">{shopProduct.measure}</span>
+                    </p>
+                  )}
+                  <BuyBox product={shopProduct} />
+                  <ul className="flex flex-col gap-1.5 text-sm font-normal text-muted">
+                    {shopConfig.shipping.map((m) => (
+                      <li key={m.code}>
+                        <span className="font-medium text-ink">{m.label}.</span> {m.description}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-sm font-normal text-muted">
+                    ¿Necesitás otra medida?{' '}
+                    <a
+                      href={quoteHref}
+                      className="text-ink underline underline-offset-4 hover:text-brand"
+                    >
+                      Pedí un presupuesto a medida
+                    </a>
+                    {waConsult && (
+                      <>
+                        {' '}
+                        o{' '}
+                        <TrackedAnchor
+                          href={waConsult}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          event="whatsapp_click"
+                          params={{ location: 'product_shop' }}
+                          className="text-ink underline underline-offset-4 hover:text-brand"
+                        >
+                          consultanos por WhatsApp
+                        </TrackedAnchor>
+                      </>
+                    )}
+                    .
+                  </p>
+                </div>
+              ) : (
+                <ProductConfigurator
+                  configurations={(product.configurations ?? []).map((c) => c.text)}
+                  whatsappNumber={getWhatsAppConfig(site).number}
+                  productName={product.name}
+                  quoteHref={quoteHref}
+                />
+              )}
               {panels.length > 0 && (
                 <Accordion
                   name="product-specs"
@@ -165,11 +228,18 @@ export default async function ProductPage({ params }: Props) {
           <div className="container-site flex flex-col gap-[26px]">
             <h2 className="text-h3">Productos relacionados</h2>
             <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,15.625rem),1fr))] gap-3">
-              {related.map((p) => (
-                <li key={p.id}>
-                  <ProductCard product={p} showDescription={false} />
-                </li>
-              ))}
+              {related.map((p) => {
+                const sp = shopConfig.enabled ? toShopProduct(p, shopConfig.rules) : null
+                return (
+                  <li key={p.id}>
+                    {sp ? (
+                      <ShopProductCard product={sp} />
+                    ) : (
+                      <ProductCard product={p} showDescription={false} />
+                    )}
+                  </li>
+                )
+              })}
             </ul>
           </div>
         </section>

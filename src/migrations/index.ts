@@ -4,6 +4,7 @@ import * as migration_20260924_023829_remove_header_whatsapp from './20260924_02
 import * as migration_20260925_174803_audiences_projects from './20260925_174803_audiences_projects';
 import * as migration_20260925_181019_separate_block_tables from './20260925_181019_separate_block_tables';
 import * as migration_20260925_194517_admin_galleries_security from './20260925_194517_admin_galleries_security';
+import * as migration_20261109_232113_shop from './20261109_232113_shop';
 
 export const migrations = [
   {
@@ -24,7 +25,7 @@ export const migrations = [
   {
     up: migration_20260925_174803_audiences_projects.up,
     down: migration_20260925_174803_audiences_projects.down,
-    name: '20260925_174803_audiences_projects'
+    name: '20260925_174803_audiences_projects',
   },
   {
     up: migration_20260925_181019_separate_block_tables.up,
@@ -35,5 +36,10 @@ export const migrations = [
     up: migration_20260925_194517_admin_galleries_security.up,
     down: migration_20260925_194517_admin_galleries_security.down,
     name: '20260925_194517_admin_galleries_security',
+  },
+  {
+    up: migration_20261109_232113_shop.up,
+    down: migration_20261109_232113_shop.down,
+    name: '20261109_232113_shop'
   },
 ];

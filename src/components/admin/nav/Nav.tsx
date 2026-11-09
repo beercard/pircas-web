@@ -31,6 +31,11 @@ export async function PircasNav({ payload, permissions, user, visibleEntities }:
     ? (await payload.count({ collection: 'leads', where: { status: { equals: 'new' } } })).totalDocs
     : 0
 
+  const newOrders = canSee({ type: 'collections', slug: 'orders' })
+    ? (await payload.count({ collection: 'orders', where: { status: { equals: 'pending' } } }))
+        .totalDocs
+    : 0
+
   const sections = NAV_SECTIONS.flatMap((s): ClientNavSection[] => {
     if (s.href !== undefined)
       return [
@@ -47,7 +52,7 @@ export async function PircasNav({ payload, permissions, user, visibleEntities }:
         icon: s.icon,
         href: items[0].href,
         items: items.length > 1 ? items : [],
-        badge: s.badge === 'newLeads' ? newLeads : undefined,
+        badge: s.badge === 'newLeads' ? newLeads : s.badge === 'newOrders' ? newOrders : undefined,
       },
     ]
   })

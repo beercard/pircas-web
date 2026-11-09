@@ -204,6 +204,25 @@
   }
 }
 
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Cajón del carrito */
+@keyframes drawer-in {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes drawer-out {
+  to {
+    transform: translateX(100%);
+  }
+}
+
 @keyframes rise-in {
   from {
     opacity: 0;
@@ -233,5 +252,15 @@ body:has([data-hide-footer-cta]) .floating-wa {
 @media (width < 48rem) {
   body:has([data-mobile-cta-bar]) {
     padding-bottom: calc(62px + env(safe-area-inset-bottom));
+  }
+
+  /* Tienda: la ficha muestra su barra de compra; carrito y checkout no llevan barra. */
+  body:has([data-buy-bar]) [data-mobile-cta-bar],
+  body:has([data-no-cta-bar]) [data-mobile-cta-bar] {
+    display: none;
+  }
+
+  body:has([data-no-cta-bar]) {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }

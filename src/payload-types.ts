@@ -75,6 +75,7 @@ export interface Config {
     pages: Page;
     media: Media;
     leads: Lead;
+    orders: Order;
     users: User;
     redirects: Redirect;
     'payload-kv': PayloadKv;
@@ -92,6 +93,7 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     leads: LeadsSelect<false> | LeadsSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -111,6 +113,7 @@ export interface Config {
     footer: Footer;
     advisor: Advisor;
     'forms-settings': FormsSetting;
+    'shop-settings': ShopSetting;
     analytics: Analytics;
     'seo-defaults': SeoDefault;
   };
@@ -122,6 +125,7 @@ export interface Config {
     footer: FooterSelect<false> | FooterSelect<true>;
     advisor: AdvisorSelect<false> | AdvisorSelect<true>;
     'forms-settings': FormsSettingsSelect<false> | FormsSettingsSelect<true>;
+    'shop-settings': ShopSettingsSelect<false> | ShopSettingsSelect<true>;
     analytics: AnalyticsSelect<false> | AnalyticsSelect<true>;
     'seo-defaults': SeoDefaultsSelect<false> | SeoDefaultsSelect<true>;
   };
@@ -174,6 +178,42 @@ export interface Product {
    * Elegí o subí varias fotos a la vez (podés arrastrarlas desde tu computadora). Arrastrá para cambiar el orden.
    */
   gallery?: (number | Media)[] | null;
+  shop?: {
+    enabled?: boolean | null;
+    /**
+     * El precio con Mercado Pago. El precio con transferencia se calcula solo con el descuento.
+     */
+    price?: number | null;
+    /**
+     * Opcional. Tu código interno.
+     */
+    sku?: string | null;
+    /**
+     * Vacío = el general de la tienda.
+     */
+    transferDiscount?: number | null;
+    /**
+     * Vacío = el general de la tienda.
+     */
+    mpDiscount?: number | null;
+    /**
+     * Vacío = las generales de la tienda.
+     */
+    installments?: number | null;
+    /**
+     * Si cargás colores, el cliente elige uno al comprar.
+     */
+    colors?: ('blanco' | 'negro' | 'anodizado' | 'madera' | 'bronce')[] | null;
+    /**
+     * Se muestra en la tarjeta y en el pedido.
+     */
+    measure?: string | null;
+    /**
+     * Si está activo, se descuenta con cada pedido y no se vende sin stock.
+     */
+    trackStock?: boolean | null;
+    stock?: number | null;
+  };
   category: number | ProductCategory;
   /**
    * Opcional (vidrios o rejas no pertenecen a una línea).
@@ -1905,6 +1945,78 @@ export interface Lead {
   createdAt: string;
 }
 /**
+ * Pedidos de la tienda online. Cambiá el estado a medida que avanza: el cliente recibe un email y ve el seguimiento en su enlace.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: number;
+  status: 'pending' | 'confirmed' | 'preparing' | 'ready' | 'shipped' | 'delivered' | 'cancelled';
+  paymentStatus: 'pending' | 'paid' | 'rejected' | 'refunded';
+  /**
+   * Se incluye en el email del cambio de estado y queda en el historial (después se vacía). Ej: "Podés pasar a retirar de 8 a 12 h".
+   */
+  statusNote?: string | null;
+  items?:
+    | {
+        name: string;
+        variant?: string | null;
+        quantity: number;
+        unitPrice: number;
+        subtotal: number;
+        product?: (number | null) | Product;
+        sku?: string | null;
+        listPrice?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  subtotal?: number | null;
+  discount?: number | null;
+  /**
+   * Editable si el envío era "a coordinar".
+   */
+  shippingCost?: number | null;
+  total?: number | null;
+  customerName: string;
+  customer?: {
+    email?: string | null;
+    phone?: string | null;
+    document?: string | null;
+  };
+  notes?: string | null;
+  shipping?: {
+    label?: string | null;
+    type?: ('pickup' | 'delivery') | null;
+    quoteLater?: boolean | null;
+    address?: string | null;
+    city?: string | null;
+    province?: string | null;
+    zip?: string | null;
+    carrier?: string | null;
+    trackingCode?: string | null;
+    trackingUrl?: string | null;
+  };
+  /**
+   * Solo las ve el equipo.
+   */
+  internalNotes?: string | null;
+  timeline?:
+    | {
+        date?: string | null;
+        label?: string | null;
+        note?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  orderNumber: string;
+  paymentMethod: 'transfer' | 'mercadopago' | 'cash';
+  paymentReference?: string | null;
+  accessToken: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Personas con acceso al panel. Solo un super administrador puede crear usuarios y cambiar roles.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2035,6 +2147,10 @@ export interface PayloadLockedDocument {
         value: number | Lead;
       } | null)
     | ({
+        relationTo: 'orders';
+        value: number | Order;
+      } | null)
+    | ({
         relationTo: 'users';
         value: number | User;
       } | null)
@@ -2093,6 +2209,20 @@ export interface ProductsSelect<T extends boolean = true> {
   shortDescription?: T;
   featuredImage?: T;
   gallery?: T;
+  shop?:
+    | T
+    | {
+        enabled?: T;
+        price?: T;
+        sku?: T;
+        transferDiscount?: T;
+        mpDiscount?: T;
+        installments?: T;
+        colors?: T;
+        measure?: T;
+        trackStock?: T;
+        stock?: T;
+      };
   category?: T;
   line?: T;
   description?: T;
@@ -3166,6 +3296,70 @@ export interface LeadsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  status?: T;
+  paymentStatus?: T;
+  statusNote?: T;
+  items?:
+    | T
+    | {
+        name?: T;
+        variant?: T;
+        quantity?: T;
+        unitPrice?: T;
+        subtotal?: T;
+        product?: T;
+        sku?: T;
+        listPrice?: T;
+        id?: T;
+      };
+  subtotal?: T;
+  discount?: T;
+  shippingCost?: T;
+  total?: T;
+  customerName?: T;
+  customer?:
+    | T
+    | {
+        email?: T;
+        phone?: T;
+        document?: T;
+      };
+  notes?: T;
+  shipping?:
+    | T
+    | {
+        label?: T;
+        type?: T;
+        quoteLater?: T;
+        address?: T;
+        city?: T;
+        province?: T;
+        zip?: T;
+        carrier?: T;
+        trackingCode?: T;
+        trackingUrl?: T;
+      };
+  internalNotes?: T;
+  timeline?:
+    | T
+    | {
+        date?: T;
+        label?: T;
+        note?: T;
+        id?: T;
+      };
+  orderNumber?: T;
+  paymentMethod?: T;
+  paymentReference?: T;
+  accessToken?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -3956,6 +4150,70 @@ export interface FormsSetting {
   createdAt?: string | null;
 }
 /**
+ * Descuentos, cuotas, medios de pago y envíos de la tienda. El precio de cada producto se carga en el producto ("Venta online").
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shop-settings".
+ */
+export interface ShopSetting {
+  id: number;
+  /**
+   * Si la desactivás, se oculta la tienda y no se pueden hacer pedidos (el catálogo sigue visible).
+   */
+  enabled?: boolean | null;
+  /**
+   * Franja sobre la tienda. Vacío = no se muestra.
+   */
+  announcement?: string | null;
+  transferDiscount?: number | null;
+  mpDiscount?: number | null;
+  installments?: number | null;
+  thanksMessage?: string | null;
+  transfer?: {
+    enabled?: boolean | null;
+    holder?: string | null;
+    bank?: string | null;
+    cbu?: string | null;
+    alias?: string | null;
+    cuit?: string | null;
+    instructions?: string | null;
+  };
+  mercadopago?: {
+    /**
+     * Con la cuenta conectada (la configura quien administra el sitio) el cliente paga online al terminar la compra. Sin conectar, el pedido queda registrado y le enviás el link de pago.
+     */
+    enabled?: boolean | null;
+  };
+  cash?: {
+    enabled?: boolean | null;
+  };
+  /**
+   * El cliente elige una al comprar. La primera es la predeterminada.
+   */
+  shippingMethods?:
+    | {
+        label: string;
+        type: 'pickup' | 'delivery';
+        description?: string | null;
+        quoteLater?: boolean | null;
+        price?: number | null;
+        freeFrom?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Si queda vacío se usan los destinatarios de las consultas (Formularios y cotizador).
+   */
+  notificationEmails?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * IDs públicos de medición. Solo un super administrador puede modificarlos.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -4491,6 +4749,59 @@ export interface FormsSettingsSelect<T extends boolean = true> {
         subject?: T;
         intro?: T;
         closing?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shop-settings_select".
+ */
+export interface ShopSettingsSelect<T extends boolean = true> {
+  enabled?: T;
+  announcement?: T;
+  transferDiscount?: T;
+  mpDiscount?: T;
+  installments?: T;
+  thanksMessage?: T;
+  transfer?:
+    | T
+    | {
+        enabled?: T;
+        holder?: T;
+        bank?: T;
+        cbu?: T;
+        alias?: T;
+        cuit?: T;
+        instructions?: T;
+      };
+  mercadopago?:
+    | T
+    | {
+        enabled?: T;
+      };
+  cash?:
+    | T
+    | {
+        enabled?: T;
+      };
+  shippingMethods?:
+    | T
+    | {
+        label?: T;
+        type?: T;
+        description?: T;
+        quoteLater?: T;
+        price?: T;
+        freeFrom?: T;
+        id?: T;
+      };
+  notificationEmails?:
+    | T
+    | {
+        email?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;

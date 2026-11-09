@@ -10,6 +10,7 @@ import { BlockLabel as BlockLabel_65d5559e4024d0730eedfbb5dfb037d8 } from '@/com
 import { AdvisorBlockNote as AdvisorBlockNote_4c82f216ea95e9c6ab61841ceeedd6a5 } from '@/components/admin/AdvisorBlockNote'
 import { QuoteWizardNote as QuoteWizardNote_ac08ab6ddbbc811820d8499db3c34f2e } from '@/components/admin/QuoteWizardNote'
 import { ExportLeadsButton as ExportLeadsButton_dfc015e147ecca7392a50b58d946480c } from '@/components/admin/ExportLeadsButton'
+import { OrderActions as OrderActions_011ea21570beafe78c52b6a0edc8e8cd } from '@/components/admin/orders/OrderActions'
 import { AdminAvatar as AdminAvatar_01044ecea0e6871a793487000c795212 } from '@/components/admin/AdminAvatar'
 import { PircasNav as PircasNav_7f624ab41ec8c18638fc597972dde484 } from '@/components/admin/nav/Nav'
 import { AdminIcon as AdminIcon_d500ae2ad98a0a33d640ae0ac1a3417c } from '@/components/admin/AdminIcon'
@@ -34,6 +35,7 @@ export const importMap = {
   "@/components/admin/AdvisorBlockNote#AdvisorBlockNote": AdvisorBlockNote_4c82f216ea95e9c6ab61841ceeedd6a5,
   "@/components/admin/QuoteWizardNote#QuoteWizardNote": QuoteWizardNote_ac08ab6ddbbc811820d8499db3c34f2e,
   "@/components/admin/ExportLeadsButton#ExportLeadsButton": ExportLeadsButton_dfc015e147ecca7392a50b58d946480c,
+  "@/components/admin/orders/OrderActions#OrderActions": OrderActions_011ea21570beafe78c52b6a0edc8e8cd,
   "@/components/admin/AdminAvatar#AdminAvatar": AdminAvatar_01044ecea0e6871a793487000c795212,
   "@/components/admin/nav/Nav#PircasNav": PircasNav_7f624ab41ec8c18638fc597972dde484,
   "@/components/admin/AdminIcon#AdminIcon": AdminIcon_d500ae2ad98a0a33d640ae0ac1a3417c,
