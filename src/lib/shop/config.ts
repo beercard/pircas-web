@@ -67,9 +67,8 @@ export function toShopConfig(settings: ShopSetting | null | undefined): ShopConf
     payments.push({
       method: 'transfer',
       label: 'Transferencia bancaria',
-      hint: rules.transferDiscount
-        ? `${rules.transferDiscount}% de descuento. Te mostramos los datos al confirmar.`
-        : 'Te mostramos los datos al confirmar.',
+      // El ahorro real (cada producto puede tener su propio descuento) se calcula en el checkout.
+      hint: 'Te mostramos los datos al confirmar.',
     })
   if (settings?.mercadopago?.enabled !== false)
     payments.push({

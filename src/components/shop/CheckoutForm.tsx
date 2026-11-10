@@ -156,6 +156,8 @@ export function CheckoutForm({
   const quote = shipping ? shippingQuote(shipping, goods.subtotal) : { cost: 0, quoteLater: false }
   const totals = orderTotals(priced, payMethod, quote)
   const blocked = lines.some((l) => l.issue)
+  // Total con Mercado Pago: referencia para mostrar el ahorro de transferencia y efectivo.
+  const listTotal = orderTotals(priced, 'mercadopago', quote).total
 
   const set = (key: keyof Values) => (e: { target: { value: string } }) => {
     if (!started.current) {
@@ -370,7 +372,13 @@ export function CheckoutForm({
                   checked={payMethod === p.method}
                   onChange={() => setMethod(p.method)}
                   title={p.label}
-                  hint={disabled ? 'Disponible solo para retiro en el taller.' : p.hint}
+                  hint={
+                    disabled
+                      ? 'Disponible solo para retiro en el taller.'
+                      : p.method !== 'mercadopago' && listTotal > t.total
+                        ? `Ahorrás ${formatPrice(listTotal - t.total)}. ${p.hint}`
+                        : p.hint
+                  }
                   aside={formatPrice(t.total)}
                   disabled={disabled}
                 />
