@@ -5,7 +5,12 @@ import { ProductLineCard } from '@/components/cards/ProductLineCard'
 import { ProductGrid } from '@/components/catalog/ProductGrid'
 import { PageIntro } from '@/components/layout/PageIntro'
 import { FilterTabs } from '@/components/ui/FilterTabs'
-import { getProductCategories, getProductLines, getProducts } from '@/lib/data/catalog'
+import {
+  getProductCategories,
+  getProductLines,
+  getProducts,
+  parentCategoryId,
+} from '@/lib/data/catalog'
 import { getArchivePages } from '@/lib/data/globals'
 import { ROUTES } from '@/lib/routes'
 import { buildMetadata } from '@/lib/seo/metadata'
@@ -44,9 +49,19 @@ export default async function ProductsPage({ searchParams }: Props) {
     getProductLines(),
   ])
 
+  // Pestañas: solo categorías principales; cada una incluye sus subcategorías.
+  const topLevel = categories.filter((c) => parentCategoryId(c) === null)
   const activeCategory = categories.find((c) => c.slug === categoria) ?? null
   const showLines = !search && (!categoria || categoria === LINES_TAB)
-  const products = await getProducts({ category: activeCategory?.slug, search })
+  const products = await getProducts({
+    categoryIds: activeCategory
+      ? [
+          activeCategory.id,
+          ...categories.filter((c) => parentCategoryId(c) === activeCategory.id).map((c) => c.id),
+        ]
+      : undefined,
+    search,
+  })
 
   const tabs = [
     { label: 'Todos', href: ROUTES.products, active: !categoria && !search },
@@ -59,10 +74,12 @@ export default async function ProductsPage({ searchParams }: Props) {
           },
         ]
       : []),
-    ...categories.map((c) => ({
+    ...topLevel.map((c) => ({
       label: c.name,
       href: `${ROUTES.products}?categoria=${c.slug}`,
-      active: c.slug === categoria,
+      active:
+        c.slug === categoria ||
+        (activeCategory !== null && parentCategoryId(activeCategory) === c.id),
     })),
   ]
 

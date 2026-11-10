@@ -7,12 +7,12 @@ import { clientIp, createRateLimiter } from '@/lib/forms/rate-limit'
 import { fieldErrors } from '@/lib/forms/schemas'
 import { verifyTurnstile } from '@/lib/forms/turnstile'
 import { SubmissionError } from '@/lib/leads/submit'
-import { createOrder } from '@/lib/shop/order'
-import { checkoutSchema } from '@/lib/shop/schema'
+import { createQuote } from '@/lib/shop/quote'
+import { quoteRequestSchema } from '@/lib/shop/schema'
 
 /**
- * POST /api/shop/orders — crea un pedido de la tienda.
- * Origen (CSRF) → límite por IP → validación → antispam → pedido con precios recalculados.
+ * POST /api/shop/quotes — calcula y guarda el presupuesto automático.
+ * Origen (CSRF) → límite por IP → validación → antispam → precios calculados en el servidor.
  */
 
 const MAX_BODY_BYTES = 32 * 1024
@@ -27,11 +27,12 @@ export async function POST(req: NextRequest) {
     return json({ error: 'Formato inválido.' }, 415)
 
   const ip = clientIp(req.headers)
-  const limit = limiter.check(`order:${ip}`)
+  const limit = limiter.check(`quote:${ip}`)
   if (!limit.allowed)
     return json(
       {
-        error: 'Recibimos muchos pedidos seguidos. Esperá unos minutos o escribinos por WhatsApp.',
+        error:
+          'Recibimos muchos pedidos de presupuesto seguidos. Esperá unos minutos o escribinos por WhatsApp.',
       },
       429,
       { 'Retry-After': String(limit.retryAfterSeconds) },
@@ -40,13 +41,14 @@ export async function POST(req: NextRequest) {
   let raw: unknown
   try {
     const text = await req.text()
-    if (text.length > MAX_BODY_BYTES) return json({ error: 'El pedido es demasiado grande.' }, 413)
+    if (text.length > MAX_BODY_BYTES)
+      return json({ error: 'El presupuesto es demasiado grande.' }, 413)
     raw = JSON.parse(text)
   } catch {
     return json({ error: 'Formato inválido.' }, 400)
   }
 
-  const parsed = checkoutSchema.safeParse(raw)
+  const parsed = quoteRequestSchema.safeParse(raw)
   if (!parsed.success)
     return json({ error: 'Revisá los datos marcados.', fields: fieldErrors(parsed.error) }, 422)
 
@@ -54,12 +56,12 @@ export async function POST(req: NextRequest) {
 
   // Honeypot completado: probablemente un bot. Se responde "ok" sin crear nada.
   if (parsed.data.website) {
-    payload.logger.warn({ ip }, 'order honeypot triggered')
+    payload.logger.warn({ ip }, 'quote honeypot triggered')
     return json({ ok: true })
   }
 
   // Turnstile se exige cuando está configurado; sin claves quedan el límite por IP, el
-  // control de origen y el honeypot (un pedido no mueve dinero: se confirma a mano).
+  // control de origen y el honeypot.
   if (process.env.TURNSTILE_SECRET_KEY) {
     const captcha = await verifyTurnstile(parsed.data.turnstileToken, ip)
     if (!captcha.success)
@@ -72,19 +74,19 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const order = await createOrder(payload, parsed.data)
+    const created = await createQuote(payload, parsed.data)
     return json({
       ok: true,
-      orderNumber: order.orderNumber,
-      url: order.url,
-      paymentUrl: order.paymentUrl,
-      total: order.totals.total,
+      orderNumber: created.orderNumber,
+      url: created.url,
+      whatsappSent: created.whatsappSent,
+      total: created.totals.list,
     })
   } catch (err) {
     if (err instanceof SubmissionError) return json({ error: err.message, fields: err.fields }, 422)
-    payload.logger.error({ err }, 'order creation failed')
+    payload.logger.error({ err }, 'quote creation failed')
     return json(
-      { error: 'No pudimos registrar tu pedido. Intentá de nuevo o escribinos por WhatsApp.' },
+      { error: 'No pudimos calcular tu presupuesto. Intentá de nuevo o escribinos por WhatsApp.' },
       500,
     )
   }

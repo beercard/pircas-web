@@ -7,8 +7,7 @@ import { ProductConfigurator } from '@/components/catalog/ProductConfigurator'
 import { ProductGallery } from '@/components/catalog/ProductGallery'
 import { RichText } from '@/components/cms/RichText'
 import { TrackedAnchor } from '@/components/analytics/TrackedAnchor'
-import { BuyBox } from '@/components/shop/AddToCart'
-import { PriceBlock } from '@/components/shop/Price'
+import { QuoteBox } from '@/components/shop/AddToQuote'
 import { ShopProductCard } from '@/components/shop/ShopProductCard'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { Accordion, SpecRows } from '@/components/ui/Accordion'
@@ -33,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = await getProductBySlug((await params).slug)
   if (!product) return {}
   const shopConfig = await getShopConfig()
-  const shop = shopConfig.enabled ? toShopProduct(product, shopConfig.rules) : null
+  const shop = shopConfig.enabled ? toShopProduct(product) : null
   return buildMetadata({
     path: pathFor('products', product.slug),
     title: productSeoTitle(product, shop),
@@ -69,8 +68,8 @@ export default async function ProductPage({ params }: Props) {
     }),
   ])
   const category = isPopulated(product.category) ? product.category : null
-  // Producto a la venta en la tienda: precio + carrito en lugar del pedido de presupuesto.
-  const shopProduct = shopConfig.enabled ? toShopProduct(product, shopConfig.rules) : null
+  // Producto de medida estándar: se suma al presupuesto online (sin precio a la vista).
+  const shopProduct = shopConfig.enabled ? toShopProduct(product) : null
   const waConsult = whatsappUrl(getWhatsAppConfig(site), productWhatsAppMessage(product.name))
   const line = isPopulated(product.line) ? product.line : null
   const path = pathFor('products', product.slug)
@@ -99,16 +98,7 @@ export default async function ProductPage({ params }: Props) {
         event="product_view"
         params={{ product: product.name, category: category?.name, line: line?.name }}
       />
-      <JsonLd
-        data={productJsonLd(
-          product,
-          path,
-          site.brandName,
-          shopProduct
-            ? { price: shopProduct.price.transfer, inStock: shopProduct.stock !== 0 }
-            : null,
-        )}
-      />
+      <JsonLd data={productJsonLd(product, path, site.brandName)} />
 
       <section className="bg-paper pt-[clamp(2rem,4vw,3.5rem)] pb-[clamp(3.5rem,7vw,6.875rem)]">
         <div className="container-site flex flex-col gap-[clamp(1.75rem,3vw,2.75rem)]">
@@ -134,20 +124,21 @@ export default async function ProductPage({ params }: Props) {
               <Facts facts={product.facts} />
               {shopProduct ? (
                 <div className="flex flex-col gap-6 border-y border-line py-6">
-                  <PriceBlock price={shopProduct.price} size="detail" />
-                  {shopProduct.measure && (
+                  <div className="flex flex-col gap-1.5">
+                    {shopProduct.measure && (
+                      <p className="text-sm font-normal text-muted">
+                        Medida estándar:{' '}
+                        <span className="font-medium text-ink">{shopProduct.measure}</span>
+                      </p>
+                    )}
                     <p className="text-sm font-normal text-muted">
-                      Medida: <span className="font-medium text-ink">{shopProduct.measure}</span>
+                      Agregalo al presupuesto, dejá tu WhatsApp y recibí el precio{' '}
+                      <span className="font-medium text-ink">en el acto</span>, con{' '}
+                      {shopConfig.rules.transferDiscount}% off por transferencia o{' '}
+                      {shopConfig.rules.installments} cuotas sin interés.
                     </p>
-                  )}
-                  <BuyBox product={shopProduct} />
-                  <ul className="flex flex-col gap-1.5 text-sm font-normal text-muted">
-                    {shopConfig.shipping.map((m) => (
-                      <li key={m.code}>
-                        <span className="font-medium text-ink">{m.label}.</span> {m.description}
-                      </li>
-                    ))}
-                  </ul>
+                  </div>
+                  <QuoteBox product={shopProduct} />
                   <p className="text-sm font-normal text-muted">
                     ¿Necesitás otra medida?{' '}
                     <a
@@ -232,7 +223,7 @@ export default async function ProductPage({ params }: Props) {
             <h2 className="text-h3">Productos relacionados</h2>
             <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,15.625rem),1fr))] gap-3">
               {related.map((p) => {
-                const sp = shopConfig.enabled ? toShopProduct(p, shopConfig.rules) : null
+                const sp = shopConfig.enabled ? toShopProduct(p) : null
                 return (
                   <li key={p.id}>
                     {sp ? (

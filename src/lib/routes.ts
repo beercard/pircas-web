@@ -15,10 +15,10 @@ export const ROUTES = {
   contact: '/contacto',
   thanks: '/gracias',
   shop: '/tienda',
-  cart: '/carrito',
-  checkout: '/checkout',
-  order: '/pedido',
-  tracking: '/seguimiento',
+  /** Lista del presupuesto + formulario (reemplaza al carrito y al checkout). */
+  quoteList: '/presupuesto',
+  /** Presupuesto calculado: /presupuesto/P261110-1234?t=token */
+  quoteResult: '/presupuesto',
 } as const
 
 export type RoutableCollection =
@@ -41,6 +41,7 @@ export const RESERVED_PAGE_SLUGS = [
   'checkout',
   'pedido',
   'seguimiento',
+  'presupuesto',
   'sitemap.xml',
   'robots.txt',
 ] as const

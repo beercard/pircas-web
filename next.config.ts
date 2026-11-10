@@ -28,6 +28,15 @@ const nextConfig: NextConfig = {
     remotePatterns: [{ protocol: 'https', hostname: '*.public.blob.vercel-storage.com' }],
     minimumCacheTTL: 60 * 60 * 24 * 30,
   },
+  async redirects() {
+    // El carrito y la compra online pasaron a ser el presupuesto automático.
+    return [
+      { source: '/carrito', destination: '/presupuesto', permanent: true },
+      { source: '/checkout', destination: '/presupuesto', permanent: true },
+      { source: '/pedido/:number', destination: '/presupuesto/:number', permanent: true },
+      { source: '/seguimiento', destination: '/tienda', permanent: true },
+    ]
+  },
   async headers() {
     return [
       { source: '/:path*', headers: securityHeaders },

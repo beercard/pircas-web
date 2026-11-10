@@ -22,7 +22,7 @@ export const getProductLines = cache(async (ids?: number[]): Promise<ProductLine
         where: ids?.length ? { id: { in: ids } } : undefined,
         sort: 'order',
         depth: 1,
-        limit: 50,
+        limit: 100,
         ...readOptions(draft),
       })
       return docs
@@ -61,6 +61,14 @@ export const getProductCategories = cache(async (ids?: number[]): Promise<Produc
   ),
 )
 
+/** Id de la categoría principal (null si es principal). */
+export const parentCategoryId = (c: { parent?: unknown }): number | null =>
+  typeof c.parent === 'number'
+    ? c.parent
+    : c.parent && typeof c.parent === 'object' && 'id' in c.parent
+      ? (c.parent as { id: number }).id
+      : null
+
 export type ProductFilters = {
   category?: string // slug
   line?: string // slug
@@ -69,6 +77,8 @@ export type ProductFilters = {
   /** Solo los que se venden en la tienda online. */
   shop?: boolean
   categoryId?: number
+  /** Una categoría y sus subcategorías. */
+  categoryIds?: number[]
   lineId?: number
   ids?: number[]
   excludeId?: number
@@ -81,6 +91,7 @@ export const getProducts = cache(async (filters: ProductFilters = {}): Promise<P
     if (filters.category) and.push({ 'category.slug': { equals: filters.category } })
     if (filters.line) and.push({ 'line.slug': { equals: filters.line } })
     if (filters.categoryId) and.push({ category: { equals: filters.categoryId } })
+    if (filters.categoryIds?.length) and.push({ category: { in: filters.categoryIds } })
     if (filters.lineId) and.push({ line: { equals: filters.lineId } })
     if (filters.featured) and.push({ featured: { equals: true } })
     if (filters.shop) and.push({ 'shop.enabled': { equals: true } })

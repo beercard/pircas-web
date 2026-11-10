@@ -1,62 +1,46 @@
-/** Opciones de la tienda compartidas por el panel, el servidor y el sitio. */
+/** Opciones del presupuesto online compartidas por el panel, el servidor y el sitio. */
 
-export const ORDER_STATUSES = [
-  { value: 'pending', label: 'Recibido' },
-  { value: 'confirmed', label: 'Confirmado' },
-  { value: 'preparing', label: 'En preparación' },
-  { value: 'ready', label: 'Listo para retirar' },
-  { value: 'shipped', label: 'Enviado' },
-  { value: 'delivered', label: 'Entregado' },
-  { value: 'cancelled', label: 'Cancelado' },
+export const QUOTE_STATUSES = [
+  { value: 'pending', label: 'Nuevo' },
+  { value: 'contacted', label: 'Contactado' },
+  { value: 'won', label: 'Vendido' },
+  { value: 'lost', label: 'No avanzó' },
 ] as const
 
-export type OrderStatus = (typeof ORDER_STATUSES)[number]['value']
-
-export const PAYMENT_STATUSES = [
-  { value: 'pending', label: 'Pendiente de pago' },
-  { value: 'paid', label: 'Pagado' },
-  { value: 'rejected', label: 'Pago rechazado' },
-  { value: 'refunded', label: 'Devuelto' },
-] as const
-
-export type PaymentStatus = (typeof PAYMENT_STATUSES)[number]['value']
-
-export const PAYMENT_METHODS = [
-  { value: 'transfer', label: 'Transferencia bancaria' },
-  { value: 'mercadopago', label: 'Mercado Pago' },
-  { value: 'cash', label: 'Efectivo al retirar' },
-] as const
+export type QuoteStatus = (typeof QUOTE_STATUSES)[number]['value']
 
 export const COLORS = [
   { value: 'blanco', label: 'Blanco', hex: '#ffffff' },
   { value: 'negro', label: 'Negro', hex: '#1d1d1f' },
-  { value: 'anodizado', label: 'Anodizado natural', hex: '#b9bcc0' },
-  { value: 'madera', label: 'Símil madera', hex: '#8a5a33' },
-  { value: 'bronce', label: 'Bronce', hex: '#5b4636' },
 ] as const
 
 export type ColorValue = (typeof COLORS)[number]['value']
 
+/** Accesorios opcionales de las ventanas (cada producto define cuáles ofrece y su precio). */
+export const ACCESSORIES = [
+  { value: 'celosia', label: 'Celosía' },
+  { value: 'mosquitero', label: 'Mosquitero' },
+  { value: 'reja', label: 'Reja' },
+] as const
+
+export type AccessoryValue = (typeof ACCESSORIES)[number]['value']
+
 const labelOf = <T extends readonly { value: string; label: string }[]>(list: T, value: unknown) =>
   list.find((o) => o.value === value)?.label ?? String(value ?? '')
 
-export const orderStatusLabel = (v: unknown) => labelOf(ORDER_STATUSES, v)
-export const paymentStatusLabel = (v: unknown) => labelOf(PAYMENT_STATUSES, v)
-export const paymentMethodLabel = (v: unknown) => labelOf(PAYMENT_METHODS, v)
+export const quoteStatusLabel = (v: unknown) => labelOf(QUOTE_STATUSES, v)
 export const colorLabel = (v: unknown) => labelOf(COLORS, v)
+export const accessoryLabel = (v: unknown) => labelOf(ACCESSORIES, v)
 
-/** Qué le decimos al cliente en cada estado (página de seguimiento, email y WhatsApp). */
-export const STATUS_MESSAGES: Record<OrderStatus, string> = {
-  pending: 'Recibimos tu pedido. Lo estamos revisando y te confirmamos a la brevedad.',
-  confirmed: 'Tu pedido está confirmado.',
-  preparing: 'Estamos preparando tu pedido en el taller.',
-  ready: 'Tu pedido está listo para retirar.',
-  shipped: 'Tu pedido ya salió y está en camino.',
-  delivered: 'Tu pedido fue entregado. ¡Gracias por elegirnos!',
-  cancelled: 'Tu pedido fue cancelado. Si tenés dudas, escribinos.',
-}
-
-/** Pasos que se muestran en el seguimiento (según sea retiro o envío). */
-export function trackingSteps(pickup: boolean): OrderStatus[] {
-  return ['pending', 'confirmed', 'preparing', pickup ? 'ready' : 'shipped', 'delivered']
+/** "Blanco · Con mosquitero y reja" */
+export function variantText(
+  color: string | null | undefined,
+  accessories: readonly string[] | null | undefined,
+  measure?: string | null,
+): string {
+  const acc = (accessories ?? []).map((a) => accessoryLabel(a).toLowerCase())
+  const withAcc = acc.length
+    ? `Con ${acc.length > 1 ? `${acc.slice(0, -1).join(', ')} y ${acc.at(-1)}` : acc[0]}`
+    : null
+  return [color ? colorLabel(color) : null, measure || null, withAcc].filter(Boolean).join(' · ')
 }

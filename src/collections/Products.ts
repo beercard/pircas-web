@@ -75,14 +75,14 @@ export const Products: CollectionConfig<'products'> = {
         galleryField({ label: 'Más fotos' }),
       ],
     },
-    // --- Tienda online: precio, colores y stock ------------------------------------------
+    // --- Presupuesto online: precio oculto, colores y accesorios -------------------------
     {
       type: 'collapsible',
-      label: 'Venta online (tienda)',
+      label: 'Presupuesto online (tienda)',
       admin: {
         initCollapsed: false,
         description:
-          'Activá la venta para que el producto aparezca en la Tienda con precio y botón "Agregar al carrito".',
+          'Activalo para que el producto aparezca en la Tienda con el botón "Agregar al presupuesto". El precio NO se muestra en la web: el cliente lo ve en el presupuesto que recibe al dejar su WhatsApp.',
       },
       fields: [
         {
@@ -92,7 +92,7 @@ export const Products: CollectionConfig<'products'> = {
           fields: [
             {
               name: 'enabled',
-              label: 'Vender este producto en la tienda online',
+              label: 'Ofrecer en el presupuesto online',
               type: 'checkbox',
               defaultValue: false,
               index: true,
@@ -103,14 +103,14 @@ export const Products: CollectionConfig<'products'> = {
               fields: [
                 {
                   name: 'price',
-                  label: 'Precio de lista (ARS)',
+                  label: 'Precio de lista (ARS, oculto)',
                   type: 'number',
                   min: 0,
                   index: true,
                   admin: {
                     width: '50%',
                     description:
-                      'El precio con Mercado Pago. El precio con transferencia se calcula solo con el descuento.',
+                      'Precio de la medida estándar, con tarjeta en cuotas. El de transferencia se calcula con el descuento.',
                   },
                   validate: (
                     value: number | null | undefined,
@@ -118,7 +118,7 @@ export const Products: CollectionConfig<'products'> = {
                   ) =>
                     !siblingData?.enabled || (typeof value === 'number' && value > 0)
                       ? true
-                      : 'Ingresá el precio para vender el producto.',
+                      : 'Ingresá el precio para ofrecer el producto.',
                 },
                 {
                   name: 'sku',
@@ -133,20 +133,78 @@ export const Products: CollectionConfig<'products'> = {
               admin: { condition: (_, s) => Boolean(s?.enabled) },
               fields: [
                 {
+                  name: 'measure',
+                  label: 'Medida estándar',
+                  type: 'text',
+                  admin: {
+                    width: '50%',
+                    placeholder: 'Ej: 1,50 × 1,10 m',
+                    description: 'Según catálogo. Se muestra en la tarjeta y en el presupuesto.',
+                  },
+                },
+                {
+                  name: 'colors',
+                  label: 'Colores',
+                  type: 'select',
+                  hasMany: true,
+                  defaultValue: ['blanco', 'negro'],
+                  options: [
+                    { label: 'Blanco', value: 'blanco' },
+                    { label: 'Negro', value: 'negro' },
+                  ],
+                  admin: { width: '50%', description: 'El cliente elige uno.' },
+                },
+              ],
+            },
+            {
+              name: 'accessories',
+              label: 'Accesorios opcionales',
+              labels: { singular: 'Accesorio', plural: 'Accesorios' },
+              type: 'array',
+              admin: {
+                condition: (_, s) => Boolean(s?.enabled),
+                description:
+                  'Para ventanas: celosía, mosquitero y reja. El cliente los suma si quiere; el precio se agrega al presupuesto.',
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'kind',
+                      label: 'Accesorio',
+                      type: 'select',
+                      required: true,
+                      options: [
+                        { label: 'Celosía', value: 'celosia' },
+                        { label: 'Mosquitero', value: 'mosquitero' },
+                        { label: 'Reja', value: 'reja' },
+                      ],
+                      admin: { width: '50%' },
+                    },
+                    {
+                      name: 'price',
+                      label: 'Precio (ARS, oculto)',
+                      type: 'number',
+                      required: true,
+                      min: 0,
+                      admin: { width: '50%' },
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'row',
+              admin: { condition: (_, s) => Boolean(s?.enabled) },
+              fields: [
+                {
                   name: 'transferDiscount',
                   label: '% descuento por transferencia',
                   type: 'number',
                   min: 0,
                   max: 90,
-                  admin: { width: '33%', description: 'Vacío = el general de la tienda.' },
-                },
-                {
-                  name: 'mpDiscount',
-                  label: '% descuento con Mercado Pago',
-                  type: 'number',
-                  min: 0,
-                  max: 90,
-                  admin: { width: '33%', description: 'Vacío = el general de la tienda.' },
+                  admin: { width: '50%', description: 'Vacío = el general.' },
                 },
                 {
                   name: 'installments',
@@ -154,59 +212,7 @@ export const Products: CollectionConfig<'products'> = {
                   type: 'number',
                   min: 1,
                   max: 24,
-                  admin: { width: '33%', description: 'Vacío = las generales de la tienda.' },
-                },
-              ],
-            },
-            {
-              name: 'colors',
-              label: 'Colores disponibles',
-              type: 'select',
-              hasMany: true,
-              options: [
-                { label: 'Blanco', value: 'blanco' },
-                { label: 'Negro', value: 'negro' },
-                { label: 'Anodizado natural', value: 'anodizado' },
-                { label: 'Símil madera', value: 'madera' },
-                { label: 'Bronce', value: 'bronce' },
-              ],
-              admin: {
-                condition: (_, s) => Boolean(s?.enabled),
-                description: 'Si cargás colores, el cliente elige uno al comprar.',
-              },
-            },
-            {
-              name: 'measure',
-              label: 'Medida estándar',
-              type: 'text',
-              admin: {
-                condition: (_, s) => Boolean(s?.enabled),
-                placeholder: 'Ej: 0,80 × 2,00 m',
-                description: 'Se muestra en la tarjeta y en el pedido.',
-              },
-            },
-            {
-              type: 'row',
-              admin: { condition: (_, s) => Boolean(s?.enabled) },
-              fields: [
-                {
-                  name: 'trackStock',
-                  label: 'Controlar stock',
-                  type: 'checkbox',
-                  defaultValue: false,
-                  admin: {
-                    width: '50%',
-                    description:
-                      'Si está activo, se descuenta con cada pedido y no se vende sin stock.',
-                  },
-                },
-                {
-                  name: 'stock',
-                  label: 'Unidades en stock',
-                  type: 'number',
-                  min: 0,
-                  defaultValue: 0,
-                  admin: { width: '50%', condition: (_, s) => Boolean(s?.trackStock) },
+                  admin: { width: '50%', description: 'Vacío = las generales.' },
                 },
               ],
             },

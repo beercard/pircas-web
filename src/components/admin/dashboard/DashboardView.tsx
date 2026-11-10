@@ -21,7 +21,7 @@ import type { Payload, TypedUser } from 'payload'
 import type { Lead } from '@/payload-types'
 import { labelFor, LEAD_STATUSES } from '@/lib/options'
 import { formatARS } from '@/lib/quote/pricing'
-import { orderStatusLabel, paymentMethodLabel, paymentStatusLabel } from '@/lib/shop/options'
+import { quoteStatusLabel } from '@/lib/shop/options'
 
 import { getDashboardData } from './data'
 import { greeting, longDate, plural, timeAgo } from './format'
@@ -80,10 +80,10 @@ export async function DashboardView({ payload, user }: Props) {
 
   const actions: Action[] = [
     {
-      title: 'Atender pedidos',
+      title: 'Contactar presupuestos',
       text: data.shop.pending
-        ? plural(data.shop.pending, 'pedido nuevo', 'pedidos nuevos')
-        : 'Sin pedidos pendientes',
+        ? plural(data.shop.pending, 'presupuesto nuevo', 'presupuestos nuevos')
+        : 'Sin presupuestos nuevos',
       href: data.shop.pending ? pendingOrdersHref : ordersHref,
       icon: ShoppingCart,
     },
@@ -147,7 +147,7 @@ export async function DashboardView({ payload, user }: Props) {
             {data.shop.pending || data.newLeads
               ? `Tenés ${[
                   data.shop.pending
-                    ? plural(data.shop.pending, 'pedido nuevo', 'pedidos nuevos')
+                    ? plural(data.shop.pending, 'presupuesto nuevo', 'presupuestos nuevos')
                     : null,
                   data.newLeads
                     ? plural(data.newLeads, 'consulta nueva', 'consultas nuevas')
@@ -155,13 +155,13 @@ export async function DashboardView({ payload, user }: Props) {
                 ]
                   .filter(Boolean)
                   .join(' y ')} para atender.`
-              : 'No hay pedidos ni consultas pendientes. ¡Todo al día!'}
+              : 'No hay presupuestos ni consultas pendientes. ¡Todo al día!'}
           </p>
         </div>
         <div className="pd-hero__actions">
           {data.shop.pending > 0 && (
             <Link href={pendingOrdersHref} className="pd-btn pd-btn--primary">
-              Ver pedidos nuevos
+              Ver presupuestos nuevos
             </Link>
           )}
           {data.newLeads > 0 && (
@@ -201,35 +201,35 @@ export async function DashboardView({ payload, user }: Props) {
         </div>
       </section>
 
-      {/* Tienda online */}
+      {/* Presupuesto online */}
       <section className="pd-card" aria-labelledby="pd-shop-title">
         <header className="pd-card__head">
           <h2 id="pd-shop-title" className="pd-h2">
-            Tienda online
+            Presupuesto online
           </h2>
           <Link href={ordersHref} className="pd-link">
-            Ver todos los pedidos
+            Ver todos los presupuestos
           </Link>
         </header>
         <dl className="pd-stats pd-stats--shop">
           <div>
-            <dt>Pedidos por atender</dt>
+            <dt>Nuevos por contactar</dt>
             <dd>{data.shop.pending}</dd>
           </div>
           <div>
-            <dt>Pedidos (30 días)</dt>
+            <dt>Presupuestos (30 días)</dt>
             <dd>{data.shop.orders30}</dd>
+          </div>
+          <div>
+            <dt>Presupuestado (30 días)</dt>
+            <dd className="pd-stats__money">
+              {data.shop.quoted30 ? formatARS(data.shop.quoted30) : '—'}
+            </dd>
           </div>
           <div>
             <dt>Vendido (30 días)</dt>
             <dd className="pd-stats__money">
-              {data.shop.sales30 ? formatARS(data.shop.sales30) : '—'}
-            </dd>
-          </div>
-          <div>
-            <dt>Cobrado (30 días)</dt>
-            <dd className="pd-stats__money">
-              {data.shop.paid30 ? formatARS(data.shop.paid30) : '—'}
+              {data.shop.won30 ? formatARS(data.shop.won30) : '—'}
             </dd>
           </div>
         </dl>
@@ -238,8 +238,8 @@ export async function DashboardView({ payload, user }: Props) {
             <ShoppingCart aria-hidden="true" size={28} strokeWidth={1.5} />
             <p>
               {data.shop.products
-                ? 'Todavía no hay pedidos. Cuando alguien compre en la tienda, lo vas a ver acá.'
-                : 'Para empezar a vender, abrí un producto y activá "Vender este producto en la tienda online".'}
+                ? 'Todavía no hay presupuestos. Cuando alguien pida uno en la web, lo vas a ver acá.'
+                : 'Para empezar, abrí un producto y activá "Ofrecer en el presupuesto online".'}
             </p>
           </div>
         ) : (
@@ -256,13 +256,13 @@ export async function DashboardView({ payload, user }: Props) {
                       <span className="pd-tag pd-tag--quotation">{order.orderNumber}</span>
                     </span>
                     <span className="pd-lead__meta">
-                      {formatARS(order.total ?? 0)} · {paymentMethodLabel(order.paymentMethod)} ·{' '}
-                      {paymentStatusLabel(order.paymentStatus)}
+                      {formatARS(order.total ?? 0)} · {order.customer?.phone}
+                      {order.customer?.city ? ` · ${order.customer.city}` : ''}
                     </span>
                   </span>
                   <span className="pd-lead__side">
                     <span className={`pd-status pd-status--order-${order.status}`}>
-                      {orderStatusLabel(order.status)}
+                      {quoteStatusLabel(order.status)}
                     </span>
                     <time dateTime={order.createdAt}>{timeAgo(order.createdAt, now)}</time>
                   </span>

@@ -1,43 +1,40 @@
 import { APIError, type CollectionConfig, type Field } from 'payload'
 
 import { authenticated, nobody, superAdmin } from '@/access'
-import { absoluteUrl, ROUTES } from '@/lib/routes'
-import { notifyOrderStatus, shopToCustomerWhatsApp } from '@/lib/shop/notify'
-import {
-  ORDER_STATUSES,
-  orderStatusLabel,
-  PAYMENT_METHODS,
-  PAYMENT_STATUSES,
-  paymentStatusLabel,
-} from '@/lib/shop/options'
+import { shopToCustomerWhatsApp } from '@/lib/shop/notify'
+import { QUOTE_STATUSES, quoteStatusLabel } from '@/lib/shop/options'
+import { quoteUrl } from '@/lib/shop/links'
 
-/** Datos que cargó el cliente: visibles pero no editables. */
+/** Datos que cargó el cliente o calculó el sistema: visibles pero no editables. */
 const ro = (field: Field): Field =>
   ({ ...field, admin: { ...(field.admin ?? {}), readOnly: true } }) as Field
 
+/**
+ * Presupuestos del sitio (slug "orders" por compatibilidad). Se crean solos cuando un
+ * cliente arma su lista y deja su WhatsApp; el equipo lo contacta y marca cómo terminó.
+ */
 export const Orders: CollectionConfig<'orders'> = {
   slug: 'orders',
-  labels: { singular: 'Pedido', plural: 'Pedidos' },
+  labels: { singular: 'Presupuesto', plural: 'Presupuestos' },
   admin: {
     group: 'Ventas',
     useAsTitle: 'orderNumber',
     defaultColumns: [
       'orderNumber',
       'customerName',
+      'customer.phone',
       'total',
-      'paymentMethod',
-      'paymentStatus',
       'status',
       'createdAt',
     ],
-    listSearchableFields: ['orderNumber', 'customerName', 'customer.email', 'customer.phone'],
+    listSearchableFields: ['orderNumber', 'customerName', 'customer.phone', 'customer.city'],
     description:
-      'Pedidos de la tienda online. Cambiá el estado a medida que avanza: el cliente recibe un email y ve el seguimiento en su enlace.',
+      'Presupuestos pedidos desde la web. Escribile al cliente por WhatsApp y cambiá el estado según cómo avance.',
     pagination: { defaultLimit: 50 },
   },
   defaultSort: '-createdAt',
   access: {
-    // Los pedidos solo se crean desde el checkout (servidor, con validación y precios recalculados).
+    // Solo se crean desde la web (servidor, con precios calculados ahí).
     create: nobody,
     read: authenticated,
     update: authenticated,
@@ -45,13 +42,14 @@ export const Orders: CollectionConfig<'orders'> = {
   },
   endpoints: [
     {
-      // Enlaces del pedido para el panel (seguimiento del cliente y aviso por WhatsApp).
+      // Enlaces del presupuesto para el panel (ver como el cliente y escribirle por WhatsApp).
       path: '/:id/links',
       method: 'get',
       handler: async (req) => {
         if (!req.user) throw new APIError('No autorizado.', 401)
         const id = req.routeParams?.id
-        if (typeof id !== 'string' || !/^\d+$/.test(id)) throw new APIError('Pedido inválido.', 400)
+        if (typeof id !== 'string' || !/^\d+$/.test(id))
+          throw new APIError('Presupuesto inválido.', 400)
         const order = await req.payload.findByID({
           collection: 'orders',
           id,
@@ -60,7 +58,7 @@ export const Orders: CollectionConfig<'orders'> = {
           overrideAccess: true,
         })
         const token = (order as { accessToken?: string }).accessToken ?? ''
-        const trackingUrl = absoluteUrl(`${ROUTES.order}/${order.orderNumber}?t=${token}`)
+        const trackingUrl = quoteUrl(order, token)
         return Response.json(
           { trackingUrl, whatsappUrl: shopToCustomerWhatsApp(order, trackingUrl) },
           { headers: { 'Cache-Control': 'no-store' } },
@@ -70,38 +68,13 @@ export const Orders: CollectionConfig<'orders'> = {
   ],
   fields: [
     {
-      type: 'row',
-      fields: [
-        {
-          name: 'status',
-          label: 'Estado del pedido',
-          type: 'select',
-          required: true,
-          defaultValue: 'pending',
-          index: true,
-          options: ORDER_STATUSES.map((o) => ({ ...o })),
-          admin: { width: '50%' },
-        },
-        {
-          name: 'paymentStatus',
-          label: 'Estado del pago',
-          type: 'select',
-          required: true,
-          defaultValue: 'pending',
-          index: true,
-          options: PAYMENT_STATUSES.map((o) => ({ ...o })),
-          admin: { width: '50%' },
-        },
-      ],
-    },
-    {
-      name: 'statusNote',
-      label: 'Mensaje para el cliente (opcional)',
-      type: 'textarea',
-      admin: {
-        description:
-          'Se incluye en el email del cambio de estado y queda en el historial (después se vacía). Ej: "Podés pasar a retirar de 8 a 12 h".',
-      },
+      name: 'status',
+      label: 'Estado',
+      type: 'select',
+      required: true,
+      defaultValue: 'pending',
+      index: true,
+      options: QUOTE_STATUSES.map((o) => ({ ...o })),
     },
     {
       name: 'actions',
@@ -123,9 +96,14 @@ export const Orders: CollectionConfig<'orders'> = {
               label: 'Producto',
               type: 'text',
               required: true,
-              admin: { width: '40%' },
+              admin: { width: '35%' },
             },
-            { name: 'variant', label: 'Color / medida', type: 'text', admin: { width: '20%' } },
+            {
+              name: 'variant',
+              label: 'Color / medida / accesorios',
+              type: 'text',
+              admin: { width: '25%' },
+            },
             {
               name: 'quantity',
               label: 'Cantidad',
@@ -151,27 +129,25 @@ export const Orders: CollectionConfig<'orders'> = {
         },
         { name: 'product', label: 'Ficha', type: 'relationship', relationTo: 'products' },
         { name: 'sku', label: 'Código', type: 'text' },
-        { name: 'listPrice', label: 'Precio de lista', type: 'number' },
       ],
     },
     {
       type: 'row',
       fields: [
-        ro({ name: 'subtotal', label: 'Subtotal', type: 'number', admin: { width: '25%' } }),
+        ro({ name: 'total', label: 'Total de lista', type: 'number', admin: { width: '25%' } }),
         ro({
-          name: 'discount',
-          label: 'Descuento por medio de pago',
+          name: 'transferTotal',
+          label: 'Con transferencia / efectivo',
           type: 'number',
           admin: { width: '25%' },
         }),
-        {
-          name: 'shippingCost',
-          label: 'Envío',
+        ro({ name: 'installments', label: 'Cuotas', type: 'number', admin: { width: '25%' } }),
+        ro({
+          name: 'installmentAmount',
+          label: 'Valor de la cuota',
           type: 'number',
-          min: 0,
-          admin: { width: '25%', description: 'Editable si el envío era "a coordinar".' },
-        },
-        ro({ name: 'total', label: 'Total', type: 'number', admin: { width: '25%' } }),
+          admin: { width: '25%' },
+        }),
       ],
     },
     {
@@ -187,19 +163,8 @@ export const Orders: CollectionConfig<'orders'> = {
             {
               type: 'row',
               fields: [
-                ro({ name: 'email', label: 'Email', type: 'email', admin: { width: '34%' } }),
-                ro({
-                  name: 'phone',
-                  label: 'Teléfono / WhatsApp',
-                  type: 'text',
-                  admin: { width: '33%' },
-                }),
-                ro({
-                  name: 'document',
-                  label: 'DNI / CUIT',
-                  type: 'text',
-                  admin: { width: '33%' },
-                }),
+                ro({ name: 'phone', label: 'WhatsApp', type: 'text', admin: { width: '50%' } }),
+                ro({ name: 'city', label: 'Localidad', type: 'text', admin: { width: '50%' } }),
               ],
             },
           ],
@@ -208,82 +173,12 @@ export const Orders: CollectionConfig<'orders'> = {
       ],
     },
     {
-      type: 'collapsible',
-      label: 'Entrega',
-      fields: [
-        {
-          name: 'shipping',
-          label: false,
-          type: 'group',
-          fields: [
-            {
-              type: 'row',
-              fields: [
-                ro({
-                  name: 'label',
-                  label: 'Forma de entrega',
-                  type: 'text',
-                  admin: { width: '50%' },
-                }),
-                ro({
-                  name: 'type',
-                  label: 'Tipo',
-                  type: 'select',
-                  options: [
-                    { label: 'Retiro en el taller', value: 'pickup' },
-                    { label: 'Envío a domicilio', value: 'delivery' },
-                  ],
-                  admin: { width: '25%' },
-                }),
-                ro({
-                  name: 'quoteLater',
-                  label: 'Costo a coordinar',
-                  type: 'checkbox',
-                  admin: { width: '25%' },
-                }),
-              ],
-            },
-            {
-              type: 'row',
-              fields: [
-                { name: 'address', label: 'Dirección', type: 'text', admin: { width: '40%' } },
-                { name: 'city', label: 'Localidad', type: 'text', admin: { width: '25%' } },
-                { name: 'province', label: 'Provincia', type: 'text', admin: { width: '20%' } },
-                { name: 'zip', label: 'CP', type: 'text', admin: { width: '15%' } },
-              ],
-            },
-            {
-              type: 'row',
-              fields: [
-                {
-                  name: 'carrier',
-                  label: 'Transporte / quién lo lleva',
-                  type: 'text',
-                  admin: { width: '34%' },
-                },
-                {
-                  name: 'trackingCode',
-                  label: 'Código de seguimiento',
-                  type: 'text',
-                  admin: { width: '33%' },
-                },
-                {
-                  name: 'trackingUrl',
-                  label: 'Enlace de seguimiento',
-                  type: 'text',
-                  admin: { width: '33%' },
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
       name: 'internalNotes',
       label: 'Notas internas',
       type: 'textarea',
-      admin: { description: 'Solo las ve el equipo.' },
+      admin: {
+        description: 'Solo las ve el equipo. Ej: "Le mandé fotos, vuelve a escribir el lunes".',
+      },
     },
     {
       name: 'timeline',
@@ -304,13 +199,13 @@ export const Orders: CollectionConfig<'orders'> = {
             { name: 'label', label: 'Movimiento', type: 'text', admin: { width: '70%' } },
           ],
         },
-        { name: 'note', label: 'Mensaje', type: 'text' },
+        { name: 'note', label: 'Detalle', type: 'text' },
       ],
     },
     // --- Columna derecha -----------------------------------------------------------------
     ro({
       name: 'orderNumber',
-      label: 'N.º de pedido',
+      label: 'N.º de presupuesto',
       type: 'text',
       required: true,
       unique: true,
@@ -318,20 +213,21 @@ export const Orders: CollectionConfig<'orders'> = {
       admin: { position: 'sidebar' },
     }),
     ro({
-      name: 'paymentMethod',
-      label: 'Medio de pago',
-      type: 'select',
-      required: true,
-      options: PAYMENT_METHODS.map((o) => ({ ...o })),
-      admin: { position: 'sidebar' },
+      name: 'whatsappSent',
+      label: 'Enviado solo por WhatsApp',
+      type: 'checkbox',
+      admin: {
+        position: 'sidebar',
+        description: 'Se marca si la web se lo envió al cliente automáticamente (API de WhatsApp).',
+      },
     }),
     ro({
-      name: 'paymentReference',
-      label: 'Referencia del pago (Mercado Pago)',
+      name: 'source',
+      label: 'Origen (campaña / sitio)',
       type: 'text',
       admin: { position: 'sidebar' },
     }),
-    // Token del enlace de seguimiento: nunca se expone por la API.
+    // Token del enlace del presupuesto: nunca se expone por la API.
     {
       name: 'accessToken',
       type: 'text',
@@ -343,40 +239,14 @@ export const Orders: CollectionConfig<'orders'> = {
   ],
   hooks: {
     beforeChange: [
-      ({ data, originalDoc, operation, req }) => {
+      ({ data, originalDoc, operation }) => {
         if (operation !== 'update' || !originalDoc) return data
-        const entries: { date: string; label: string; note?: string }[] = []
-        const date = new Date().toISOString()
-        const note = typeof data.statusNote === 'string' ? data.statusNote.trim() : ''
-        // El mensaje se usa una sola vez (historial + email) y el campo queda vacío.
-        req.context.statusNote = note
-        data.statusNote = null
         if (data.status && data.status !== originalDoc.status)
-          entries.push({
-            date,
-            label: `Pedido: ${orderStatusLabel(data.status)}`,
-            note: note || undefined,
-          })
-        if (data.paymentStatus && data.paymentStatus !== originalDoc.paymentStatus)
-          entries.push({ date, label: `Pago: ${paymentStatusLabel(data.paymentStatus)}` })
-        if (entries.length)
-          data.timeline = [...(data.timeline ?? originalDoc.timeline ?? []), ...entries]
-        // El envío "a coordinar" se carga después: el total se recalcula.
-        if (typeof data.shippingCost === 'number' && data.shippingCost !== originalDoc.shippingCost)
-          data.total = (data.subtotal ?? originalDoc.subtotal ?? 0) + data.shippingCost
+          data.timeline = [
+            ...(data.timeline ?? originalDoc.timeline ?? []),
+            { date: new Date().toISOString(), label: `Estado: ${quoteStatusLabel(data.status)}` },
+          ]
         return data
-      },
-    ],
-    afterChange: [
-      async ({ doc, previousDoc, operation, req }) => {
-        if (operation !== 'update' || req.context?.skipOrderNotify) return doc
-        const statusChanged = doc.status !== previousDoc?.status
-        const paid = doc.paymentStatus === 'paid' && previousDoc?.paymentStatus !== 'paid'
-        if (statusChanged || paid) {
-          const note = typeof req.context.statusNote === 'string' ? req.context.statusNote : ''
-          await notifyOrderStatus(req.payload, doc, { statusChanged, paid, note }, req)
-        }
-        return doc
       },
     ],
   },

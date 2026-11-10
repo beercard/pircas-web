@@ -20,9 +20,14 @@ export type AnalyticsEventName =
   | 'phone_click'
   | 'map_click'
   | 'advisor_complete'
-  | 'add_to_cart'
-  | 'begin_checkout'
-  | 'purchase'
+  // Presupuesto online (tienda)
+  | 'add_to_quote'
+  | 'remove_from_quote'
+  | 'view_quote'
+  | 'begin_quote'
+  | 'generate_lead'
+  | 'quote_error'
+  | 'quote_whatsapp_click'
 
 export type AnalyticsParams = Record<string, string | number | boolean | undefined>
 
@@ -55,12 +60,13 @@ const META_STANDARD: Partial<Record<AnalyticsEventName, string>> = {
   contact_submit: 'Contact',
   whatsapp_click: 'Contact',
   phone_click: 'Contact',
-  add_to_cart: 'AddToCart',
-  begin_checkout: 'InitiateCheckout',
-  purchase: 'Purchase',
+  add_to_quote: 'AddToCart',
+  begin_quote: 'InitiateCheckout',
+  generate_lead: 'Lead',
+  quote_whatsapp_click: 'Contact',
 }
 
-const LEAD_EVENTS: AnalyticsEventName[] = ['quote_submit', 'contact_submit']
+const LEAD_EVENTS: AnalyticsEventName[] = ['quote_submit', 'contact_submit', 'generate_lead']
 
 const clean = (params: AnalyticsParams) =>
   Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined && v !== ''))

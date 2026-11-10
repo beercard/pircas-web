@@ -264,3 +264,21 @@ body:has([data-hide-footer-cta]) .floating-wa {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+/* Presupuesto en PDF: al imprimir solo queda el documento (sin header, footer ni botones). */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 14mm 16mm;
+  }
+
+  body:has([data-print-doc]) {
+    background: #fff;
+    padding: 0 !important;
+  }
+
+  body:has([data-print-doc]) > :not(main),
+  body:has([data-print-doc]) main > :not([data-print-doc]):not(:has([data-print-doc])) {
+    display: none !important;
+  }
+}

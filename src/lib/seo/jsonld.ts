@@ -81,12 +81,8 @@ export function breadcrumbJsonLd(items: Crumb[]): Json {
 }
 
 /** Producto sin precio (se cotiza a medida): no se declara `offers` para no generar datos falsos. */
-export function productJsonLd(
-  product: Product,
-  path: string,
-  brandName: string,
-  offer?: { price: number; inStock: boolean } | null,
-): Json {
+export function productJsonLd(product: Product, path: string, brandName: string): Json {
+  // Sin "offers": los precios no se publican (se informan en el presupuesto).
   const images = [img(product.featuredImage), ...(product.gallery ?? []).map((g) => img(g))].filter(
     Boolean,
   )
@@ -102,17 +98,6 @@ export function productJsonLd(
     brand: { '@type': 'Brand', name: brandName },
     manufacturer: { '@id': `${getSiteUrl()}/#organization` },
     sku: product.shop?.sku || undefined,
-    offers: offer
-      ? {
-          '@type': 'Offer',
-          price: offer.price,
-          priceCurrency: 'ARS',
-          availability: `https://schema.org/${offer.inStock ? 'InStock' : 'OutOfStock'}`,
-          itemCondition: 'https://schema.org/NewCondition',
-          seller: { '@id': `${getSiteUrl()}/#organization` },
-          url: absoluteUrl(path),
-        }
-      : undefined,
     additionalProperty: product.technicalSpecifications?.length
       ? product.technicalSpecifications.map((s) => ({
           '@type': 'PropertyValue',

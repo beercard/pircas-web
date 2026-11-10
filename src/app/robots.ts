@@ -20,17 +20,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: [
-          '/admin',
-          '/api/',
-          '/next/',
-          '/gracias',
-          '/carrito',
-          '/checkout',
-          '/pedido/',
-          '/seguimiento',
-          '/*?*q=',
-        ],
+        disallow: ['/admin', '/api/', '/next/', '/gracias', '/presupuesto', '/*?*q='],
       },
     ],
     sitemap: absoluteUrl('/sitemap.xml'),

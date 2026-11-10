@@ -1,22 +1,17 @@
 'use client'
 
-import { useDocumentInfo, useFormFields } from '@payloadcms/ui'
+import { useDocumentInfo } from '@payloadcms/ui'
 import { Copy, ExternalLink, MessageCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 type Links = { trackingUrl: string; whatsappUrl: string | null }
 
 /**
- * Acciones rápidas del pedido: avisar al cliente por WhatsApp (con el estado y el enlace de
- * seguimiento ya escritos), abrir el seguimiento que ve el cliente y copiar el enlace.
+ * Acciones rápidas del presupuesto: escribirle al cliente por WhatsApp (con el detalle y el
+ * enlace ya escritos), ver el presupuesto como lo ve el cliente y copiar el enlace.
  */
 export function OrderActions() {
   const { id } = useDocumentInfo()
-  // Se vuelve a pedir el enlace cuando cambia el estado guardado (el mensaje lo incluye).
-  const status = useFormFields(([fields]) => fields.status?.initialValue as string | undefined)
-  const payment = useFormFields(
-    ([fields]) => fields.paymentStatus?.initialValue as string | undefined,
-  )
   const [links, setLinks] = useState<Links | null>(null)
   const [copied, setCopied] = useState(false)
 
@@ -28,15 +23,15 @@ export function OrderActions() {
       .then((data: Links | null) => data && setLinks(data))
       .catch(() => {})
     return () => ctrl.abort()
-  }, [id, status, payment])
+  }, [id])
 
   if (!id || !links) return null
 
   return (
     <div className="pircas-order-actions">
       <p>
-        Al guardar un cambio de estado, el cliente recibe un email. También podés avisarle por
-        WhatsApp: el mensaje ya incluye el estado y su enlace de seguimiento.
+        Escribile al cliente por WhatsApp: el mensaje ya incluye su presupuesto con precios y el
+        enlace para verlo. Después cambiá el estado según cómo avance.
       </p>
       <div className="pircas-order-actions__row">
         {links.whatsappUrl && (
@@ -46,7 +41,7 @@ export function OrderActions() {
             rel="noopener noreferrer"
             className="pircas-order-actions__btn pircas-order-actions__btn--wa"
           >
-            <MessageCircle aria-hidden="true" size={16} /> Avisar por WhatsApp
+            <MessageCircle aria-hidden="true" size={16} /> Escribir por WhatsApp
           </a>
         )}
         <a
@@ -55,7 +50,7 @@ export function OrderActions() {
           rel="noopener noreferrer"
           className="pircas-order-actions__btn"
         >
-          <ExternalLink aria-hidden="true" size={16} /> Ver seguimiento del cliente
+          <ExternalLink aria-hidden="true" size={16} /> Ver presupuesto del cliente
         </a>
         <button
           type="button"

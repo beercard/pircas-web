@@ -1950,7 +1950,7 @@ h4 {
 }
 
 // =============================================================================
-// Tienda online: pedidos
+// Presupuesto online
 // =============================================================================
 .pd-stats--shop {
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1966,30 +1966,23 @@ h4 {
     color: #fff;
   }
 
-  &--order-confirmed,
-  &--order-preparing {
+  &--order-contacted {
     background: var(--p-info-tint);
     color: var(--p-info);
   }
 
-  &--order-ready,
-  &--order-shipped {
-    background: var(--p-warning-tint);
-    color: var(--p-warning);
-  }
-
-  &--order-delivered {
+  &--order-won {
     background: var(--p-success-tint);
     color: var(--p-success);
   }
 
-  &--order-cancelled {
+  &--order-lost {
     background: var(--p-danger-tint);
     color: var(--p-danger);
   }
 }
 
-// Acciones del pedido (src/components/admin/orders/OrderActions.tsx).
+// Acciones del presupuesto (src/components/admin/orders/OrderActions.tsx).
 .pircas-order-actions {
   display: flex;
   flex-direction: column;

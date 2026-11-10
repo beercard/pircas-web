@@ -1,45 +1,59 @@
 'use client'
 
 import * as Dialog from '@radix-ui/react-dialog'
-import { ShoppingBag, X } from 'lucide-react'
+import { ClipboardList, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
 import { buttonVariants } from '@/components/ui/button-variants'
 import { cn } from '@/lib/cn'
-import { formatPrice, orderTotals } from '@/lib/shop/pricing'
 import { ROUTES } from '@/lib/routes'
 
-import { cart, useCart } from './cart-store'
-import { CartLines } from './CartLines'
+import { quote, useQuote } from './quote-store'
+import { QuoteLines } from './QuoteLines'
 
-/** Botón del carrito del encabezado + cajón lateral que se abre al agregar un producto. */
-export function CartButton() {
-  const { lines, open, count } = useCart()
+/** Botón "Mi presupuesto" del encabezado (reemplaza al CTA) + cajón que se abre al agregar un producto. */
+export function QuoteButton() {
+  const { lines, open, count } = useQuote()
   const pathname = usePathname()
 
   // Al navegar se cierra el cajón.
-  useEffect(() => cart.close(), [pathname])
-
-  const priced = lines.map((l) => ({ breakdown: l.product.price, quantity: l.quantity }))
-  const none = { cost: 0, quoteLater: false }
-  const transfer = orderTotals(priced, 'transfer', none)
-  const list = orderTotals(priced, 'mercadopago', none)
+  useEffect(() => quote.close(), [pathname])
 
   return (
-    <Dialog.Root open={open} onOpenChange={(o) => (o ? cart.open() : cart.close())}>
+    <Dialog.Root open={open} onOpenChange={(o) => (o ? quote.open() : quote.close())}>
+      {/* Celular: ícono con contador. Desde tablet: es el botón principal del header. */}
       <Dialog.Trigger
-        className="relative flex size-11 items-center justify-center hover:text-brand"
+        className="relative flex h-11 items-center gap-2 px-1.5 transition-colors duration-250 hover:text-brand sm:h-auto sm:min-h-12 sm:gap-2.5 sm:rounded-door sm:bg-brand sm:pr-7 sm:pl-5 sm:text-white sm:hover:bg-ink sm:hover:text-white"
         aria-label={
-          count ? `Carrito: ${count} ${count === 1 ? 'producto' : 'productos'}` : 'Carrito vacío'
+          count
+            ? `Mi presupuesto: ${count} ${count === 1 ? 'producto' : 'productos'}`
+            : 'Mi presupuesto (vacío)'
         }
       >
-        <ShoppingBag aria-hidden="true" className="size-[22px]" strokeWidth={1.6} />
+        <span className="relative">
+          <ClipboardList
+            aria-hidden="true"
+            className="size-[22px] sm:size-[18px]"
+            strokeWidth={1.6}
+          />
+          {count > 0 && (
+            <span
+              aria-hidden="true"
+              className="absolute -top-2 -right-2.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-brand px-1 text-[0.625rem] font-semibold text-white sm:hidden"
+            >
+              {count > 99 ? '99+' : count}
+            </span>
+          )}
+        </span>
+        <span className="hidden text-label text-[0.6875rem] font-medium whitespace-nowrap uppercase sm:inline">
+          Mi presupuesto
+        </span>
         {count > 0 && (
           <span
             aria-hidden="true"
-            className="absolute top-1 right-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-brand px-1 text-[0.625rem] font-semibold text-white"
+            className="hidden h-5 min-w-5 items-center justify-center rounded-full bg-white px-1.5 text-[0.6875rem] font-semibold text-brand sm:flex"
           >
             {count > 99 ? '99+' : count}
           </span>
@@ -53,12 +67,12 @@ export function CartButton() {
         >
           <header className="flex h-[4.5rem] shrink-0 items-center justify-between border-b border-line px-5">
             <Dialog.Title className="text-lg tracking-[-0.01em]">
-              Tu carrito{' '}
+              Tu presupuesto{' '}
               {count > 0 && <span className="text-sm font-normal text-muted">({count})</span>}
             </Dialog.Title>
             <Dialog.Close
               className="-mr-2 flex size-11 items-center justify-center hover:text-brand"
-              aria-label="Cerrar carrito"
+              aria-label="Cerrar presupuesto"
             >
               <X aria-hidden="true" className="size-5" />
             </Dialog.Close>
@@ -66,54 +80,43 @@ export function CartButton() {
 
           {lines.length === 0 ? (
             <div className="flex flex-1 flex-col items-center justify-center gap-5 px-8 text-center">
-              <ShoppingBag aria-hidden="true" className="size-10 text-muted" strokeWidth={1.2} />
-              <p className="text-base font-normal text-muted">Todavía no agregaste productos.</p>
+              <ClipboardList aria-hidden="true" className="size-10 text-muted" strokeWidth={1.2} />
+              <p className="text-base font-normal text-muted">
+                Agregá los productos que te interesan y recibí el presupuesto en el acto.
+              </p>
               <Link
                 href={ROUTES.shop}
                 className={buttonVariants({ variant: 'primary', size: 'sm' })}
               >
-                Ver la tienda
+                Ver productos
               </Link>
             </div>
           ) : (
             <>
               <div className="flex-1 overflow-y-auto overscroll-contain px-5">
-                <CartLines lines={lines} compact onNavigate={() => cart.close()} />
+                <QuoteLines lines={lines} compact onNavigate={() => quote.close()} />
               </div>
               <footer className="shrink-0 border-t border-line bg-white px-5 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
-                <dl className="mb-4 flex flex-col gap-1.5 text-sm">
-                  <div className="flex items-baseline justify-between gap-4">
-                    <dt className="font-medium">Total con transferencia</dt>
-                    <dd className="text-xl font-semibold tabular-nums">
-                      {formatPrice(transfer.total)}
-                    </dd>
-                  </div>
-                  {list.total > transfer.total && (
-                    <div className="flex items-baseline justify-between gap-4 font-normal text-muted">
-                      <dt>Con Mercado Pago</dt>
-                      <dd className="tabular-nums">{formatPrice(list.total)}</dd>
-                    </div>
-                  )}
-                </dl>
                 <div className="flex flex-col gap-2">
                   <Link
-                    href={ROUTES.checkout}
+                    href={ROUTES.quoteList}
                     className={cn(buttonVariants({ variant: 'primary' }), 'justify-center')}
                   >
-                    Finalizar compra
+                    Recibir mi presupuesto
                   </Link>
-                  <Link
-                    href={ROUTES.cart}
+                  <button
+                    type="button"
+                    onClick={() => quote.close()}
                     className={cn(
                       buttonVariants({ variant: 'outline', size: 'sm' }),
                       'justify-center',
                     )}
                   >
-                    Ver carrito
-                  </Link>
+                    Seguir agregando
+                  </button>
                 </div>
                 <p className="mt-3 text-center text-xs font-normal text-muted">
-                  El envío se calcula al finalizar la compra.
+                  Dejás tu WhatsApp y ves el precio al instante.
                 </p>
               </footer>
             </>

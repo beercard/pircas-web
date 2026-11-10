@@ -181,7 +181,7 @@ export interface Product {
   shop?: {
     enabled?: boolean | null;
     /**
-     * El precio con Mercado Pago. El precio con transferencia se calcula solo con el descuento.
+     * Precio de la medida estándar, con tarjeta en cuotas. El de transferencia se calcula con el descuento.
      */
     price?: number | null;
     /**
@@ -189,30 +189,31 @@ export interface Product {
      */
     sku?: string | null;
     /**
-     * Vacío = el general de la tienda.
-     */
-    transferDiscount?: number | null;
-    /**
-     * Vacío = el general de la tienda.
-     */
-    mpDiscount?: number | null;
-    /**
-     * Vacío = las generales de la tienda.
-     */
-    installments?: number | null;
-    /**
-     * Si cargás colores, el cliente elige uno al comprar.
-     */
-    colors?: ('blanco' | 'negro' | 'anodizado' | 'madera' | 'bronce')[] | null;
-    /**
-     * Se muestra en la tarjeta y en el pedido.
+     * Según catálogo. Se muestra en la tarjeta y en el presupuesto.
      */
     measure?: string | null;
     /**
-     * Si está activo, se descuenta con cada pedido y no se vende sin stock.
+     * El cliente elige uno.
      */
-    trackStock?: boolean | null;
-    stock?: number | null;
+    colors?: ('blanco' | 'negro')[] | null;
+    /**
+     * Para ventanas: celosía, mosquitero y reja. El cliente los suma si quiere; el precio se agrega al presupuesto.
+     */
+    accessories?:
+      | {
+          kind: 'celosia' | 'mosquitero' | 'reja';
+          price: number;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Vacío = el general.
+     */
+    transferDiscount?: number | null;
+    /**
+     * Vacío = las generales.
+     */
+    installments?: number | null;
   };
   category: number | ProductCategory;
   /**
@@ -409,7 +410,7 @@ export interface Media {
   };
 }
 /**
- * Ventanas, Puertas, Mamparas, Vidrios, Rejas… Se usan como filtros del catálogo.
+ * Ventanas, Puertas, Mamparas… Se usan como filtros del catálogo y de la tienda. Para una subcategoría (ej: Puertas → Módena), elegí la categoría principal.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "product-categories".
@@ -417,6 +418,10 @@ export interface Media {
 export interface ProductCategory {
   id: number;
   name: string;
+  /**
+   * Vacío = es una categoría principal. Ej: "Módena" → Puertas.
+   */
+  parent?: (number | null) | ProductCategory;
   description?: string | null;
   image?: (number | null) | Media;
   /**
@@ -1945,19 +1950,14 @@ export interface Lead {
   createdAt: string;
 }
 /**
- * Pedidos de la tienda online. Cambiá el estado a medida que avanza: el cliente recibe un email y ve el seguimiento en su enlace.
+ * Presupuestos pedidos desde la web. Escribile al cliente por WhatsApp y cambiá el estado según cómo avance.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "orders".
  */
 export interface Order {
   id: number;
-  status: 'pending' | 'confirmed' | 'preparing' | 'ready' | 'shipped' | 'delivered' | 'cancelled';
-  paymentStatus: 'pending' | 'paid' | 'rejected' | 'refunded';
-  /**
-   * Se incluye en el email del cambio de estado y queda en el historial (después se vacía). Ej: "Podés pasar a retirar de 8 a 12 h".
-   */
-  statusNote?: string | null;
+  status: 'pending' | 'contacted' | 'won' | 'lost';
   items?:
     | {
         name: string;
@@ -1967,38 +1967,21 @@ export interface Order {
         subtotal: number;
         product?: (number | null) | Product;
         sku?: string | null;
-        listPrice?: number | null;
         id?: string | null;
       }[]
     | null;
-  subtotal?: number | null;
-  discount?: number | null;
-  /**
-   * Editable si el envío era "a coordinar".
-   */
-  shippingCost?: number | null;
   total?: number | null;
+  transferTotal?: number | null;
+  installments?: number | null;
+  installmentAmount?: number | null;
   customerName: string;
   customer?: {
-    email?: string | null;
     phone?: string | null;
-    document?: string | null;
+    city?: string | null;
   };
   notes?: string | null;
-  shipping?: {
-    label?: string | null;
-    type?: ('pickup' | 'delivery') | null;
-    quoteLater?: boolean | null;
-    address?: string | null;
-    city?: string | null;
-    province?: string | null;
-    zip?: string | null;
-    carrier?: string | null;
-    trackingCode?: string | null;
-    trackingUrl?: string | null;
-  };
   /**
-   * Solo las ve el equipo.
+   * Solo las ve el equipo. Ej: "Le mandé fotos, vuelve a escribir el lunes".
    */
   internalNotes?: string | null;
   timeline?:
@@ -2010,8 +1993,11 @@ export interface Order {
       }[]
     | null;
   orderNumber: string;
-  paymentMethod: 'transfer' | 'mercadopago' | 'cash';
-  paymentReference?: string | null;
+  /**
+   * Se marca si la web se lo envió al cliente automáticamente (API de WhatsApp).
+   */
+  whatsappSent?: boolean | null;
+  source?: string | null;
   accessToken: string;
   updatedAt: string;
   createdAt: string;
@@ -2215,13 +2201,17 @@ export interface ProductsSelect<T extends boolean = true> {
         enabled?: T;
         price?: T;
         sku?: T;
-        transferDiscount?: T;
-        mpDiscount?: T;
-        installments?: T;
-        colors?: T;
         measure?: T;
-        trackStock?: T;
-        stock?: T;
+        colors?: T;
+        accessories?:
+          | T
+          | {
+              kind?: T;
+              price?: T;
+              id?: T;
+            };
+        transferDiscount?: T;
+        installments?: T;
       };
   category?: T;
   line?: T;
@@ -2382,6 +2372,7 @@ export interface ProductLinesSelect<T extends boolean = true> {
  */
 export interface ProductCategoriesSelect<T extends boolean = true> {
   name?: T;
+  parent?: T;
   description?: T;
   image?: T;
   generateSlug?: T;
@@ -3300,8 +3291,6 @@ export interface LeadsSelect<T extends boolean = true> {
  */
 export interface OrdersSelect<T extends boolean = true> {
   status?: T;
-  paymentStatus?: T;
-  statusNote?: T;
   items?:
     | T
     | {
@@ -3312,36 +3301,20 @@ export interface OrdersSelect<T extends boolean = true> {
         subtotal?: T;
         product?: T;
         sku?: T;
-        listPrice?: T;
         id?: T;
       };
-  subtotal?: T;
-  discount?: T;
-  shippingCost?: T;
   total?: T;
+  transferTotal?: T;
+  installments?: T;
+  installmentAmount?: T;
   customerName?: T;
   customer?:
     | T
     | {
-        email?: T;
         phone?: T;
-        document?: T;
+        city?: T;
       };
   notes?: T;
-  shipping?:
-    | T
-    | {
-        label?: T;
-        type?: T;
-        quoteLater?: T;
-        address?: T;
-        city?: T;
-        province?: T;
-        zip?: T;
-        carrier?: T;
-        trackingCode?: T;
-        trackingUrl?: T;
-      };
   internalNotes?: T;
   timeline?:
     | T
@@ -3352,8 +3325,8 @@ export interface OrdersSelect<T extends boolean = true> {
         id?: T;
       };
   orderNumber?: T;
-  paymentMethod?: T;
-  paymentReference?: T;
+  whatsappSent?: T;
+  source?: T;
   accessToken?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -4150,7 +4123,7 @@ export interface FormsSetting {
   createdAt?: string | null;
 }
 /**
- * Descuentos, cuotas, medios de pago y envíos de la tienda. El precio de cada producto se carga en el producto ("Venta online").
+ * Cómo se calcula el presupuesto automático de la web. El precio de cada producto (y de sus accesorios) se carga en el producto, en "Presupuesto online". Los precios no se muestran en la web: el cliente los ve en su presupuesto.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "shop-settings".
@@ -4158,7 +4131,7 @@ export interface FormsSetting {
 export interface ShopSetting {
   id: number;
   /**
-   * Si la desactivás, se oculta la tienda y no se pueden hacer pedidos (el catálogo sigue visible).
+   * Si lo desactivás, se oculta la tienda y no se pueden pedir presupuestos (el catálogo sigue visible).
    */
   enabled?: boolean | null;
   /**
@@ -4166,41 +4139,9 @@ export interface ShopSetting {
    */
   announcement?: string | null;
   transferDiscount?: number | null;
-  mpDiscount?: number | null;
   installments?: number | null;
+  validityDays?: number | null;
   thanksMessage?: string | null;
-  transfer?: {
-    enabled?: boolean | null;
-    holder?: string | null;
-    bank?: string | null;
-    cbu?: string | null;
-    alias?: string | null;
-    cuit?: string | null;
-    instructions?: string | null;
-  };
-  mercadopago?: {
-    /**
-     * Con la cuenta conectada (la configura quien administra el sitio) el cliente paga online al terminar la compra. Sin conectar, el pedido queda registrado y le enviás el link de pago.
-     */
-    enabled?: boolean | null;
-  };
-  cash?: {
-    enabled?: boolean | null;
-  };
-  /**
-   * El cliente elige una al comprar. La primera es la predeterminada.
-   */
-  shippingMethods?:
-    | {
-        label: string;
-        type: 'pickup' | 'delivery';
-        description?: string | null;
-        quoteLater?: boolean | null;
-        price?: number | null;
-        freeFrom?: number | null;
-        id?: string | null;
-      }[]
-    | null;
   /**
    * Si queda vacío se usan los destinatarios de las consultas (Formularios y cotizador).
    */
@@ -4762,41 +4703,9 @@ export interface ShopSettingsSelect<T extends boolean = true> {
   enabled?: T;
   announcement?: T;
   transferDiscount?: T;
-  mpDiscount?: T;
   installments?: T;
+  validityDays?: T;
   thanksMessage?: T;
-  transfer?:
-    | T
-    | {
-        enabled?: T;
-        holder?: T;
-        bank?: T;
-        cbu?: T;
-        alias?: T;
-        cuit?: T;
-        instructions?: T;
-      };
-  mercadopago?:
-    | T
-    | {
-        enabled?: T;
-      };
-  cash?:
-    | T
-    | {
-        enabled?: T;
-      };
-  shippingMethods?:
-    | T
-    | {
-        label?: T;
-        type?: T;
-        description?: T;
-        quoteLater?: T;
-        price?: T;
-        freeFrom?: T;
-        id?: T;
-      };
   notificationEmails?:
     | T
     | {

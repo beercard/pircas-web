@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 
 import type { Product, Project } from '@/payload-types'
 import type { ShopProduct } from '@/lib/shop/config'
-import { DEFAULT_PRICE_RULES, priceBreakdown } from '@/lib/shop/pricing'
 import {
   clip,
   productSeoDescription,
@@ -21,7 +20,10 @@ const product = (over: Partial<Product> = {}) =>
 
 const shop = {
   measure: '0,80 × 2,00 m',
-  price: priceBreakdown(37375, DEFAULT_PRICE_RULES),
+  colors: [
+    { value: 'blanco', label: 'Blanco', hex: '#fff' },
+    { value: 'negro', label: 'Negro', hex: '#000' },
+  ],
 } as ShopProduct
 
 describe('SEO automático', () => {
@@ -37,13 +39,13 @@ describe('SEO automático', () => {
     expect(productSeoDescription(product(), null)).toMatch(/Coronda, Santa Fe/)
   })
 
-  it('producto a la venta: precio, cuotas y entrega en la descripción', () => {
+  it('producto del presupuesto online: sin precios, con medida, colores y WhatsApp', () => {
     const d = productSeoDescription(product({ name: 'Puerta placa' }), shop)
-    expect(d).toContain('$ 29.900 con transferencia')
-    expect(d).toContain('3 cuotas sin interés')
+    expect(d).not.toMatch(/\$/)
+    expect(d).toContain('blanco o negro')
     expect(d.length).toBeLessThanOrEqual(158)
     expect(productSeoTitle(product({ name: 'Puerta placa' }), shop)).toBe(
-      'Puerta placa: precio online',
+      'Puerta placa: presupuesto online',
     )
   })
 

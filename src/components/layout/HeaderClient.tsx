@@ -9,7 +9,7 @@ import { buttonVariants } from '@/components/ui/button-variants'
 import { BrandLogo, DoorShape } from '@/components/ui/Brand'
 import { cn } from '@/lib/cn'
 
-import { CartButton } from '@/components/shop/CartDrawer'
+import { QuoteButton } from '@/components/shop/QuoteButton'
 
 import { MobileMenu } from './MobileMenu'
 import { isActivePath, type NavItem, type SimpleLink } from './nav-types'
@@ -19,7 +19,7 @@ type Props = {
   cta: SimpleLink
   brandName: string
   logo: { url: string; width: number; height: number } | null
-  /** Muestra el carrito (tienda abierta). */
+  /** Muestra el botón del presupuesto (tienda abierta). */
   shop?: boolean
   /** Texto de la barra superior (promo de la tienda). */
   announcement?: string | null
@@ -52,18 +52,10 @@ export function HeaderLogo({ brandName, logo }: Pick<Props, 'brandName' | 'logo'
 export function HeaderClient({ nav: allNav, cta, brandName, logo, shop, announcement }: Props) {
   const nav = allNav.filter((i) => !AUDIENCE_PATHS.includes(i.href))
   const audience = allNav.filter((i) => AUDIENCE_PATHS.includes(i.href))
-  const mobileNav: NavItem[] = shop
-    ? [
-        ...allNav,
-        {
-          href: '/seguimiento',
-          label: 'Seguí tu pedido',
-          external: false,
-          newTab: false,
-          mega: null,
-        },
-      ]
-    : allNav
+  // Con la tienda abierta, el botón del menú lleva al presupuesto (un solo CTA).
+  const mobileCta: SimpleLink = shop
+    ? { href: '/presupuesto', label: 'Mi presupuesto', external: false, newTab: false }
+    : cta
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [megaIndex, setMegaIndex] = useState<number | null>(null)
@@ -124,10 +116,10 @@ export function HeaderClient({ nav: allNav, cta, brandName, logo, shop, announce
             {shop && (
               <li>
                 <Link
-                  href="/seguimiento"
+                  href="/presupuesto"
                   className="whitespace-nowrap text-white/80 hover:text-brand-soft"
                 >
-                  Seguí tu pedido
+                  Tu presupuesto
                 </Link>
               </li>
             )}
@@ -186,17 +178,21 @@ export function HeaderClient({ nav: allNav, cta, brandName, logo, shop, announce
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3.5">
-            {shop && <CartButton />}
-            <Link
-              href={cta.href}
-              className={cn(
-                buttonVariants({ variant: 'primary', size: 'sm' }),
-                'hidden sm:inline-flex',
-              )}
-            >
-              {cta.label}
-            </Link>
-            <MobileMenu nav={mobileNav} cta={cta} brandName={brandName} pathname={pathname} />
+            {/* Con la tienda abierta, el botón principal es el presupuesto (no se duplica el CTA). */}
+            {shop ? (
+              <QuoteButton />
+            ) : (
+              <Link
+                href={cta.href}
+                className={cn(
+                  buttonVariants({ variant: 'primary', size: 'sm' }),
+                  'hidden sm:inline-flex',
+                )}
+              >
+                {cta.label}
+              </Link>
+            )}
+            <MobileMenu nav={allNav} cta={mobileCta} brandName={brandName} pathname={pathname} />
           </div>
         </div>
 

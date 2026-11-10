@@ -111,10 +111,7 @@ export async function getDashboardData(payload: Payload, isSuperAdmin: boolean) 
     payload.find({
       collection: 'orders',
       where: {
-        and: [
-          { createdAt: { greater_than_equal: since30 } },
-          { status: { not_equals: 'cancelled' } },
-        ],
+        and: [{ createdAt: { greater_than_equal: since30 } }, { status: { not_equals: 'lost' } }],
       },
       limit: 2000,
       depth: 0,
@@ -279,9 +276,9 @@ export async function getDashboardData(payload: Payload, isSuperAdmin: boolean) 
       recent: recentOrders.docs,
       pending: pendingOrders.totalDocs,
       orders30: orders30.docs.length,
-      sales30: orders30.docs.reduce((sum, o) => sum + (o.total ?? 0), 0),
-      paid30: orders30.docs
-        .filter((o) => o.paymentStatus === 'paid')
+      quoted30: orders30.docs.reduce((sum, o) => sum + (o.total ?? 0), 0),
+      won30: orders30.docs
+        .filter((o) => o.status === 'won')
         .reduce((sum, o) => sum + (o.total ?? 0), 0),
       products: shopProducts.totalDocs,
     },

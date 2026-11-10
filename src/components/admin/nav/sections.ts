@@ -36,10 +36,10 @@ export const NAV_SECTIONS: NavSectionConfig[] = [
   },
   {
     key: 'orders',
-    label: 'Pedidos',
+    label: 'Presupuestos',
     icon: 'cart',
     badge: 'newOrders',
-    items: [{ label: 'Pedidos', entity: c('orders') }],
+    items: [{ label: 'Presupuestos', entity: c('orders') }],
   },
   {
     key: 'catalog',
@@ -82,7 +82,7 @@ export const NAV_SECTIONS: NavSectionConfig[] = [
     icon: 'settings',
     items: [
       { label: 'Datos del negocio', entity: g('site-settings') },
-      { label: 'Tienda online', entity: g('shop-settings') },
+      { label: 'Presupuesto online', entity: g('shop-settings') },
       { label: 'Formularios y cotizador', entity: g('forms-settings') },
       { label: 'Asesor virtual', entity: g('advisor') },
       { label: 'Analítica', entity: g('analytics') },

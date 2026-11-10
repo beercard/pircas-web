@@ -5,13 +5,11 @@ import { buttonVariants } from '@/components/ui/button-variants'
 import { cn } from '@/lib/cn'
 import type { MadeToMeasureItem } from '@/lib/shop/catalog'
 import type { ShopProduct } from '@/lib/shop/config'
-import { formatPrice } from '@/lib/shop/pricing'
 import { pathFor } from '@/lib/routes'
 
-import { QuickAddButton } from './AddToCart'
-import { PriceBadges, PriceBlock } from './Price'
+import { QuickAddButton } from './AddToQuote'
 
-/** Tarjeta de la tienda: foto, descuento, precios por medio de pago y botón Agregar. */
+/** Tarjeta de la tienda: foto, medida, colores y "Agregar al presupuesto" (sin precio). */
 export function ShopProductCard({
   product,
   priority,
@@ -38,7 +36,13 @@ export function ShopProductCard({
             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         )}
-        <PriceBadges price={product.price} featured={product.featured} />
+        {product.featured && (
+          <span className="pointer-events-none absolute top-0 left-0 p-2.5">
+            <span className="bg-ink px-2.5 py-1 text-[0.625rem] tracking-[0.16em] text-white uppercase">
+              Destacado
+            </span>
+          </span>
+        )}
       </Link>
       <div className="flex flex-1 flex-col gap-3 px-4 pt-4 pb-4 sm:px-5">
         {product.category && (
@@ -71,8 +75,15 @@ export function ShopProductCard({
             )}
           </p>
         )}
-        <div className="mt-auto flex flex-col gap-4 pt-1">
-          <PriceBlock price={product.price} />
+        {product.accessories.length > 0 && (
+          <p className="text-xs font-normal text-muted">
+            Opcional: {product.accessories.map((a) => a.label.toLowerCase()).join(', ')}
+          </p>
+        )}
+        <div className="mt-auto flex flex-col gap-2.5 pt-1">
+          <p className="text-[0.8125rem] font-normal text-muted">
+            Precio en tu presupuesto, al instante
+          </p>
           <QuickAddButton product={product} />
         </div>
       </div>
@@ -80,7 +91,7 @@ export function ShopProductCard({
   )
 }
 
-/** Tarjeta de un producto a medida: precio estimado "desde" y acceso al cotizador. */
+/** Tarjeta de un producto a medida: acceso al cotizador. */
 export function MadeToMeasureCard({
   product,
   priority,
@@ -126,21 +137,9 @@ export function MadeToMeasureCard({
         </h3>
         <p className="text-xs font-normal text-muted">Fabricado a la medida de tu vano</p>
         <div className="mt-auto flex flex-col gap-4 pt-1">
-          <div className="flex flex-col gap-1">
-            {product.fromPrice ? (
-              <p className="flex flex-wrap items-baseline gap-x-2">
-                <span className="text-xs font-normal text-muted">desde</span>
-                <span className="text-[1.375rem] leading-tight font-semibold tracking-[-0.02em]">
-                  {formatPrice(product.fromPrice)}
-                </span>
-              </p>
-            ) : (
-              <p className="text-[1.0625rem] font-medium">Precio según medida</p>
-            )}
-            <p className="text-[0.8125rem] font-normal text-muted">
-              {product.quotable ? 'Cotizá online al instante' : 'Te lo cotizamos sin cargo'}
-            </p>
-          </div>
+          <p className="text-[0.8125rem] font-normal text-muted">
+            {product.quotable ? 'Cotizá tu medida online' : 'Te lo cotizamos sin cargo'}
+          </p>
           <Link
             href={product.quotable ? product.quoteHref : href}
             className={cn(

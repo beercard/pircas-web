@@ -1,8 +1,8 @@
 import { z } from 'zod'
 
-import { attributionSchema, emailSchema, phoneSchema } from '@/lib/forms/schemas'
+import { attributionSchema, phoneSchema } from '@/lib/forms/schemas'
 
-import { COLORS } from './options'
+import { ACCESSORIES, COLORS } from './options'
 
 const text = (max: number) =>
   z
@@ -14,34 +14,38 @@ const required = (max: number, message: string) => text(max).refine((v) => v.len
 
 export const MAX_QTY = 50
 
-export const cartItemSchema = z.object({
+export const quoteItemSchema = z.object({
   productId: z.number().int().positive(),
   color: z
     .enum(COLORS.map((c) => c.value) as [string, ...string[]])
     .nullable()
     .optional(),
+  accessories: z
+    .array(z.enum(ACCESSORIES.map((a) => a.value) as [string, ...string[]]))
+    .max(ACCESSORIES.length)
+    .optional()
+    .transform((v) => [...new Set(v ?? [])].sort()),
   quantity: z.number().int().min(1).max(MAX_QTY),
 })
 
-export const cartSchema = z.array(cartItemSchema).min(1, 'El carrito está vacío.').max(40)
+export const quoteItemsSchema = z
+  .array(quoteItemSchema)
+  .min(1, 'Tu presupuesto está vacío.')
+  .max(40)
 
-/** Datos del checkout. El servidor recalcula precios, envío y total: nunca vienen del navegador. */
-export const checkoutSchema = z
+/** Pedido de presupuesto (como Lagoon: nombre, WhatsApp y localidad). Los precios se calculan en el servidor. */
+export const quoteRequestSchema = z
   .object({
-    items: cartSchema,
-    fullName: required(120, 'Ingresá tu nombre y apellido.').refine(
-      (v) => v.length >= 3,
-      'Ingresá tu nombre y apellido.',
+    items: quoteItemsSchema,
+    fullName: required(120, 'Ingresá tu nombre.').refine(
+      (v) => v.length >= 2,
+      'Ingresá tu nombre.',
     ),
-    email: emailSchema.refine((v) => v.length > 0, 'Ingresá tu email para enviarte el pedido.'),
-    phone: phoneSchema.refine((v) => v.length > 0, 'Ingresá un teléfono o WhatsApp.'),
-    document: text(20).optional().or(z.literal('')),
-    shippingCode: required(60, 'Elegí una forma de entrega.'),
-    address: text(160).optional().or(z.literal('')),
-    city: text(100).optional().or(z.literal('')),
-    province: text(60).optional().or(z.literal('')),
-    zip: text(12).optional().or(z.literal('')),
-    paymentMethod: z.enum(['transfer', 'mercadopago', 'cash'], 'Elegí un medio de pago.'),
+    phone: phoneSchema.refine(
+      (v) => v.replace(/\D/g, '').length >= 8,
+      'Ingresá tu WhatsApp con código de área (solo números).',
+    ),
+    city: required(100, 'Ingresá tu localidad.'),
     notes: text(600).optional().or(z.literal('')),
     turnstileToken: z.string().max(4096).optional(),
     website: z.string().max(200).optional(),
@@ -49,5 +53,5 @@ export const checkoutSchema = z
   })
   .strict()
 
-export type CheckoutData = z.infer<typeof checkoutSchema>
-export type CartItemInput = z.infer<typeof cartItemSchema>
+export type QuoteRequestData = z.infer<typeof quoteRequestSchema>
+export type QuoteItemInput = z.infer<typeof quoteItemSchema>

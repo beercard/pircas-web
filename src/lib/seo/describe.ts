@@ -1,7 +1,6 @@
 import type { Product, Project } from '@/payload-types'
 import { isPopulated } from '@/lib/data/populated'
 import type { ShopProduct } from '@/lib/shop/config'
-import { formatPrice } from '@/lib/shop/pricing'
 
 /**
  * Títulos y descripciones automáticos para buscadores cuando el contenido no tiene SEO
@@ -33,7 +32,7 @@ const namesMaterial = (name: string) =>
 export function productSeoTitle(product: Product, shop: ShopProduct | null): string {
   const name = product.name.trim()
   // Con la marca (" | Pircas Aberturas") el título queda en ~70 caracteres como máximo.
-  if (shop) return name.length <= 34 ? `${name}: precio online` : name
+  if (shop) return name.length <= 30 ? `${name}: presupuesto online` : name
   const material = namesMaterial(name) ? '' : ' de aluminio'
   const measure = /a medida/i.test(name) ? '' : ' a medida'
   const full = `${name}${material}${measure}`
@@ -43,13 +42,9 @@ export function productSeoTitle(product: Product, shop: ShopProduct | null): str
 export function productSeoDescription(product: Product, shop: ShopProduct | null): string {
   const category = isPopulated(product.category) ? product.category.name : null
   if (shop) {
-    const p = shop.price
-    const pay =
-      p.transfer < p.list
-        ? `${formatPrice(p.transfer)} con transferencia${p.installments > 1 ? ` o ${p.installments} cuotas sin interés de ${formatPrice(p.installmentAmount)}` : ''}`
-        : `${formatPrice(p.transfer)}${p.installments > 1 ? ` o ${p.installments} cuotas sin interés` : ''}`
+    const colors = shop.colors.map((c) => c.label.toLowerCase()).join(' o ')
     return clip(
-      `${product.name}${shop.measure ? ` (${shop.measure})` : ''} a ${pay}. ${sentence(product.shortDescription)} Retiro en ${LOCATION} o envío.`,
+      `${product.name}${shop.measure ? ` (${shop.measure})` : ''}${colors ? ` en ${colors}` : ''}. ${sentence(product.shortDescription)} Agregalo al presupuesto y recibí el precio en el acto por WhatsApp. ${LOCATION}.`,
     )
   }
   return clip(

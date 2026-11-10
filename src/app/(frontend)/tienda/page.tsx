@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+import { QuoteSteps } from '@/components/shop/QuoteSteps'
 import { MadeToMeasureCard, ShopProductCard } from '@/components/shop/ShopProductCard'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 import { buttonVariants } from '@/components/ui/button-variants'
@@ -10,89 +11,50 @@ import { getProductCategories, getProducts } from '@/lib/data/catalog'
 import { ROUTES } from '@/lib/routes'
 import { buildMetadata } from '@/lib/seo/metadata'
 import { getQuoteCatalog } from '@/lib/quote/catalog'
-import { itemPrice, toStoreItem, type StoreItem } from '@/lib/shop/catalog'
+import { categoryIds, storeCategoryTree, toStoreItem, type CategoryNode } from '@/lib/shop/catalog'
+import type { ShopProduct } from '@/lib/shop/config'
 import { getShopConfig } from '@/lib/shop/config'
+import type { MadeToMeasureItem } from '@/lib/shop/catalog'
 import { COLORS } from '@/lib/shop/options'
 
-type Search = {
-  categoria?: string
-  color?: string
-  min?: string
-  max?: string
-  orden?: string
-  q?: string
-  tipo?: string
-}
-
-const TYPES = [
-  { value: '', label: 'Todos' },
-  { value: 'online', label: 'Comprar online' },
-  { value: 'medida', label: 'A medida' },
-] as const
+type Search = { categoria?: string; color?: string; orden?: string; q?: string }
 type Props = { searchParams: Promise<Search> }
 
 const SORTS = [
   { value: 'destacados', label: 'Destacados' },
   { value: 'nombre', label: 'Nombre A-Z' },
-  { value: 'menor', label: 'Menor precio' },
-  { value: 'mayor', label: 'Mayor precio' },
 ] as const
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const [sp, categories] = await Promise.all([searchParams, getProductCategories()])
   const category = categories.find((c) => c.slug === sp.categoria) ?? null
-  // Solo la tienda y sus categorías se indexan; búsqueda, color, precio, orden y tipo son
-  // variantes del mismo listado (noindex, canonical a la categoría).
-  const filtered = Boolean(
-    sp.q || sp.color || sp.min || sp.max || sp.tipo || (sp.orden && sp.orden !== 'destacados'),
-  )
+  // Solo la tienda y sus categorías se indexan; búsqueda, color y orden son variantes.
+  const filtered = Boolean(sp.q || sp.color || (sp.orden && sp.orden !== 'destacados'))
   const canonicalPath = category ? `${ROUTES.shop}?categoria=${category.slug}` : ROUTES.shop
   return buildMetadata({
     path: ROUTES.shop,
     canonicalPath,
     noIndex: filtered,
     title: category
-      ? `${category.name} de aluminio: precios y compra online`
-      : 'Tienda online de aberturas de aluminio',
+      ? `${category.name} de aluminio: presupuesto online`
+      : 'Presupuesto online de aberturas de aluminio',
     description: category
-      ? `${category.name} de aluminio con precio online: descuento por transferencia, cuotas sin interés con Mercado Pago y retiro en Coronda o envío. ${category.description ?? ''}`
+      ? `${category.name} de aluminio en medidas estándar, blanco o negro. Agregalas al presupuesto, dejá tu WhatsApp y recibí el precio en el acto. ${category.description ?? ''}`
           .trim()
           .slice(0, 158)
-      : 'Comprá online puertas, ventanas y accesorios de aluminio. Descuento por transferencia, cuotas sin interés con Mercado Pago, retiro en Coronda o envío.',
+      : 'Ventanas, puertas, puertas placa, mamparas y rejas de aluminio. Agregá los productos, dejá tu WhatsApp y recibí el presupuesto automático en el acto.',
   })
 }
 
-const num = (v: string | undefined) => {
-  const n = Number((v ?? '').replace(/\D/g, ''))
-  return Number.isFinite(n) && n > 0 ? n : null
-}
-
-/** Sin precio (a medida sin tarifa) va al final al ordenar por precio. */
-const priceOr = (i: StoreItem, fallback: number) => itemPrice(i) ?? fallback
-
-function sortItems(list: StoreItem[], order: string): StoreItem[] {
-  const by = [...list]
-  if (order === 'nombre')
-    return by.sort((a, b) => a.product.name.localeCompare(b.product.name, 'es'))
-  if (order === 'menor') return by.sort((a, b) => priceOr(a, Infinity) - priceOr(b, Infinity))
-  if (order === 'mayor') return by.sort((a, b) => priceOr(b, -1) - priceOr(a, -1))
-  // Destacados: primero lo que se compra online, después lo destacado.
-  return by.sort(
-    (a, b) =>
-      Number(b.kind === 'buy') - Number(a.kind === 'buy') ||
-      Number(b.product.featured) - Number(a.product.featured),
-  )
-}
-
 /**
- * Tienda: todo el catálogo. Los productos con precio se compran online; los fabricados a
- * medida muestran su precio "desde" y llevan al cotizador. Filtros: tipo, categoría, color,
- * precio, búsqueda y orden.
+ * Tienda = presupuesto automático: productos de medida estándar (sin precio a la vista) que
+ * se suman al presupuesto. Filtros: categoría y subcategoría, color, búsqueda y orden.
+ * Abajo, lo que se fabrica a medida (lleva al cotizador).
  */
 export default async function ShopPage({ searchParams }: Props) {
   const sp = await searchParams
   const search = sp.q?.trim().slice(0, 80) || undefined
-  const [config, categories, docs, quote] = await Promise.all([
+  const [config, categories, docs, quoteCatalog] = await Promise.all([
     getShopConfig(),
     getProductCategories(),
     getProducts({ search, limit: 300 }),
@@ -100,37 +62,43 @@ export default async function ShopPage({ searchParams }: Props) {
   ])
   if (!config.enabled) notFound()
 
-  const all = docs.flatMap((d) => toStoreItem(d, config.rules, quote) ?? [])
-  const usedCategories = categories.filter((c) =>
-    all.some((i) => i.product.categorySlug === c.slug),
+  const items = docs.flatMap((d) => toStoreItem(d, quoteCatalog) ?? [])
+  const all: ShopProduct[] = items.flatMap((i) => (i.kind === 'buy' ? [i.product] : []))
+  const madeToMeasure: MadeToMeasureItem[] = items.flatMap((i) =>
+    i.kind === 'measure' ? [i.product] : [],
   )
-  const usedColors = COLORS.filter((c) =>
-    all.some((i) => i.kind === 'buy' && i.product.colors.some((x) => x.value === c.value)),
-  )
-  const type = TYPES.some((t) => t.value === sp.tipo) ? (sp.tipo ?? '') : ''
+  const tree = storeCategoryTree(categories, all)
 
-  const category = usedCategories.find((c) => c.slug === sp.categoria) ?? null
+  // Categoría activa: principal o subcategoría.
+  const activeTop =
+    tree.find((c) => c.slug === sp.categoria || c.children.some((s) => s.slug === sp.categoria)) ??
+    null
+  const activeSub = activeTop?.children.find((s) => s.slug === sp.categoria) ?? null
+  const scope = activeSub ? [activeSub.id] : activeTop ? categoryIds(activeTop) : null
+
+  const usedColors = COLORS.filter((c) =>
+    all.some((p) => p.colors.some((x) => x.value === c.value)),
+  )
   const color = usedColors.find((c) => c.value === sp.color) ?? null
-  const min = num(sp.min)
-  const max = num(sp.max)
   const order = SORTS.some((s) => s.value === sp.orden) ? sp.orden! : 'destacados'
 
-  const products = sortItems(
-    all.filter((i) => {
-      const price = itemPrice(i)
-      return (
-        (!type || (type === 'online') === (i.kind === 'buy')) &&
-        (!category || i.product.categorySlug === category.slug) &&
-        (!color || (i.kind === 'buy' && i.product.colors.some((c) => c.value === color.value))) &&
-        (!min || (price !== null && price >= min)) &&
-        (!max || (price !== null && price <= max))
-      )
-    }),
-    order,
-  )
-  const onlineCount = all.filter((i) => i.kind === 'buy').length
+  const products = all
+    .filter(
+      (p) =>
+        (!scope || (p.categoryId !== null && scope.includes(p.categoryId))) &&
+        (!color || p.colors.some((c) => c.value === color.value)),
+    )
+    .sort((a, b) =>
+      order === 'nombre'
+        ? a.name.localeCompare(b.name, 'es')
+        : Number(b.featured) - Number(a.featured),
+    )
+  const countIn = (node: CategoryNode | { id: number }) => {
+    const ids = categoryIds(node)
+    return all.filter((p) => p.categoryId !== null && ids.includes(p.categoryId)).length
+  }
 
-  const hasFilters = Boolean(type || category || color || min || max || search)
+  const hasFilters = Boolean(activeTop || color || search || order !== 'destacados')
   const hrefWith = (patch: Partial<Search>) => {
     const next: Search = { ...sp, ...patch }
     const qs = new URLSearchParams(
@@ -141,12 +109,16 @@ export default async function ShopPage({ searchParams }: Props) {
 
   const title = search
     ? `Resultados para “${search}”`
-    : category
-      ? category.name
-      : 'Todos los productos'
+    : (activeSub?.name ?? activeTop?.name ?? 'Todos los productos')
   const label = 'text-eyebrow tracking-[0.2em] text-muted uppercase'
   const input =
     'h-11 w-full border border-line-strong bg-white px-3 text-sm outline-none focus:border-brand'
+  const catLink = (active: boolean, sub = false) =>
+    cn(
+      'flex min-h-10 items-center justify-between border-l-2 hover:text-brand',
+      sub ? 'pl-6 text-[0.8125rem]' : 'pl-3',
+      active ? 'border-brand font-medium text-brand' : 'border-transparent font-normal',
+    )
 
   const filters = (
     <form action={ROUTES.shop} className="flex flex-col gap-7">
@@ -159,67 +131,60 @@ export default async function ShopPage({ searchParams }: Props) {
           name="q"
           type="search"
           defaultValue={search}
-          placeholder="Puerta, ventana…"
+          placeholder="Ventana, puerta…"
           className={input}
         />
       </div>
 
-      <fieldset className="flex flex-col gap-2.5">
-        <legend className={cn(label, 'mb-2.5')}>Tipo de compra</legend>
-        <div className="flex flex-wrap gap-2">
-          {TYPES.map((t) => (
-            <label
-              key={t.value || 'all'}
-              className="flex min-h-10 cursor-pointer items-center border border-line-strong bg-white px-3 text-sm font-normal has-checked:border-ink has-checked:font-medium has-focus-visible:outline-2 has-focus-visible:outline-brand"
-            >
-              <input
-                type="radio"
-                name="tipo"
-                value={t.value}
-                defaultChecked={type === t.value}
-                className="sr-only"
-              />
-              {t.label}
-            </label>
-          ))}
-        </div>
-      </fieldset>
-
-      <div className="flex flex-col gap-2.5">
-        <span className={label}>Categoría</span>
+      <nav aria-label="Categorías" className="flex flex-col gap-2.5">
+        <span className={label}>Categorías</span>
         <ul className="flex flex-col text-sm">
-          {[
-            { slug: undefined as string | undefined, name: 'Todas las categorías', id: 0 },
-            ...usedCategories,
-          ].map((c) => {
-            const active = (c.slug ?? null) === (category?.slug ?? null)
+          <li>
+            <Link
+              href={hrefWith({ categoria: undefined })}
+              aria-current={!activeTop ? 'true' : undefined}
+              className={catLink(!activeTop)}
+            >
+              Todas
+              <span className="text-xs text-muted">{all.length}</span>
+            </Link>
+          </li>
+          {tree.map((c) => {
+            const open = activeTop?.id === c.id
             return (
               <li key={c.id}>
                 <Link
-                  href={hrefWith({ categoria: c.slug ?? undefined })}
-                  aria-current={active ? 'true' : undefined}
-                  className={cn(
-                    'flex min-h-10 items-center justify-between border-l-2 pl-3 hover:text-brand',
-                    active
-                      ? 'border-brand font-medium text-brand'
-                      : 'border-transparent font-normal',
-                  )}
+                  href={hrefWith({ categoria: c.slug })}
+                  aria-current={open && !activeSub ? 'true' : undefined}
+                  className={catLink(open && !activeSub)}
                 >
                   {c.name}
-                  {c.slug && (
-                    <span className="text-xs text-muted">
-                      {all.filter((i) => i.product.categorySlug === c.slug).length}
-                    </span>
-                  )}
+                  <span className="text-xs text-muted">{countIn(c)}</span>
                 </Link>
+                {open && c.children.length > 0 && (
+                  <ul className="flex flex-col">
+                    {c.children.map((s) => (
+                      <li key={s.id}>
+                        <Link
+                          href={hrefWith({ categoria: s.slug })}
+                          aria-current={activeSub?.id === s.id ? 'true' : undefined}
+                          className={catLink(activeSub?.id === s.id, true)}
+                        >
+                          {s.name}
+                          <span className="text-xs text-muted">{countIn(s)}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             )
           })}
         </ul>
-        {category && <input type="hidden" name="categoria" value={category.slug ?? ''} />}
-      </div>
+        {sp.categoria && activeTop && <input type="hidden" name="categoria" value={sp.categoria} />}
+      </nav>
 
-      {usedColors.length > 0 && (
+      {usedColors.length > 1 && (
         <fieldset className="flex flex-col gap-2.5">
           <legend className={cn(label, 'mb-2.5')}>Color</legend>
           <div className="flex flex-wrap gap-2">
@@ -248,34 +213,6 @@ export default async function ShopPage({ searchParams }: Props) {
           </div>
         </fieldset>
       )}
-
-      <fieldset className="flex flex-col gap-2.5">
-        <legend className={cn(label, 'mb-2.5')}>Rango de precio</legend>
-        <div className="grid grid-cols-2 gap-2">
-          <label className="sr-only" htmlFor="shop-min">
-            Precio mínimo
-          </label>
-          <input
-            id="shop-min"
-            name="min"
-            inputMode="numeric"
-            defaultValue={min ?? ''}
-            placeholder="Mínimo"
-            className={input}
-          />
-          <label className="sr-only" htmlFor="shop-max">
-            Precio máximo
-          </label>
-          <input
-            id="shop-max"
-            name="max"
-            inputMode="numeric"
-            defaultValue={max ?? ''}
-            placeholder="Máximo"
-            className={input}
-          />
-        </div>
-      </fieldset>
 
       <div className="flex flex-col gap-2.5">
         <label htmlFor="shop-order" className={label}>
@@ -311,32 +248,63 @@ export default async function ShopPage({ searchParams }: Props) {
 
   return (
     <>
-      {config.announcement && (
-        <p className="bg-brand px-4 py-2.5 text-center text-eyebrow tracking-[0.2em] text-white uppercase">
-          {config.announcement}
-        </p>
-      )}
       <section className="bg-paper pt-[clamp(2rem,4vw,3.5rem)] pb-section-sm">
         <div className="container-site flex flex-col gap-[clamp(1.5rem,3vw,2.5rem)]">
-          <Breadcrumbs items={[{ name: 'Tienda', path: ROUTES.shop }]} />
+          <Breadcrumbs
+            items={[
+              { name: 'Tienda', path: ROUTES.shop },
+              ...(activeTop
+                ? [{ name: activeTop.name, path: hrefWith({ categoria: activeTop.slug }) }]
+                : []),
+              ...(activeSub
+                ? [{ name: activeSub.name, path: hrefWith({ categoria: activeSub.slug }) }]
+                : []),
+            ]}
+          />
+          {!hasFilters && <QuoteSteps current={1} />}
+
           <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3">
             <div className="flex flex-col gap-3">
-              <p className="eyebrow">Tienda online</p>
+              <p className="eyebrow">Presupuesto online</p>
               <h1 className="text-[clamp(2rem,1.3rem+2.8vw,3.75rem)] leading-[1.02] tracking-[-0.03em]">
                 {title}
               </h1>
             </div>
             <p className="text-eyebrow tracking-[0.2em] text-muted uppercase" aria-live="polite">
               {products.length} {products.length === 1 ? 'producto' : 'productos'}
-              {!type && onlineCount > 0 && ` · ${onlineCount} para comprar online`}
             </p>
           </div>
+
+          {/* Subcategorías de la categoría elegida, a mano también en el celular. */}
+          {activeTop && activeTop.children.length > 0 && (
+            <ul className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:hidden">
+              {[{ id: 0, name: 'Todas', slug: activeTop.slug }, ...activeTop.children].map((s) => {
+                const active = s.id === 0 ? !activeSub : activeSub?.id === s.id
+                return (
+                  <li key={s.id} className="shrink-0">
+                    <Link
+                      href={hrefWith({ categoria: s.slug })}
+                      aria-current={active ? 'true' : undefined}
+                      className={cn(
+                        'flex min-h-10 items-center border px-3.5 text-sm whitespace-nowrap',
+                        active
+                          ? 'border-ink bg-ink font-medium text-white'
+                          : 'border-line-strong bg-white font-normal',
+                      )}
+                    >
+                      {s.name}
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
 
           <div className="grid items-start gap-[clamp(1.5rem,3vw,3rem)] lg:grid-cols-[16.5rem_minmax(0,1fr)]">
             {/* Celular y tablet: filtros plegables. Desktop: columna fija. */}
             <details className="group border border-line-strong bg-white lg:hidden">
               <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-4 text-label uppercase [&::-webkit-details-marker]:hidden">
-                Filtros y orden{hasFilters ? ' · activos' : ''}
+                Categorías y filtros{hasFilters ? ' · activos' : ''}
                 <span
                   aria-hidden="true"
                   className="text-brand transition-transform group-open:rotate-45"
@@ -355,13 +323,9 @@ export default async function ShopPage({ searchParams }: Props) {
 
             {products.length ? (
               <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,15.5rem),1fr))] gap-3">
-                {products.map((item, i) => (
-                  <li key={item.product.id}>
-                    {item.kind === 'buy' ? (
-                      <ShopProductCard product={item.product} priority={i < 4} />
-                    ) : (
-                      <MadeToMeasureCard product={item.product} priority={i < 4} />
-                    )}
+                {products.map((product, i) => (
+                  <li key={product.id}>
+                    <ShopProductCard product={product} priority={i < 4} />
                   </li>
                 ))}
               </ul>
@@ -380,18 +344,41 @@ export default async function ShopPage({ searchParams }: Props) {
             )}
           </div>
 
+          {!activeTop && !color && madeToMeasure.length > 0 && (
+            <div className="flex flex-col gap-5 border-t border-line pt-[clamp(1.5rem,3vw,2.5rem)]">
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div className="flex flex-col gap-2">
+                  <p className="eyebrow">¿Otra medida?</p>
+                  <h2 className="text-[clamp(1.5rem,1.1rem+1.4vw,2.25rem)] leading-tight tracking-[-0.02em]">
+                    Fabricamos a la medida de tu vano
+                  </h2>
+                </div>
+                <Link
+                  href={ROUTES.quote}
+                  className={buttonVariants({ variant: 'outline', size: 'sm' })}
+                >
+                  Ir al cotizador a medida
+                </Link>
+              </div>
+              <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,15.5rem),1fr))] gap-3">
+                {madeToMeasure.map((product) => (
+                  <li key={product.id}>
+                    <MadeToMeasureCard product={product} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <ul className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-px border border-line bg-line text-sm">
             {[
+              ['Presupuesto en el acto', 'Ves el precio apenas dejás tu WhatsApp.'],
               [
                 `${config.rules.transferDiscount}% off por transferencia`,
-                'Pagás menos transfiriendo o en efectivo.',
+                'Pagando por transferencia o en efectivo.',
               ],
-              [
-                `${config.rules.installments} cuotas sin interés`,
-                'Con tarjeta a través de Mercado Pago.',
-              ],
-              ['Retiro o envío', 'Retirás en Coronda o coordinamos la entrega.'],
-              ['¿A medida?', 'Si necesitás otra medida, la cotizamos.'],
+              [`${config.rules.installments} cuotas sin interés`, 'Con tarjeta de crédito.'],
+              ['Blanco o negro', 'Medidas estándar según catálogo.'],
             ].map(([t, d]) => (
               <li key={t} className="flex flex-col gap-1 bg-paper p-5">
                 <span className="font-medium">{t}</span>
