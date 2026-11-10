@@ -108,6 +108,8 @@ export function productJsonLd(
           price: offer.price,
           priceCurrency: 'ARS',
           availability: `https://schema.org/${offer.inStock ? 'InStock' : 'OutOfStock'}`,
+          itemCondition: 'https://schema.org/NewCondition',
+          seller: { '@id': `${getSiteUrl()}/#organization` },
           url: absoluteUrl(path),
         }
       : undefined,

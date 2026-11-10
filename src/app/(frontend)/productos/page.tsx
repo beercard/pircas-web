@@ -15,7 +15,7 @@ type Props = { searchParams: Promise<{ categoria?: string; q?: string }> }
 const LINES_TAB = 'lineas'
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  const [{ products: archive }, { categoria }, categories] = await Promise.all([
+  const [{ products: archive }, { categoria, q }, categories] = await Promise.all([
     getArchivePages(),
     searchParams,
     getProductCategories(),
@@ -29,6 +29,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   })
   // Los filtros apuntan su canonical a /productos?categoria=… solo si la categoría existe.
   if (cat) meta.alternates = { canonical: `${ROUTES.products}?categoria=${cat.slug}` }
+  // Resultados de búsqueda: no se indexan (contenido duplicado y sin fin).
+  if (q) meta.robots = { index: false, follow: true }
   return meta
 }
 

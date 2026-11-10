@@ -13,6 +13,7 @@ import config from '@payload-config'
 
 import { seedCatalog } from './catalog'
 import { seedAudiences } from './audiences'
+import { applySeo } from './seo'
 import { seedShop } from './shop'
 import { seedContent } from './content'
 
@@ -31,6 +32,7 @@ const catalog = await seedCatalog(payload)
 await seedContent(payload, catalog)
 await seedAudiences(payload)
 await seedShop(payload)
+await applySeo(payload)
 
 const { SEED_ADMIN_EMAIL: email, SEED_ADMIN_PASSWORD: password } = process.env
 if (email && password) {

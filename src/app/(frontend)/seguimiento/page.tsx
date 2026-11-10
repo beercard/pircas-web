@@ -10,6 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
     path: ROUTES.tracking,
     title: 'Seguí tu pedido',
     description: 'Consultá el estado de tu compra en la tienda de PIRCAS Aberturas.',
+    noIndex: true,
   })
 }
 

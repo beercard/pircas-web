@@ -15,6 +15,7 @@ import { isPopulated, populatedList } from '@/lib/data/populated'
 import { getProjectBySlug, getProjects } from '@/lib/data/projects'
 import { toGalleryImages } from '@/lib/media'
 import { pathFor, ROUTES } from '@/lib/routes'
+import { projectSeoDescription } from '@/lib/seo/describe'
 import { buildMetadata } from '@/lib/seo/metadata'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -24,8 +25,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!project) return {}
   return buildMetadata({
     path: pathFor('projects', project.slug),
-    title: project.title,
-    description: project.summary,
+    title:
+      project.location && !project.title.includes(project.location)
+        ? `${project.title} en ${project.location}`
+        : project.title,
+    description: projectSeoDescription(project),
     image: project.coverImage,
     meta: project.meta,
     type: 'article',

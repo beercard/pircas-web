@@ -27,6 +27,10 @@ type BuildArgs = {
   type?: 'website' | 'article'
   /** El título ya incluye la marca (no aplicar plantilla). */
   absoluteTitle?: boolean
+  /** Página utilitaria o variante filtrada: no indexar (los enlaces se siguen). */
+  noIndex?: boolean
+  /** Canonical distinta de `path` (ej: un listado filtrado apunta a su categoría). */
+  canonicalPath?: string
 }
 
 const mediaUrl = (m: Media | number | null | undefined): string | null => {
@@ -44,6 +48,8 @@ export async function buildMetadata({
   meta,
   type = 'website',
   absoluteTitle,
+  noIndex: forceNoIndex,
+  canonicalPath,
 }: BuildArgs): Promise<Metadata> {
   const [seo, settings] = await Promise.all([getSeoDefaults(), getSiteSettings()])
 
@@ -54,17 +60,26 @@ export async function buildMetadata({
     mediaUrl(image) ||
     mediaUrl(seo.defaultImage) ||
     absoluteUrl('/brand/og-default.jpg')
-  const canonical = meta?.canonicalURL || absoluteUrl(path)
-  const noIndex = Boolean(meta?.noIndex || seo.noindexSite)
-  const useTemplate = !absoluteTitle && !meta?.title && Boolean(title)
+  const canonical = meta?.canonicalURL || absoluteUrl(canonicalPath ?? path)
+  const noIndex = Boolean(meta?.noIndex || seo.noindexSite || forceNoIndex)
   const template = seo.titleTemplate || `%s | ${seo.siteName}`
-  const fullTitle = useTemplate ? template.replace('%s', finalTitle) : finalTitle
+  const brand = seo.siteName || settings.brandName
+  const branded = template.replace('%s', finalTitle)
+  // La marca se agrega si el título no la tiene y el resultado no queda demasiado largo.
+  const useTemplate =
+    !absoluteTitle &&
+    Boolean(meta?.title || title) &&
+    !finalTitle.toLowerCase().includes(String(brand).toLowerCase()) &&
+    (!meta?.title || branded.length <= 70)
+  const fullTitle = useTemplate ? branded : finalTitle
 
   return {
     title: { absolute: fullTitle },
     description: finalDescription,
     alternates: { canonical },
-    robots: noIndex ? { index: false, follow: false } : { index: true, follow: true },
+    robots: noIndex
+      ? { index: false, follow: !seo.noindexSite }
+      : { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
     openGraph: {
       type,
       locale: 'es_AR',

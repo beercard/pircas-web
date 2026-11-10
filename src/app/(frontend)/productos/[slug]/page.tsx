@@ -22,6 +22,7 @@ import { isPopulated } from '@/lib/data/populated'
 import { toGalleryImages } from '@/lib/media'
 import { pathFor, ROUTES } from '@/lib/routes'
 import { productJsonLd } from '@/lib/seo/jsonld'
+import { productSeoDescription, productSeoTitle } from '@/lib/seo/describe'
 import { buildMetadata } from '@/lib/seo/metadata'
 import { getShopConfig, toShopProduct } from '@/lib/shop/config'
 import { getWhatsAppConfig, productWhatsAppMessage, whatsappUrl } from '@/lib/whatsapp'
@@ -31,10 +32,12 @@ type Props = { params: Promise<{ slug: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = await getProductBySlug((await params).slug)
   if (!product) return {}
+  const shopConfig = await getShopConfig()
+  const shop = shopConfig.enabled ? toShopProduct(product, shopConfig.rules) : null
   return buildMetadata({
     path: pathFor('products', product.slug),
-    title: product.name,
-    description: product.shortDescription,
+    title: productSeoTitle(product, shop),
+    description: productSeoDescription(product, shop),
     image: product.featuredImage,
     meta: product.meta,
   })

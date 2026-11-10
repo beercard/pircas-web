@@ -38,12 +38,27 @@ const SORTS = [
   { value: 'mayor', label: 'Mayor precio' },
 ] as const
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const [sp, categories] = await Promise.all([searchParams, getProductCategories()])
+  const category = categories.find((c) => c.slug === sp.categoria) ?? null
+  // Solo la tienda y sus categorías se indexan; búsqueda, color, precio, orden y tipo son
+  // variantes del mismo listado (noindex, canonical a la categoría).
+  const filtered = Boolean(
+    sp.q || sp.color || sp.min || sp.max || sp.tipo || (sp.orden && sp.orden !== 'destacados'),
+  )
+  const canonicalPath = category ? `${ROUTES.shop}?categoria=${category.slug}` : ROUTES.shop
   return buildMetadata({
     path: ROUTES.shop,
-    title: 'Tienda online de aberturas',
-    description:
-      'Comprá online puertas, ventanas y accesorios de aluminio. Descuento por transferencia, cuotas sin interés con Mercado Pago, retiro en Coronda o envío.',
+    canonicalPath,
+    noIndex: filtered,
+    title: category
+      ? `${category.name} de aluminio: precios y compra online`
+      : 'Tienda online de aberturas de aluminio',
+    description: category
+      ? `${category.name} de aluminio con precio online: descuento por transferencia, cuotas sin interés con Mercado Pago y retiro en Coronda o envío. ${category.description ?? ''}`
+          .trim()
+          .slice(0, 158)
+      : 'Comprá online puertas, ventanas y accesorios de aluminio. Descuento por transferencia, cuotas sin interés con Mercado Pago, retiro en Coronda o envío.',
   })
 }
 
