@@ -94,7 +94,7 @@ export async function placeholderImage(
     <line x1="${width * 0.69}" y1="${height * 0.22}" x2="${width * 0.69}" y2="${height * 0.86}"/>
     <line x1="${width * 0.52}" y1="${height * 0.54}" x2="${width * 0.86}" y2="${height * 0.54}"/>
   </g>
-  <text x="${x}" y="${height * 0.06 + fontSize}" text-anchor="end" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="${fontSize * 0.75}" letter-spacing="4" fill="#B8502C" fill-opacity="0.9">IMAGEN DE REEMPLAZO</text>
+  <text x="${x}" y="${height * 0.06 + fontSize}" text-anchor="end" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="${fontSize * 0.75}" letter-spacing="4" fill="#C46128" fill-opacity="0.9">IMAGEN DE REEMPLAZO</text>
   ${text}
 </svg>`
   return sharp(Buffer.from(svg)).jpeg({ quality: 78 }).toBuffer()

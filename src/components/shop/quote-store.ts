@@ -17,8 +17,17 @@ export type QuoteLine = {
   product: ShopProduct
   color: string | null
   accessories: AccessoryValue[]
+  /** Medida elegida (productos con varias medidas). */
+  measure: string | null
+  /** Opción con precio propio (ej. "Reja 3/8"). */
+  option: string | null
+  /** Elecciones sin cambio de precio (giro, vidrio…). */
+  choices: string[]
   quantity: number
 }
+
+/** Lo que distingue una línea de otra del mismo producto. */
+type Selection = Pick<QuoteLine, 'color' | 'accessories' | 'measure' | 'option' | 'choices'>
 
 type State = { lines: QuoteLine[]; open: boolean }
 
@@ -29,8 +38,15 @@ let state: State = EMPTY
 let loaded = false
 const listeners = new Set<() => void>()
 
-const keyOf = (productId: number, color: string | null, accessories: readonly string[]) =>
-  `${productId}:${color ?? ''}:${[...accessories].sort().join('+')}`
+const keyOf = (productId: number, s: Selection) =>
+  [
+    productId,
+    s.color ?? '',
+    [...s.accessories].sort().join('+'),
+    s.measure ?? '',
+    s.option ?? '',
+    s.choices.join('+'),
+  ].join(':')
 
 function load() {
   if (loaded || typeof window === 'undefined') return
@@ -43,7 +59,13 @@ function load() {
         ...state,
         lines: lines
           .filter((l) => l?.product?.id && l.quantity > 0)
-          .map((l) => ({ ...l, accessories: Array.isArray(l.accessories) ? l.accessories : [] })),
+          .map((l) => ({
+            ...l,
+            accessories: Array.isArray(l.accessories) ? l.accessories : [],
+            measure: l.measure ?? null,
+            option: l.option ?? null,
+            choices: Array.isArray(l.choices) ? l.choices : [],
+          })),
       }
   } catch {
     // Almacenamiento bloqueado o dato inválido: se empieza con la lista vacía.
@@ -81,7 +103,7 @@ function subscribe(listener: () => void) {
 
 const clamp = (qty: number) => Math.max(1, Math.min(qty, MAX_QTY))
 
-/** Une líneas iguales (mismo producto, color y accesorios) sumando cantidades. */
+/** Une líneas iguales (mismo producto y misma selección) sumando cantidades. */
 function merge(lines: QuoteLine[]): QuoteLine[] {
   const out: QuoteLine[] = []
   for (const l of lines) {
@@ -92,11 +114,14 @@ function merge(lines: QuoteLine[]): QuoteLine[] {
   return out
 }
 
-const trackParams = (l: Pick<QuoteLine, 'product' | 'color' | 'accessories' | 'quantity'>) => ({
+const trackParams = (
+  l: Pick<QuoteLine, 'product' | 'color' | 'accessories' | 'measure' | 'quantity'>,
+) => ({
   item_id: l.product.id,
   item_name: l.product.name,
   item_category: l.product.category ?? undefined,
   color: l.color ?? undefined,
+  measure: l.measure ?? undefined,
   accessories: l.accessories.join(',') || undefined,
   quantity: l.quantity,
 })
@@ -104,20 +129,22 @@ const trackParams = (l: Pick<QuoteLine, 'product' | 'color' | 'accessories' | 'q
 export const quote = {
   add(
     product: ShopProduct,
-    opts: { color?: string | null; accessories?: AccessoryValue[]; quantity?: number } = {},
+    opts: Partial<Selection> & { quantity?: number } = {},
     { open = true }: { open?: boolean } = {},
   ) {
     load()
     const color = opts.color ?? product.colors[0]?.value ?? null
-    const accessories = [...(opts.accessories ?? [])].sort()
-    const quantity = clamp(opts.quantity ?? 1)
-    const line = {
-      key: keyOf(product.id, color, accessories),
-      product,
+    const selection: Selection = {
       color,
-      accessories,
-      quantity,
+      accessories: [...(opts.accessories ?? [])].sort(),
+      measure: opts.measure ?? null,
+      option: opts.option ?? null,
+      choices: opts.choices ?? [],
     }
+    const quantity = clamp(opts.quantity ?? 1)
+    // La lista guarda una copia liviana del producto (sin la tabla de medidas).
+    const { variants: _variants, ...light } = product
+    const line = { key: keyOf(product.id, selection), product: light, ...selection, quantity }
     set({ lines: merge([...state.lines, line]), open })
     track('add_to_quote', trackParams(line))
   },
@@ -133,7 +160,7 @@ export const quote = {
       if (l.key !== key) return l
       const color = patch.color !== undefined ? patch.color : l.color
       const accessories = [...(patch.accessories ?? l.accessories)].sort()
-      return { ...l, color, accessories, key: keyOf(l.product.id, color, accessories) }
+      return { ...l, color, accessories, key: keyOf(l.product.id, { ...l, color, accessories }) }
     })
     set({ ...state, lines: merge(lines) })
   },
@@ -148,18 +175,8 @@ export const quote = {
   open: () => set({ ...state, open: true }, false),
   close: () => set({ ...state, open: false }, false),
   /** Actualiza las líneas con los datos actuales del servidor y quita lo que ya no existe. */
-  sync(
-    fresh: {
-      product: ShopProduct
-      color: string | null
-      accessories: AccessoryValue[]
-      quantity: number
-    }[],
-  ) {
-    const lines = fresh.map((f) => ({
-      ...f,
-      key: keyOf(f.product.id, f.color, f.accessories),
-    }))
+  sync(fresh: (Selection & { product: ShopProduct; quantity: number })[]) {
+    const lines = fresh.map((f) => ({ ...f, key: keyOf(f.product.id, f) }))
     set({ ...state, lines: merge(lines) })
   },
 }
@@ -182,5 +199,8 @@ export const toQuoteItems = (lines: QuoteLine[]) =>
     productId: l.product.id,
     color: l.color,
     accessories: l.accessories,
+    measure: l.measure,
+    option: l.option,
+    choices: l.choices,
     quantity: l.quantity,
   }))

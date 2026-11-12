@@ -110,7 +110,7 @@ export default async function ProjectPage({ params }: Props) {
                   }
                 >
                   <dd className="text-sm">{m.value}</dd>
-                  <dt className="text-[0.656rem] tracking-[0.24em] text-white/60 uppercase">
+                  <dt className="text-[0.656rem] tracking-[0.24em] text-white/75 uppercase">
                     {m.label}
                   </dt>
                 </div>

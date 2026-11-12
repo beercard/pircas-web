@@ -181,7 +181,7 @@ export interface Product {
   shop?: {
     enabled?: boolean | null;
     /**
-     * Precio de la medida estándar, con tarjeta en cuotas. El de transferencia se calcula con el descuento.
+     * Sin IVA. Para productos de una sola medida. Si cargás "Medidas y precios" abajo, este precio no se usa.
      */
     price?: number | null;
     /**
@@ -189,13 +189,48 @@ export interface Product {
      */
     sku?: string | null;
     /**
-     * Según catálogo. Se muestra en la tarjeta y en el presupuesto.
+     * Para productos de una sola medida. Con "Medidas y precios" se completa sola.
      */
     measure?: string | null;
     /**
      * El cliente elige uno.
      */
     colors?: ('blanco' | 'negro')[] | null;
+    /**
+     * Una fila por cada combinación que tiene precio propio: medida, color (si cambia el precio) y opción (por ejemplo "Reja 3/8" o "Con postigo"). Precios sin IVA: el IVA se suma en el presupuesto. El cliente elige la medida en la ficha del producto.
+     */
+    variants?:
+      | {
+          measure: string;
+          /**
+           * Vacío = cualquiera.
+           */
+          color?: ('blanco' | 'negro') | null;
+          /**
+           * Vacío = sin opciones.
+           */
+          option?: string | null;
+          price: number;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Título del selector de "Opción" en la ficha.
+     */
+    optionLabel?: string | null;
+    /**
+     * Lo que el cliente elige y no cambia el precio. Ej: Giro → Derecha, Izquierda. Vidrio → Repartido, Entero.
+     */
+    choices?:
+      | {
+          label: string;
+          /**
+           * Escribí cada valor y Enter.
+           */
+          values: string[];
+          id?: string | null;
+        }[]
+      | null;
     /**
      * Para ventanas: celosía, mosquitero y reja. El cliente los suma si quiere; el precio se agrega al presupuesto.
      */
@@ -345,6 +380,10 @@ export interface Media {
    */
   caption?: string | null;
   credit?: string | null;
+  /**
+   * Se marca sola: las fotos de productos reciben el logo de Pircas al publicar el producto.
+   */
+  watermarked?: boolean | null;
   prefix?: string | null;
   _objectKey?: string | null;
   updatedAt: string;
@@ -1970,6 +2009,10 @@ export interface Order {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Los precios de este presupuesto ya incluyen este IVA.
+   */
+  vatPercent?: number | null;
   total?: number | null;
   transferTotal?: number | null;
   installments?: number | null;
@@ -2203,6 +2246,23 @@ export interface ProductsSelect<T extends boolean = true> {
         sku?: T;
         measure?: T;
         colors?: T;
+        variants?:
+          | T
+          | {
+              measure?: T;
+              color?: T;
+              option?: T;
+              price?: T;
+              id?: T;
+            };
+        optionLabel?: T;
+        choices?:
+          | T
+          | {
+              label?: T;
+              values?: T;
+              id?: T;
+            };
         accessories?:
           | T
           | {
@@ -3134,6 +3194,7 @@ export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
   credit?: T;
+  watermarked?: T;
   prefix?: T;
   _objectKey?: T;
   updatedAt?: T;
@@ -3303,6 +3364,7 @@ export interface OrdersSelect<T extends boolean = true> {
         sku?: T;
         id?: T;
       };
+  vatPercent?: T;
   total?: T;
   transferTotal?: T;
   installments?: T;
@@ -4141,6 +4203,10 @@ export interface ShopSetting {
   transferDiscount?: number | null;
   installments?: number | null;
   validityDays?: number | null;
+  /**
+   * Los precios de los productos se cargan sin IVA; el presupuesto los muestra con el IVA incluido. Poné 0 si cargás los precios finales.
+   */
+  vatPercent?: number | null;
   thanksMessage?: string | null;
   /**
    * Si queda vacío se usan los destinatarios de las consultas (Formularios y cotizador).
@@ -4705,6 +4771,7 @@ export interface ShopSettingsSelect<T extends boolean = true> {
   transferDiscount?: T;
   installments?: T;
   validityDays?: T;
+  vatPercent?: T;
   thanksMessage?: T;
   notificationEmails?:
     | T

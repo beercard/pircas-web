@@ -55,9 +55,10 @@ export function ShopProductCard({
             {product.name}
           </Link>
         </h3>
-        {(product.measure || product.colors.length > 0) && (
+        {(product.measure || product.measureCount > 0 || product.colors.length > 0) && (
           <p className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs font-normal text-muted">
             {product.measure && <span>{product.measure}</span>}
+            {product.measureCount > 0 && <span>{product.measureCount} medidas</span>}
             {product.colors.length > 0 && (
               <span
                 className="flex items-center gap-1.5"

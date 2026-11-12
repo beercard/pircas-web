@@ -1,6 +1,7 @@
 'use client'
 
 import { Check, ClipboardList, Minus, Plus } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -9,13 +10,26 @@ import { cn } from '@/lib/cn'
 import type { ShopProduct } from '@/lib/shop/config'
 import type { AccessoryValue } from '@/lib/shop/options'
 import { MAX_QTY } from '@/lib/shop/schema'
-import { ROUTES } from '@/lib/routes'
+import { colorsFor, measuresOf, optionsFor, resolveVariant } from '@/lib/shop/variants'
+import { pathFor, ROUTES } from '@/lib/routes'
 
 import { quote } from './quote-store'
 
-/** Botón de las tarjetas: suma 1 unidad (primer color, sin accesorios) y abre el presupuesto. */
+/**
+ * Botón de las tarjetas: suma 1 unidad (primer color, sin accesorios) y abre el presupuesto.
+ * Si el producto tiene varias medidas, lleva a la ficha para elegirla.
+ */
 export function QuickAddButton({ product }: { product: ShopProduct }) {
   const [added, setAdded] = useState(false)
+  if (product.measureCount > 0)
+    return (
+      <Link
+        href={pathFor('products', product.slug)}
+        className={cn(buttonVariants({ variant: 'primary', size: 'sm' }), 'w-full justify-center')}
+      >
+        <ClipboardList aria-hidden="true" className="size-4" /> Elegir medida
+      </Link>
+    )
   return (
     <button
       type="button"
@@ -103,14 +117,20 @@ export function ColorPicker({
   onChange,
   small,
   name,
+  only,
 }: {
   product: ShopProduct
   value: string | null
   onChange: (v: string) => void
   small?: boolean
   name: string
+  /** Colores disponibles para la medida elegida (por defecto, todos los del producto). */
+  only?: readonly string[]
 }) {
-  if (product.colors.length < 2) return null
+  const colors = only?.length
+    ? product.colors.filter((c) => only.includes(c.value))
+    : product.colors
+  if (colors.length < 2) return null
   return (
     <fieldset className="flex flex-col gap-2">
       <legend
@@ -126,13 +146,13 @@ export function ColorPicker({
           <>
             :{' '}
             <span className="tracking-normal text-ink normal-case">
-              {product.colors.find((c) => c.value === value)?.label}
+              {colors.find((c) => c.value === value)?.label}
             </span>
           </>
         )}
       </legend>
       <div className="flex flex-wrap gap-1.5">
-        {product.colors.map((c) => (
+        {colors.map((c) => (
           <label
             key={c.value}
             className={cn(
@@ -226,13 +246,78 @@ export function AccessoryPicker({
   )
 }
 
-/** Caja de la ficha: color, accesorios, cantidad y "Agregar al presupuesto". */
+const legend = 'mb-2.5 text-eyebrow tracking-[0.2em] text-muted uppercase'
+
+/** Chips de una sola elección (opción con precio, giro, tipo de vidrio…). */
+function ChipGroup({
+  label,
+  name,
+  values,
+  value,
+  onChange,
+}: {
+  label: string
+  name: string
+  values: readonly string[]
+  value: string | null
+  onChange: (v: string) => void
+}) {
+  if (values.length < 2) return null
+  return (
+    <fieldset className="flex flex-col gap-2">
+      <legend className={legend}>
+        {label}: <span className="tracking-normal text-ink normal-case">{value}</span>
+      </legend>
+      <div className="flex flex-wrap gap-1.5">
+        {values.map((v) => (
+          <label
+            key={v}
+            className={cn(
+              'flex min-h-12 cursor-pointer items-center border px-3.5 text-sm font-medium has-focus-visible:outline-2 has-focus-visible:outline-brand',
+              value === v ? 'border-ink bg-white' : 'border-line-strong hover:border-ink/50',
+            )}
+          >
+            <input
+              type="radio"
+              name={name}
+              value={v}
+              checked={value === v}
+              onChange={() => onChange(v)}
+              className="sr-only"
+            />
+            {v}
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  )
+}
+
+/** Caja de la ficha: medida, color, opciones, accesorios, cantidad y "Agregar al presupuesto". */
 export function QuoteBox({ product }: { product: ShopProduct }) {
   const router = useRouter()
-  const [color, setColor] = useState<string | null>(product.colors[0]?.value ?? null)
+  const rows = product.variants ?? []
+  const measures = measuresOf(rows)
+  const [wanted, setWanted] = useState<{
+    measure: string | null
+    color: string | null
+    option: string | null
+  }>({ measure: measures[0] ?? null, color: product.colors[0]?.value ?? null, option: null })
+  const [choices, setChoices] = useState(() => product.choices.map((g) => g.values[0]))
   const [accessories, setAccessories] = useState<AccessoryValue[]>([])
   const [quantity, setQuantity] = useState(1)
-  const add = (open = true) => quote.add(product, { color, accessories, quantity }, { open })
+
+  // Con medidas: lo elegido se ajusta a una combinación que existe (cada medida puede tener
+  // otros colores u opciones).
+  const variant = rows.length ? resolveVariant(rows, wanted) : null
+  const measure = variant?.measure ?? null
+  const color = variant ? (variant.color ?? wanted.color) : wanted.color
+  const option = variant?.option ?? null
+  const colorsHere = measure ? colorsFor(rows, measure) : []
+  const optionsHere = measure ? optionsFor(rows, measure, color) : []
+
+  const add = (open = true) =>
+    quote.add(product, { color, accessories, measure, option, choices, quantity }, { open })
 
   return (
     <div className="flex flex-col gap-5">
@@ -257,7 +342,52 @@ export function QuoteBox({ product }: { product: ShopProduct }) {
         </button>
       </div>
 
-      <ColorPicker product={product} value={color} onChange={setColor} name="color" />
+      {measures.length > 0 && (
+        <div className="flex flex-col gap-2.5">
+          <label
+            htmlFor="quote-measure"
+            className="text-eyebrow tracking-[0.2em] text-muted uppercase"
+          >
+            Medida (ancho × alto)
+          </label>
+          <select
+            id="quote-measure"
+            value={measure ?? ''}
+            onChange={(e) => setWanted((w) => ({ ...w, measure: e.target.value }))}
+            className="h-12 w-full border border-line-strong bg-white px-3 text-sm font-medium outline-none focus:border-brand"
+          >
+            {measures.map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+      <ColorPicker
+        product={product}
+        value={color}
+        onChange={(c) => setWanted((w) => ({ ...w, color: c }))}
+        name="color"
+        only={colorsHere}
+      />
+      <ChipGroup
+        label={product.optionLabel ?? 'Opción'}
+        name="option"
+        values={optionsHere}
+        value={option}
+        onChange={(o) => setWanted((w) => ({ ...w, option: o }))}
+      />
+      {product.choices.map((g, i) => (
+        <ChipGroup
+          key={g.label}
+          label={g.label}
+          name={`choice-${i}`}
+          values={g.values}
+          value={choices[i] ?? null}
+          onChange={(v) => setChoices((c) => c.map((x, k) => (k === i ? v : x)))}
+        />
+      ))}
       <AccessoryPicker product={product} value={accessories} onChange={setAccessories} />
 
       <div className="flex flex-col gap-2">

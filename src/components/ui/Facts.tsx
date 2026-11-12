@@ -40,7 +40,7 @@ export function Facts({
           <dt
             className={cn(
               'text-[0.656rem] leading-normal tracking-[0.2em] uppercase',
-              dark ? 'text-white/70' : 'text-muted',
+              dark ? 'text-white/75' : 'text-muted',
             )}
           >
             {f.label}

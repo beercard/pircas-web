@@ -82,7 +82,7 @@ export function HeroBlock({
                   <span className="flex flex-col gap-1">
                     <span className="text-[0.906rem]">{h.title}</span>
                     {h.text && (
-                      <span className="text-[0.8125rem] leading-normal font-normal text-white/70">
+                      <span className="text-[0.8125rem] leading-normal font-normal text-white/75">
                         {h.text}
                       </span>
                     )}

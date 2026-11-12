@@ -7,6 +7,8 @@ import * as migration_20260925_194517_admin_galleries_security from './20260925_
 import * as migration_20261109_232113_shop from './20261109_232113_shop';
 import * as migration_20261110_222803_presupuesto_quitar from './20261110_222803_presupuesto_quitar';
 import * as migration_20261110_222904_presupuesto_agregar from './20261110_222904_presupuesto_agregar';
+import * as migration_20261112_221447_medidas_iva from './20261112_221447_medidas_iva';
+import * as migration_20261112_221933_marca_de_agua from './20261112_221933_marca_de_agua';
 
 export const migrations = [
   {
@@ -52,6 +54,16 @@ export const migrations = [
   {
     up: migration_20261110_222904_presupuesto_agregar.up,
     down: migration_20261110_222904_presupuesto_agregar.down,
-    name: '20261110_222904_presupuesto_agregar'
+    name: '20261110_222904_presupuesto_agregar',
+  },
+  {
+    up: migration_20261112_221447_medidas_iva.up,
+    down: migration_20261112_221447_medidas_iva.down,
+    name: '20261112_221447_medidas_iva',
+  },
+  {
+    up: migration_20261112_221933_marca_de_agua.up,
+    down: migration_20261112_221933_marca_de_agua.down,
+    name: '20261112_221933_marca_de_agua'
   },
 ];

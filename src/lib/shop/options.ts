@@ -32,15 +32,25 @@ export const quoteStatusLabel = (v: unknown) => labelOf(QUOTE_STATUSES, v)
 export const colorLabel = (v: unknown) => labelOf(COLORS, v)
 export const accessoryLabel = (v: unknown) => labelOf(ACCESSORIES, v)
 
-/** "Blanco · Con mosquitero y reja" */
+/** "Blanco · 1,20 × 1,10 m · Reja 3/8 · Giro derecha · Con mosquitero" */
 export function variantText(
   color: string | null | undefined,
   accessories: readonly string[] | null | undefined,
   measure?: string | null,
+  option?: string | null,
+  choices?: readonly string[] | null,
 ): string {
   const acc = (accessories ?? []).map((a) => accessoryLabel(a).toLowerCase())
   const withAcc = acc.length
     ? `Con ${acc.length > 1 ? `${acc.slice(0, -1).join(', ')} y ${acc.at(-1)}` : acc[0]}`
     : null
-  return [color ? colorLabel(color) : null, measure || null, withAcc].filter(Boolean).join(' · ')
+  return [
+    color ? colorLabel(color) : null,
+    measure || null,
+    option || null,
+    ...(choices ?? []),
+    withAcc,
+  ]
+    .filter(Boolean)
+    .join(' · ')
 }

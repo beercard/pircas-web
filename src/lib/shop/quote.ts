@@ -15,8 +15,9 @@ import {
 import { quoteUrl } from './links'
 import { sendQuoteNotification } from './notify'
 import { variantText, type AccessoryValue } from './options'
-import { formatPrice, quoteTotals, type PriceRules, type QuoteTotals } from './pricing'
+import { formatPrice, quoteTotals, withVat, type PriceRules, type QuoteTotals } from './pricing'
 import type { QuoteItemInput, QuoteRequestData } from './schema'
+import { resolveChoices, resolveVariant } from './variants'
 import { sendQuoteTemplate } from './whatsapp-cloud'
 
 /** Línea del presupuesto tal como la ve el navegador (sin precios). */
@@ -24,6 +25,12 @@ export type QuoteLine = {
   product: ShopProduct
   color: string | null
   accessories: AccessoryValue[]
+  /** Medida elegida (null en productos de medida única). */
+  measure: string | null
+  /** Opción con precio propio (ej. "Reja 3/8"). */
+  option: string | null
+  /** Elecciones sin cambio de precio, una por grupo. */
+  choices: string[]
   quantity: number
 }
 
@@ -38,6 +45,7 @@ export async function loadQuoteLines(
   payload: Payload,
   items: QuoteItemInput[],
   rules: PriceRules,
+  vatPercent: number,
 ): Promise<{ lines: PricedLine[]; missing: number[] }> {
   const ids = [...new Set(items.map((i) => i.productId))]
   const { docs } = await payload.find({
@@ -59,25 +67,56 @@ export async function loadQuoteLines(
       missing.push(item.productId)
       continue
     }
-    const color = product.colors.length
+    let color: string | null = product.colors.length
       ? (product.colors.find((c) => c.value === item.color) ?? product.colors[0]).value
       : null
+    // Con medidas: el precio sale de la combinación elegida (medida + color + opción).
+    let base = pricing.list
+    let measure: string | null = null
+    let option: string | null = null
+    if (pricing.variants.length) {
+      const row = resolveVariant(pricing.variants, {
+        measure: item.measure,
+        color,
+        option: item.option,
+      })
+      if (!row) {
+        missing.push(item.productId)
+        continue
+      }
+      base = row.price
+      measure = row.measure
+      option = row.option
+      color = row.color ?? color
+    }
     const accessories = product.accessories
       .map((a) => a.value)
       .filter((a) => item.accessories.includes(a))
-    const unitList =
-      pricing.list + accessories.reduce((sum, a) => sum + (pricing.accessoryPrices[a] ?? 0), 0)
-    lines.push({ product, color, accessories, quantity: item.quantity, pricing, unitList })
+    const net = base + accessories.reduce((sum, a) => sum + (pricing.accessoryPrices[a] ?? 0), 0)
+    lines.push({
+      product,
+      color,
+      accessories,
+      measure,
+      option,
+      choices: resolveChoices(product.choices, item.choices),
+      quantity: item.quantity,
+      pricing,
+      unitList: withVat(net, vatPercent),
+    })
   }
   return { lines, missing }
 }
 
 /** Versión para el navegador: sin precios. */
 export const publicLines = (lines: PricedLine[]): QuoteLine[] =>
-  lines.map(({ product, color, accessories, quantity }) => ({
+  lines.map(({ product, color, accessories, measure, option, choices, quantity }) => ({
     product,
     color,
     accessories,
+    measure,
+    option,
+    choices,
     quantity,
   }))
 
@@ -116,7 +155,12 @@ export async function createQuote(payload: Payload, data: QuoteRequestData): Pro
   if (!config.enabled)
     throw new SubmissionError('El presupuesto online no está disponible en este momento.')
 
-  const { lines, missing } = await loadQuoteLines(payload, data.items, config.rules)
+  const { lines, missing } = await loadQuoteLines(
+    payload,
+    data.items,
+    config.rules,
+    config.vatPercent,
+  )
   if (missing.length || !lines.length)
     throw new SubmissionError(
       'Algunos productos ya no están disponibles. Revisá tu presupuesto e intentá de nuevo.',
@@ -136,13 +180,16 @@ export async function createQuote(payload: Payload, data: QuoteRequestData): Pro
     items: lines.map((l) => ({
       product: l.product.id,
       name: l.product.name,
-      variant: variantText(l.color, l.accessories, l.product.measure) || undefined,
+      variant:
+        variantText(l.color, l.accessories, l.measure ?? l.product.measure, l.option, l.choices) ||
+        undefined,
       sku: l.pricing.sku || undefined,
       quantity: l.quantity,
       unitPrice: l.unitList,
       subtotal: l.unitList * l.quantity,
     })),
     total: totals.list,
+    vatPercent: config.vatPercent,
     transferTotal: totals.transfer,
     installments: totals.installments,
     installmentAmount: totals.installmentAmount,

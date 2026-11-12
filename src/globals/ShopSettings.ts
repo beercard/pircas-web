@@ -70,6 +70,18 @@ export const ShopSettings: GlobalConfig = {
               ],
             },
             {
+              name: 'vatPercent',
+              label: '% de IVA que se suma a los precios',
+              type: 'number',
+              min: 0,
+              max: 50,
+              defaultValue: 21,
+              admin: {
+                description:
+                  'Los precios de los productos se cargan sin IVA; el presupuesto los muestra con el IVA incluido. Poné 0 si cargás los precios finales.',
+              },
+            },
+            {
               name: 'thanksMessage',
               label: 'Mensaje junto al presupuesto',
               type: 'textarea',

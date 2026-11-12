@@ -124,7 +124,9 @@ export function QuoteDocument({
         <table className="w-[25rem] border-collapse text-[9.5pt]">
           <tbody>
             <tr className="border-b border-line">
-              <td className="py-2 whitespace-nowrap text-muted">Total (precio de lista)</td>
+              <td className="py-2 whitespace-nowrap text-muted">
+                Total{order.vatPercent ? ' con IVA' : ''} (precio de lista)
+              </td>
               <td className="py-2 text-right font-semibold whitespace-nowrap tabular-nums">
                 {formatPrice(total)}
               </td>
@@ -160,7 +162,10 @@ export function QuoteDocument({
           Condiciones
         </p>
         <ul className="list-disc space-y-0.5 pl-4">
-          <li>Precios en pesos argentinos para las medidas estándar indicadas.</li>
+          <li>
+            Precios en pesos argentinos para las medidas estándar indicadas
+            {order.vatPercent ? `, con IVA (${order.vatPercent} %) incluido` : ''}.
+          </li>
           <li>No incluyen flete ni colocación (se cotizan aparte según la obra y la localidad).</li>
           <li>Presupuesto válido por {validityDays} días. Sujeto a disponibilidad de stock.</li>
           <li>Otras medidas se fabrican a pedido y se cotizan por separado.</li>

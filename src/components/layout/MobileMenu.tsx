@@ -42,7 +42,7 @@ export function MobileMenu({ nav, cta, brandName, pathname }: Props) {
           aria-describedby={undefined}
         >
           <div className="flex h-header shrink-0 items-center justify-between border-b border-white/12 px-5">
-            <BrandLogo brandName={brandName.split(' ')[0]?.toUpperCase()} />
+            <BrandLogo tone="light" brandName={brandName.split(' ')[0]?.toUpperCase()} />
             <Dialog.Title className="sr-only">Menú</Dialog.Title>
             <Dialog.Close
               className="flex size-12 items-center justify-center text-[1.375rem]"

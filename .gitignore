@@ -70,3 +70,6 @@ node_modules/
 /.agents/
 /.claude/skills/
 /skills-lock.json
+
+# Datos y fotos de la carga masiva del catálogo (no van al repo)
+/catalogo-import/

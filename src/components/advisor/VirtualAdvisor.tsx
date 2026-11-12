@@ -122,7 +122,7 @@ export function VirtualAdvisor({ config, labels }: { config: AdvisorConfig; labe
               <span className="text-[clamp(1.5rem,1.1rem+1.4vw,2.25rem)] leading-[1.05] tracking-[-0.02em]">
                 {rec.line.headline || rec.line.name}
               </span>
-              <span className="max-w-[40ch] text-sm leading-relaxed font-normal text-white/70">
+              <span className="max-w-[40ch] text-sm leading-relaxed font-normal text-white/75">
                 {rec.line.text}
               </span>
             </div>
@@ -143,7 +143,7 @@ export function VirtualAdvisor({ config, labels }: { config: AdvisorConfig; labe
             <button
               type="button"
               onClick={restart}
-              className="basis-full text-left text-eyebrow tracking-[0.2em] text-white/60 uppercase hover:text-white"
+              className="basis-full text-left text-eyebrow tracking-[0.2em] text-white/75 uppercase hover:text-white"
             >
               {labels.restartLabel}
             </button>

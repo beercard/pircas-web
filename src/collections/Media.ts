@@ -44,6 +44,18 @@ export const Media: CollectionConfig = {
       admin: { description: 'Opcional. Se muestra debajo de la foto en las galerías.' },
     },
     { name: 'credit', label: 'Crédito / autor', type: 'text' },
+    {
+      name: 'watermarked',
+      label: 'Con marca de agua',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        description:
+          'Se marca sola: las fotos de productos reciben el logo de Pircas al publicar el producto.',
+      },
+    },
   ],
   upload: {
     // Carpeta de archivos subidos (volumen en Docker). Relativa al directorio de trabajo.

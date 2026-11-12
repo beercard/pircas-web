@@ -31,6 +31,6 @@ export async function POST(req: NextRequest) {
 
   const payload = await getPayload({ config: configPromise })
   const config = toShopConfig(await payload.findGlobal({ slug: 'shop-settings', depth: 0 }))
-  const { lines } = await loadQuoteLines(payload, parsed.data, config.rules)
+  const { lines } = await loadQuoteLines(payload, parsed.data, config.rules, config.vatPercent)
   return json({ lines: publicLines(lines) })
 }

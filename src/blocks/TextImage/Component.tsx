@@ -41,7 +41,7 @@ export function TextImageBlock(props: TextImageBlockData) {
         </h2>
       )}
       {intro && (
-        <p className="max-w-[46ch] text-[0.97rem] leading-[1.7] font-normal text-muted in-[.on-dark]:text-white/70">
+        <p className="max-w-[46ch] text-[0.97rem] leading-[1.7] font-normal text-muted in-[.on-dark]:text-white/75">
           {intro}
         </p>
       )}

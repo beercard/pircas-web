@@ -74,7 +74,7 @@ export function BenefitsBlock({
                 <p
                   className={cn(
                     'text-[0.84rem] leading-relaxed font-normal',
-                    dark ? 'text-white/70' : 'text-muted',
+                    dark ? 'text-white/75' : 'text-muted',
                   )}
                 >
                   {item.text}

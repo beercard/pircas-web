@@ -21,7 +21,7 @@ export function Breadcrumbs({
         aria-label="Migas de pan"
         className={cn('text-eyebrow tracking-[0.18em] uppercase', className)}
       >
-        <ol className={cn('flex flex-wrap gap-2.5', dark ? 'text-white/65' : 'text-muted')}>
+        <ol className={cn('flex flex-wrap gap-2.5', dark ? 'text-white/75' : 'text-muted')}>
           {all.map((c, i) => {
             const last = i === all.length - 1
             return (

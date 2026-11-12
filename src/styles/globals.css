@@ -1,29 +1,33 @@
 @import 'tailwindcss';
 
 /*
- * PIRCAS — tokens de diseño (fuente: diseño aprobado en /design).
- * Terracota #B8502C · Grafito #26272B · Gris #ECEAE6 · Off-white #FAF9F7 · Montserrat.
+ * PIRCAS — tokens de diseño (fuente: identidad de marca PIRCAS Aberturas).
+ * Naranja #C46128 · Gris oscuro #57585A (negro 80 %) · Gris #6C6E70 · Negro #221F1F · Montserrat.
  * Los componentes usan solo estas utilidades (bg-brand, text-ink, bg-stone…);
  * no hay colores sueltos en los componentes.
  *
- * Contraste (WCAG AA): blanco/terracota 4.97 · muted/off-white 5.95 · muted/gris 5.21 ·
- * brand-ink/gris 4.84 · brand-soft/grafito 6.53.
+ * El naranja y el gris oscuro de la identidad se usan tal cual en fondos, formas y logo.
+ * Para texto chico sobre fondos claros se usa un tono apenas más oscuro (legibilidad).
+ * Contraste: blanco/naranja 4.13 · blanco/gris oscuro 7.1 · texto naranja/off-white 4.56 ·
+ * muted/off-white 5.5 · muted/gris 4.8 · brand-ink/gris 4.76 · brand-soft/gris oscuro 4.7.
  */
 @theme {
-  /* Terracota */
-  --color-brand: #b8502c;
-  --color-brand-ink: #a9471f; /* texto terracota sobre gris */
-  --color-brand-soft: #e39a7e; /* acentos sobre grafito */
-  --color-brand-tint: #f3e3db;
+  /* Naranja de marca */
+  --color-brand: #c46128;
+  --text-color-brand: #b35925; /* texto naranja sobre fondos claros */
+  --color-brand-ink: #a14f21; /* texto naranja sobre gris */
+  --color-brand-soft: #f4c9b7; /* acentos sobre gris oscuro */
+  --color-brand-tint: #f5e4da;
 
-  /* Grafito y neutros */
-  --color-ink: #26272b;
+  /* Grises y neutros */
+  --color-ink: #221f1f; /* texto y líneas */
+  --background-color-ink: #57585a; /* superficies oscuras (negro 80 %) */
   --color-ink-deep: #18191c; /* base de los degradés sobre fotos */
-  --color-muted: #5f6066;
+  --color-muted: #636567;
   --color-stone: #eceae6; /* gris de secciones */
   --color-paper: #faf9f7; /* off-white de fondo */
-  --color-line: rgb(38 39 43 / 0.14);
-  --color-line-strong: rgb(38 39 43 / 0.25);
+  --color-line: rgb(34 31 31 / 0.14);
+  --color-line-strong: rgb(34 31 31 / 0.25);
 
   --color-success: #2f6b3f;
   --color-danger: #b42318;
@@ -180,7 +184,7 @@
     @apply border-l border-brand pl-5 text-lg text-ink;
   }
   .on-dark .prose-pircas {
-    @apply text-white/70;
+    @apply text-white/75;
   }
   .on-dark .prose-pircas h2,
   .on-dark .prose-pircas h3,
@@ -228,6 +232,27 @@
     opacity: 0;
     transform: translateY(14px);
   }
+}
+
+/*
+ * Logo de la identidad: naranja + grises sobre fondos claros; todo blanco (cuerpo de la P
+ * translúcido) sobre fondos oscuros, como en el manual de marca.
+ */
+.brand-logo {
+  --brand-body: var(--color-brand);
+  --brand-body-opacity: 1;
+  --brand-leaf: #6c6e70;
+  --brand-name: #6c6e70;
+  --brand-tagline: #221f1f;
+}
+.on-dark .brand-logo,
+.brand-logo[data-tone='light'],
+body:has([data-over-hero]) .site-header[data-scrolled='false'][data-mega='false'] .brand-logo {
+  --brand-body: #fff;
+  --brand-body-opacity: 0.62;
+  --brand-leaf: #fff;
+  --brand-name: #fff;
+  --brand-tagline: #fff;
 }
 
 /*

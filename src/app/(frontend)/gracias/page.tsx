@@ -13,7 +13,7 @@ export default function ThanksPage() {
     <section className="bg-paper py-section">
       <span data-hide-footer-cta hidden />
       <div className="container-site flex flex-col items-start gap-6">
-        <DoorMark className="h-[60px] w-[44px] text-brand" />
+        <DoorMark className="h-[60px] w-[45px]" />
         <h1 className="max-w-[18ch] text-h1">Gracias por escribirnos.</h1>
         <p className="max-w-[46ch] text-lead font-normal text-muted">
           Recibimos tu consulta y te vamos a responder a la brevedad.

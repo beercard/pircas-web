@@ -80,7 +80,7 @@ export async function SiteFooter() {
               <BrandLogo />
             </Link>
             {footer.about && (
-              <p className="max-w-[30ch] text-[0.84rem] leading-relaxed font-normal text-white/65">
+              <p className="max-w-[30ch] text-[0.84rem] leading-relaxed font-normal text-white/75">
                 {footer.about}
               </p>
             )}
@@ -102,7 +102,7 @@ export async function SiteFooter() {
             </nav>
           ))}
 
-          <address className="flex flex-col gap-2.5 text-[0.84rem] leading-relaxed font-normal text-white/65 not-italic">
+          <address className="flex flex-col gap-2.5 text-[0.84rem] leading-relaxed font-normal text-white/75 not-italic">
             {a?.street &&
               (a.mapsUrl ? (
                 <TrackedAnchor
@@ -151,7 +151,7 @@ export async function SiteFooter() {
           </address>
         </div>
 
-        <div className="relative mx-auto mt-[52px] flex max-w-site flex-wrap justify-between gap-3 border-t border-white/12 pt-[22px] text-[0.72rem] font-normal tracking-[0.06em] text-white/50">
+        <div className="relative mx-auto mt-[52px] flex max-w-site flex-wrap justify-between gap-3 border-t border-white/12 pt-[22px] text-[0.72rem] font-normal tracking-[0.06em] text-white/75">
           <span>{copyright}</span>
           {!!footer.legalLinks?.length && (
             <ul className="flex flex-wrap gap-x-5">

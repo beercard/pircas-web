@@ -131,6 +131,12 @@ export const Orders: CollectionConfig<'orders'> = {
         { name: 'sku', label: 'Código', type: 'text' },
       ],
     },
+    ro({
+      name: 'vatPercent',
+      label: '% de IVA incluido en los precios',
+      type: 'number',
+      admin: { description: 'Los precios de este presupuesto ya incluyen este IVA.' },
+    }),
     {
       type: 'row',
       fields: [

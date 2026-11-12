@@ -56,7 +56,7 @@ export async function DocumentsBlock({
             <p
               className={cn(
                 'max-w-[42ch] text-[0.9rem] leading-relaxed font-normal',
-                dark ? 'text-white/70' : 'text-muted',
+                dark ? 'text-white/75' : 'text-muted',
               )}
             >
               {note}
@@ -83,7 +83,7 @@ export async function DocumentsBlock({
                     <span
                       className={cn(
                         'text-[0.84rem] font-normal',
-                        dark ? 'text-white/60' : 'text-muted',
+                        dark ? 'text-white/75' : 'text-muted',
                       )}
                     >
                       {r.description}

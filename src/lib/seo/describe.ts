@@ -44,7 +44,7 @@ export function productSeoDescription(product: Product, shop: ShopProduct | null
   if (shop) {
     const colors = shop.colors.map((c) => c.label.toLowerCase()).join(' o ')
     return clip(
-      `${product.name}${shop.measure ? ` (${shop.measure})` : ''}${colors ? ` en ${colors}` : ''}. ${sentence(product.shortDescription)} Agregalo al presupuesto y recibí el precio en el acto por WhatsApp. ${LOCATION}.`,
+      `${product.name}${shop.measure ? ` (${shop.measure})` : shop.measureCount ? ` en ${shop.measureCount} medidas` : ''}${colors ? ` en ${colors}` : ''}. ${sentence(product.shortDescription)} Agregalo al presupuesto y recibí el precio en el acto por WhatsApp. ${LOCATION}.`,
     )
   }
   return clip(

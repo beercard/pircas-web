@@ -43,7 +43,7 @@ export function SectionHeading({
         </div>
       )}
       {intro && (
-        <p className="max-w-[36ch] text-[0.9375rem] leading-relaxed font-normal text-muted in-[.on-dark]:text-white/70">
+        <p className="max-w-[36ch] text-[0.9375rem] leading-relaxed font-normal text-muted in-[.on-dark]:text-white/75">
           {intro}
         </p>
       )}

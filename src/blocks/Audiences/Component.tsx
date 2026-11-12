@@ -49,7 +49,7 @@ export function AudiencesBlock({ eyebrow, title, intro, items, settings }: Audie
                     <p
                       className={cn(
                         'relative max-w-[44ch] text-[0.97rem] leading-[1.7] font-normal',
-                        dark ? 'text-white/72' : 'text-muted',
+                        dark ? 'text-white/75' : 'text-muted',
                       )}
                     >
                       {item.text}

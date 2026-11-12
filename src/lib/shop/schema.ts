@@ -25,6 +25,12 @@ export const quoteItemSchema = z.object({
     .max(ACCESSORIES.length)
     .optional()
     .transform((v) => [...new Set(v ?? [])].sort()),
+  /** Medida elegida (productos con varias medidas). */
+  measure: text(60).nullable().optional(),
+  /** Opción con precio propio (ej. "Reja 3/8"). */
+  option: text(60).nullable().optional(),
+  /** Elecciones sin cambio de precio, una por grupo (ej. giro, vidrio). */
+  choices: z.array(text(60)).max(4).optional(),
   quantity: z.number().int().min(1).max(MAX_QTY),
 })
 

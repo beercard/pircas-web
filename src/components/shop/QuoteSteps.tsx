@@ -28,7 +28,7 @@ export function QuoteSteps({
         <p
           className={cn(
             'text-eyebrow tracking-[0.2em] uppercase',
-            dark ? 'text-white/70' : 'text-muted',
+            dark ? 'text-white/75' : 'text-muted',
           )}
         >
           Presupuesto automático en 3 simples pasos
@@ -78,7 +78,7 @@ export function QuoteSteps({
                 <span
                   className={cn(
                     'hidden text-[0.8125rem] font-normal sm:block',
-                    dark ? 'text-white/70' : 'text-muted',
+                    dark ? 'text-white/75' : 'text-muted',
                   )}
                 >
                   {s.text}

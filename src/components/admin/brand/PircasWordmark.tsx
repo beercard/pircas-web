@@ -1,17 +1,17 @@
-/** Trazo de la "P-puerta" de la marca (mismo que el sitio). */
-const DOOR_MARK = 'M0 0 H13 A9 9 0 0 1 13 18 H7 V30 H0 Z'
+import { ISO_BODY, ISO_LEAF, ISO_VIEWBOX } from '@/components/ui/brand-paths'
 
-/** Isotipo: la P que también es una puerta, en terracota. */
+/** Isotipo de la identidad: la P-puerta, naranja con la hoja gris. */
 export function PircasMark({ size = 30, className }: { size?: number; className?: string }) {
   return (
     <svg
-      viewBox="0 0 22 30"
-      width={(size * 22) / 30}
+      viewBox={ISO_VIEWBOX}
+      width={(size * 3) / 4}
       height={size}
       aria-hidden="true"
       className={className}
     >
-      <path d={DOOR_MARK} fill="#B8502C" />
+      <path d={ISO_BODY} fill="#C46128" />
+      <path d={ISO_LEAF} fill="#8a8c8e" />
     </svg>
   )
 }

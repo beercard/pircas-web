@@ -24,7 +24,7 @@ export default function GlobalError({
               fontSize: 11,
               letterSpacing: '.32em',
               textTransform: 'uppercase',
-              color: '#B8502C',
+              color: '#C46128',
             }}
           >
             Error
@@ -40,7 +40,7 @@ export default function GlobalError({
               marginTop: 16,
               padding: '16px 26px',
               border: 0,
-              background: '#B8502C',
+              background: '#C46128',
               color: '#fff',
               borderRadius: '0 999px 999px 0',
               cursor: 'pointer',

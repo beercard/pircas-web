@@ -13,7 +13,7 @@ export const escapeHtml = (s: unknown): string =>
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;')
 
-const BRAND = '#B8502C'
+const BRAND = '#C46128'
 const INK = '#26272B'
 const MUTED = '#5F6066'
 

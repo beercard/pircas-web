@@ -6,6 +6,7 @@ import { bulletListField, galleryField, imageField, specsField } from '@/fields/
 import { defaultEditor } from '@/fields/richText'
 import { featuredField, orderField, slug } from '@/fields/slug'
 import { revalidateCollectionHooks } from '@/hooks/revalidate'
+import { watermarkMedia } from '@/lib/media/watermark'
 import { previewPathFor } from '@/lib/preview'
 
 export const Products: CollectionConfig<'products'> = {
@@ -110,15 +111,17 @@ export const Products: CollectionConfig<'products'> = {
                   admin: {
                     width: '50%',
                     description:
-                      'Precio de la medida estándar, con tarjeta en cuotas. El de transferencia se calcula con el descuento.',
+                      'Sin IVA. Para productos de una sola medida. Si cargás "Medidas y precios" abajo, este precio no se usa.',
                   },
                   validate: (
                     value: number | null | undefined,
-                    { siblingData }: { siblingData: { enabled?: boolean } },
+                    { siblingData }: { siblingData: { enabled?: boolean; variants?: unknown[] } },
                   ) =>
-                    !siblingData?.enabled || (typeof value === 'number' && value > 0)
+                    !siblingData?.enabled ||
+                    (typeof value === 'number' && value > 0) ||
+                    (siblingData.variants?.length ?? 0) > 0
                       ? true
-                      : 'Ingresá el precio para ofrecer el producto.',
+                      : 'Ingresá el precio, o cargá las medidas con su precio.',
                 },
                 {
                   name: 'sku',
@@ -139,7 +142,8 @@ export const Products: CollectionConfig<'products'> = {
                   admin: {
                     width: '50%',
                     placeholder: 'Ej: 1,50 × 1,10 m',
-                    description: 'Según catálogo. Se muestra en la tarjeta y en el presupuesto.',
+                    description:
+                      'Para productos de una sola medida. Con "Medidas y precios" se completa sola.',
                   },
                 },
                 {
@@ -153,6 +157,107 @@ export const Products: CollectionConfig<'products'> = {
                     { label: 'Negro', value: 'negro' },
                   ],
                   admin: { width: '50%', description: 'El cliente elige uno.' },
+                },
+              ],
+            },
+            {
+              name: 'variants',
+              label: 'Medidas y precios',
+              labels: { singular: 'Medida', plural: 'Medidas' },
+              type: 'array',
+              admin: {
+                condition: (_, s) => Boolean(s?.enabled),
+                initCollapsed: true,
+                description:
+                  'Una fila por cada combinación que tiene precio propio: medida, color (si cambia el precio) y opción (por ejemplo "Reja 3/8" o "Con postigo"). Precios sin IVA: el IVA se suma en el presupuesto. El cliente elige la medida en la ficha del producto.',
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'measure',
+                      label: 'Medida',
+                      type: 'text',
+                      required: true,
+                      admin: { width: '30%', placeholder: 'Ej: 1,20 × 1,10 m' },
+                    },
+                    {
+                      name: 'color',
+                      label: 'Color',
+                      type: 'select',
+                      options: [
+                        { label: 'Blanco', value: 'blanco' },
+                        { label: 'Negro', value: 'negro' },
+                      ],
+                      admin: { width: '20%', description: 'Vacío = cualquiera.' },
+                    },
+                    {
+                      name: 'option',
+                      label: 'Opción',
+                      type: 'text',
+                      admin: { width: '25%', description: 'Vacío = sin opciones.' },
+                    },
+                    {
+                      name: 'price',
+                      label: 'Precio (ARS, sin IVA)',
+                      type: 'number',
+                      required: true,
+                      min: 1,
+                      admin: { width: '25%' },
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'row',
+              admin: { condition: (_, s) => Boolean(s?.enabled && s?.variants?.length) },
+              fields: [
+                {
+                  name: 'optionLabel',
+                  label: 'Nombre de la opción',
+                  type: 'text',
+                  admin: {
+                    width: '50%',
+                    placeholder: 'Ej: Reja, Postigo',
+                    description: 'Título del selector de "Opción" en la ficha.',
+                  },
+                },
+              ],
+            },
+            {
+              name: 'choices',
+              label: 'Otras elecciones (sin cambio de precio)',
+              labels: { singular: 'Elección', plural: 'Elecciones' },
+              type: 'array',
+              maxRows: 4,
+              admin: {
+                condition: (_, s) => Boolean(s?.enabled),
+                initCollapsed: true,
+                description:
+                  'Lo que el cliente elige y no cambia el precio. Ej: Giro → Derecha, Izquierda. Vidrio → Repartido, Entero.',
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'label',
+                      label: 'Título',
+                      type: 'text',
+                      required: true,
+                      admin: { width: '35%' },
+                    },
+                    {
+                      name: 'values',
+                      label: 'Valores',
+                      type: 'text',
+                      hasMany: true,
+                      required: true,
+                      admin: { width: '65%', description: 'Escribí cada valor y Enter.' },
+                    },
+                  ],
                 },
               ],
             },
@@ -380,6 +485,33 @@ export const Products: CollectionConfig<'products'> = {
     featuredField,
     orderField,
   ],
-  hooks: revalidateCollectionHooks('products', ['product-lines', 'product-categories', 'projects']),
+  hooks: (() => {
+    const hooks = revalidateCollectionHooks('products', [
+      'product-lines',
+      'product-categories',
+      'projects',
+    ])
+    return {
+      ...hooks,
+      afterChange: [
+        // Al publicar, las fotos del producto reciben la marca de agua (una sola vez).
+        async ({ doc, req, context }) => {
+          if (doc?._status !== 'published' || context?.skipWatermark) return doc
+          const idOf = (v: unknown) =>
+            typeof v === 'number'
+              ? v
+              : v && typeof v === 'object'
+                ? (v as { id?: number }).id
+                : null
+          const ids = [doc.featuredImage, ...(doc.gallery ?? []), doc.applicationImage]
+            .map(idOf)
+            .filter((id): id is number => typeof id === 'number')
+          if (ids.length) await watermarkMedia(req.payload, ids)
+          return doc
+        },
+        ...(hooks.afterChange ?? []),
+      ],
+    }
+  })(),
   versions: { drafts: { autosave: { interval: 800 } }, maxPerDoc: 30 },
 }

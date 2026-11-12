@@ -352,6 +352,7 @@ export function QuoteWizard({ catalog, turnstileSiteKey, whatsappNumber, address
                     )}
                   >
                     <DoorMark
+                      mono
                       className={cn('h-6 w-[18px]', selected ? 'text-brand-soft' : 'text-brand')}
                     />
                     <span className="text-[0.97rem] leading-tight tracking-[-0.01em]">
@@ -600,7 +601,7 @@ export function QuoteWizard({ catalog, turnstileSiteKey, whatsappNumber, address
 
         {step === 5 && submitted && (
           <div className="flex flex-col gap-6" role="status">
-            <DoorMark className="h-[60px] w-[44px] text-brand" />
+            <DoorMark className="h-[60px] w-[45px]" />
             <h2 className="text-[clamp(1.4375rem,1.1rem+1.2vw,2.125rem)] leading-[1.1] tracking-[-0.025em]">
               {catalog.success.title}
             </h2>
@@ -703,14 +704,14 @@ export function QuoteWizard({ catalog, turnstileSiteKey, whatsappNumber, address
           <h2 className="text-[clamp(1.25rem,1rem+0.8vw,1.6875rem)] tracking-[-0.02em]">
             Tu presupuesto
           </h2>
-          <span className="text-eyebrow tracking-[0.22em] text-white/60 uppercase">
+          <span className="text-eyebrow tracking-[0.22em] text-white/75 uppercase">
             {cartCount}
           </span>
         </div>
         {cart.length === 0 ? (
           <div className="flex flex-1 flex-col justify-center gap-3.5 border-y border-white/12 py-7">
-            <DoorMark className="h-[38px] w-[28px] text-white/14" />
-            <p className="max-w-[32ch] text-[0.84rem] leading-relaxed font-normal text-white/65">
+            <DoorMark mono className="h-[38px] w-[28px] text-white/14" />
+            <p className="max-w-[32ch] text-[0.84rem] leading-relaxed font-normal text-white/75">
               Todavía no agregaste aberturas. Configurá la primera y sumala a la lista.
             </p>
           </div>
@@ -724,7 +725,7 @@ export function QuoteWizard({ catalog, turnstileSiteKey, whatsappNumber, address
                 >
                   <div className="flex min-w-0 flex-col gap-1">
                     <span className="text-sm">{r.p.name}</span>
-                    <span className="text-xs leading-normal font-normal text-white/60">
+                    <span className="text-xs leading-normal font-normal text-white/75">
                       {describeItem(r.it, r.p, r.l)}
                     </span>
                   </div>
@@ -737,7 +738,7 @@ export function QuoteWizard({ catalog, turnstileSiteKey, whatsappNumber, address
                     <button
                       type="button"
                       onClick={() => setCart((c) => c.filter((_, j) => j !== i))}
-                      className="py-1 text-[0.656rem] tracking-[0.16em] text-white/55 uppercase hover:text-brand-soft"
+                      className="py-1 text-[0.656rem] tracking-[0.16em] text-white/75 uppercase hover:text-brand-soft"
                       aria-label={`Quitar ${r.p.name}`}
                     >
                       Quitar
@@ -748,7 +749,7 @@ export function QuoteWizard({ catalog, turnstileSiteKey, whatsappNumber, address
             </ul>
             {show && (
               <div className="flex items-baseline justify-between gap-3">
-                <span className="text-eyebrow tracking-[0.22em] text-white/60 uppercase">
+                <span className="text-eyebrow tracking-[0.22em] text-white/75 uppercase">
                   Total estimado
                 </span>
                 <span className="text-[clamp(1.5rem,1.1rem+1.2vw,2.125rem)] tracking-[-0.02em]">
@@ -759,7 +760,7 @@ export function QuoteWizard({ catalog, turnstileSiteKey, whatsappNumber, address
           </>
         )}
         {show && pricing.disclaimer && (
-          <p className="text-[0.78rem] leading-relaxed font-normal text-white/55">
+          <p className="text-[0.78rem] leading-relaxed font-normal text-white/75">
             {pricing.disclaimer}
           </p>
         )}
@@ -790,7 +791,7 @@ export function QuoteWizard({ catalog, turnstileSiteKey, whatsappNumber, address
           >
             Visitar el local <span aria-hidden="true">→</span>
           </Link>
-          {addressLine && <span className="text-xs font-normal text-white/55">{addressLine}</span>}
+          {addressLine && <span className="text-xs font-normal text-white/75">{addressLine}</span>}
         </div>
       </aside>
     </div>

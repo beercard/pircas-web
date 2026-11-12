@@ -4,8 +4,9 @@
  * Los precios NUNCA se mandan al navegador del catálogo: el cliente arma su lista sin
  * precios y recibe el presupuesto calculado acá al dejar su WhatsApp.
  *
- * Cada producto tiene un precio de lista (medida estándar) y, opcionalmente, el precio de
- * cada accesorio. El presupuesto informa el total de lista, el total pagando por
+ * Cada producto tiene un precio de lista por medida (o uno solo, si es de medida única) y,
+ * opcionalmente, el precio de cada accesorio. Se cargan sin IVA; el presupuesto los muestra
+ * con el IVA incluido. El presupuesto informa el total de lista, el total pagando por
  * transferencia / efectivo (con descuento) y las cuotas sin interés.
  */
 
@@ -35,10 +36,16 @@ export function resolveRules(
   }
 }
 
+/** Precio final con IVA (los precios se cargan sin IVA). */
+export const withVat = (price: number, vatPercent: number) =>
+  Math.round(price * (1 + Math.max(0, vatPercent) / 100))
+
+export const DEFAULT_VAT_PERCENT = 21
+
 const off = (price: number, discount: number) => Math.round(price * (1 - discount / 100))
 
 export type QuoteLinePrice = {
-  /** Precio de lista unitario (producto + accesorios elegidos). */
+  /** Precio de lista unitario, con IVA (producto + accesorios elegidos). */
   unitList: number
   rules: PriceRules
   quantity: number

@@ -37,7 +37,7 @@ export function ProcessBlock({
             {eyebrow && <p className="eyebrow">{eyebrow}</p>}
             {title && <h2 className="max-w-[20ch] text-h2">{title}</h2>}
             {(body || intro) && (
-              <p className="max-w-[44ch] text-[0.97rem] leading-[1.65] font-normal text-muted in-[.on-dark]:text-white/70">
+              <p className="max-w-[44ch] text-[0.97rem] leading-[1.65] font-normal text-muted in-[.on-dark]:text-white/75">
                 {body || intro}
               </p>
             )}
@@ -72,7 +72,7 @@ export function ProcessBlock({
                     {step.title}
                   </span>
                   {step.text && (
-                    <span className="max-w-[46ch] text-sm leading-relaxed font-normal text-muted in-[.on-dark]:text-white/65">
+                    <span className="max-w-[46ch] text-sm leading-relaxed font-normal text-muted in-[.on-dark]:text-white/75">
                       {step.text}
                     </span>
                   )}
@@ -130,7 +130,7 @@ export function ProcessBlock({
                 <p
                   className={cn(
                     'text-[0.84rem] leading-relaxed font-normal',
-                    dark ? 'text-white/65' : 'text-muted',
+                    dark ? 'text-white/75' : 'text-muted',
                   )}
                 >
                   {step.text}

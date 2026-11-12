@@ -144,7 +144,8 @@ export default async function QuoteResultPage({ params, searchParams }: Props) {
                 )}
               </dl>
               <p className="mt-5 text-xs font-normal text-muted">
-                Precios de medida estándar según catálogo, no incluyen flete ni colocación. Si
+                Precios de medida estándar según catálogo
+                {order.vatPercent ? ', con IVA incluido' : ''}. No incluyen flete ni colocación. Si
                 necesitás otra medida, la fabricamos y te la cotizamos.
               </p>
             </div>

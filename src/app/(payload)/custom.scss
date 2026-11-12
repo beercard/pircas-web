@@ -1,6 +1,6 @@
 // =============================================================================
 // Panel de PIRCAS — tema de marca sobre el admin de Payload.
-// Manual de marca: terracota #B8502C · grafito #26272B · neutros cálidos
+// Manual de marca: naranja #C46128 · gris oscuro #57585A · neutros cálidos
 // (#FAF9F7, #F3F1ED, #ECEAE6) · Montserrat · forma "puerta" en botones.
 //
 // Payload define sus estilos dentro de `@layer payload-default`; estas reglas (sin
@@ -9,8 +9,8 @@
 
 :root {
   // --- Tokens de marca -----------------------------------------------------------
-  --p-brand: #b8502c;
-  --p-brand-ink: #a9471f;
+  --p-brand: #c46128;
+  --p-brand-ink: #a14f21;
   --p-brand-soft: #e39a7e;
   --p-brand-tint: #f6e7df;
   --p-ink: #26272b;
@@ -868,7 +868,7 @@ h4 {
     bottom: -14vh;
     width: min(46vw, 560px);
     aspect-ratio: 480 / 680;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 680'%3E%3Cpath d='M0 0 H280 A200 200 0 0 1 280 400 H160 V680 H0 Z' fill='%23B8502C'/%3E%3C/svg%3E")
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 680'%3E%3Cpath d='M0 0 H280 A200 200 0 0 1 280 400 H160 V680 H0 Z' fill='%23C46128'/%3E%3C/svg%3E")
       no-repeat center / contain;
     opacity: 0.95;
     pointer-events: none;

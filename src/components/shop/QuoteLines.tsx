@@ -25,10 +25,14 @@ export function QuoteLines({
     <ul className="flex flex-col divide-y divide-line">
       {lines.map((line) => {
         const href = pathFor('products', line.product.slug)
+        // Con medidas, el color es parte de la combinación elegida: no se edita desde la lista.
+        const fixed = Boolean(line.measure)
         const summary = variantText(
-          compact ? line.color : null,
+          compact || fixed ? line.color : null,
           compact ? line.accessories : [],
-          line.product.measure,
+          line.measure ?? line.product.measure,
+          line.option,
+          line.choices,
         )
         return (
           <li key={line.key} className={cn('flex gap-3.5', compact ? 'py-3.5' : 'py-5')}>
@@ -75,13 +79,15 @@ export function QuoteLines({
               </div>
               {!compact && (
                 <div className="flex flex-col gap-3">
-                  <ColorPicker
-                    small
-                    name={`color-${line.key}`}
-                    product={line.product}
-                    value={line.color}
-                    onChange={(color) => quote.update(line.key, { color })}
-                  />
+                  {!fixed && (
+                    <ColorPicker
+                      small
+                      name={`color-${line.key}`}
+                      product={line.product}
+                      value={line.color}
+                      onChange={(color) => quote.update(line.key, { color })}
+                    />
+                  )}
                   <AccessoryPicker
                     small
                     product={line.product}

@@ -69,7 +69,7 @@ export default async function ProductPage({ params }: Props) {
   ])
   const category = isPopulated(product.category) ? product.category : null
   // Producto de medida estándar: se suma al presupuesto online (sin precio a la vista).
-  const shopProduct = shopConfig.enabled ? toShopProduct(product) : null
+  const shopProduct = shopConfig.enabled ? toShopProduct(product, { full: true }) : null
   const waConsult = whatsappUrl(getWhatsAppConfig(site), productWhatsAppMessage(product.name))
   const line = isPopulated(product.line) ? product.line : null
   const path = pathFor('products', product.slug)
@@ -129,6 +129,15 @@ export default async function ProductPage({ params }: Props) {
                       <p className="text-sm font-normal text-muted">
                         Medida estándar:{' '}
                         <span className="font-medium text-ink">{shopProduct.measure}</span>
+                      </p>
+                    )}
+                    {shopProduct.measureCount > 0 && (
+                      <p className="text-sm font-normal text-muted">
+                        Disponible en{' '}
+                        <span className="font-medium text-ink">
+                          {shopProduct.measureCount} medidas estándar
+                        </span>
+                        . Elegí la tuya:
                       </p>
                     )}
                     <p className="text-sm font-normal text-muted">
