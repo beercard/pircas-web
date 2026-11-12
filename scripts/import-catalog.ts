@@ -644,4 +644,15 @@ for (const slug of OBSOLETE) {
 payload.logger.info(
   `Catálogo: ${created} creados · ${updated} actualizados · ${sections} fotos de categorías y líneas · ${examples.docs.length} de ejemplo eliminados · ${removed} categorías viejas eliminadas${skipped.length ? ` · sin cargar: ${skipped.join(' | ')}` : ''}`,
 )
+// El script escribe por fuera de Next: se le pide al sitio que vacíe su caché de datos.
+// SITE_URL=https://… (el sitio que usa esta misma base).
+if (process.env.SITE_URL && process.env.DATABASE_URL) {
+  const token = createHash('sha256').update(process.env.DATABASE_URL).digest('hex')
+  const res = await fetch(`${process.env.SITE_URL.replace(/\/$/, '')}/api/revalidate`, {
+    method: 'POST',
+    headers: { 'x-revalidate-token': token },
+  })
+  payload.logger.info(`Caché del sitio: ${res.ok ? 'actualizado' : `no se pudo (${res.status})`}`)
+}
+
 process.exit(0)
