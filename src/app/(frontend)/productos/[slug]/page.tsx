@@ -103,9 +103,12 @@ export default async function ProductPage({ params }: Props) {
       <section className="bg-paper pt-[clamp(2rem,4vw,3.5rem)] pb-[clamp(3.5rem,7vw,6.875rem)]">
         <div className="container-site flex flex-col gap-[clamp(1.75rem,3vw,2.75rem)]">
           <Breadcrumbs items={crumbs} />
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,25rem),1fr))] items-start gap-[clamp(1.75rem,3.5vw,4rem)]">
-            <ProductGallery images={images} name={product.name} />
-            <div className="flex flex-col gap-[22px]">
+          {/* Celular: fotos → datos y compra → descripción. Desktop: la descripción va debajo de las fotos. */}
+          <div className="grid items-start gap-[clamp(1.75rem,3.5vw,4rem)] lg:grid-cols-2 lg:grid-rows-[auto_1fr]">
+            <div className="lg:col-start-1 lg:row-start-1">
+              <ProductGallery images={images} name={product.name} />
+            </div>
+            <div className="flex flex-col gap-[22px] lg:col-start-2 lg:row-span-2 lg:row-start-1">
               {(category || line) && (
                 <p className="eyebrow tracking-[0.3em]">
                   {[category?.name, line?.name].filter(Boolean).join(' · ')}
@@ -114,13 +117,9 @@ export default async function ProductPage({ params }: Props) {
               <h1 className="text-[clamp(2rem,1.3rem+2.8vw,3.75rem)] leading-[1.02] tracking-[-0.03em]">
                 {product.name}
               </h1>
-              {product.description?.root?.children?.length ? (
-                <RichText data={product.description} className="text-base" />
-              ) : (
-                <p className="max-w-[52ch] text-base leading-[1.7] font-normal text-muted">
-                  {product.shortDescription}
-                </p>
-              )}
+              <p className="max-w-[52ch] text-base leading-[1.7] font-normal text-muted">
+                {product.shortDescription}
+              </p>
               <Facts facts={product.facts} />
               {shopProduct ? (
                 <div className="flex flex-col gap-6 border-y border-line py-6">
@@ -195,6 +194,12 @@ export default async function ProductPage({ params }: Props) {
                 />
               )}
             </div>
+            {product.description?.root?.children?.length ? (
+              <div className="flex flex-col gap-4 border-t border-line pt-6 lg:col-start-1 lg:row-start-2">
+                <h2 className="eyebrow">Descripción</h2>
+                <RichText data={product.description} className="text-base" />
+              </div>
+            ) : null}
           </div>
         </div>
       </section>

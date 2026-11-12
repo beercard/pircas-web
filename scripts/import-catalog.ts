@@ -7,7 +7,7 @@
  * Lee `catalogo-import/` (fuera del repo): catalog.json (productos, medidas y precios sin
  * IVA), photos.json y la carpeta fotos/. Las fotos se llevan a un lienzo 4:3 (para que la
  * tarjeta muestre la abertura entera) y reciben la marca de agua.
- * Además despublica los productos de ejemplo (código EJ-…), que tienen precios ficticios.
+ * Además deja las categorías del Drive y elimina los productos de ejemplo (código EJ-…).
  */
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
@@ -22,6 +22,8 @@ import { slugify } from '../src/lib/slugify'
 import { richText, specs } from '../src/seed/helpers'
 
 const DIR = path.resolve(process.cwd(), process.env.CATALOG_DIR || 'catalogo-import')
+// Ojo: cada llamada recibe una copia. El almacenamiento en la nube marca el contexto al subir
+// un archivo; si se comparte el mismo objeto, las fotos siguientes no se suben.
 const ctx = { disableRevalidate: true, skipWatermark: true }
 
 type Row = {
@@ -50,6 +52,8 @@ type Rule = {
   optionLabel?: string
   choices?: { label: string; values: string[] }[]
   featured?: boolean
+  /** Posición de la foto que va como principal (por defecto, la primera). */
+  lead?: number
 }
 
 const ECO = 'herrero-economica'
@@ -75,22 +79,23 @@ const RULES: Rule[] = [
   {
     match: /^Ventana corrediza económica – vidrio entero$/,
     sku: 'PIR-VCE-VE',
-    category: 'ventanas-corredizas',
+    category: 'ventanas-economicas',
     line: ECO,
     photos: [{ folder: `${V}/1. Economicas/Ventana corrediza vidrio entero` }],
     featured: true,
+    lead: 3,
   },
   {
     match: /^Ventana corrediza económica – vidrio repartido$/,
     sku: 'PIR-VCE-VR',
-    category: 'ventanas-corredizas',
+    category: 'ventanas-economicas',
     line: ECO,
     photos: [{ folder: `${V}/1. Economicas/Ventana corrediza vidrio repartido` }],
   },
   {
     match: /^Ventana corrediza económica – vidrio entero con reja$/,
     sku: 'PIR-VCE-REJA',
-    category: 'ventanas-corredizas',
+    category: 'ventanas-economicas',
     line: ECO,
     photos: [{ folder: `${V}/1. Economicas/Ventana corrediza vidrio entero con reja` }],
     optionLabel: 'Reja',
@@ -98,22 +103,23 @@ const RULES: Rule[] = [
   {
     match: /^Ventana corrediza reforzada – vidrio entero$/,
     sku: 'PIR-VCR-VE',
-    category: 'ventanas-corredizas',
+    category: 'ventanas-reforzadas',
     line: REF,
     photos: [{ folder: `${V}/2. Reforzada/Ventana corrediza reforzada vidrio entero` }],
     featured: true,
+    lead: 1,
   },
   {
     match: /^Ventana corrediza reforzada – vidrio repartido$/,
     sku: 'PIR-VCR-VR',
-    category: 'ventanas-corredizas',
+    category: 'ventanas-reforzadas',
     line: REF,
     photos: [{ folder: `${V}/2. Reforzada/Ventana corrediza reforzada vidrio repartido` }],
   },
   {
     match: /^Ventana corrediza reforzada con celosía corrediza/,
     sku: 'PIR-VCR-CEL',
-    category: 'ventanas-corredizas',
+    category: 'ventanas-reforzadas',
     line: REF,
     photos: [{ folder: `${V}/2. Reforzada/Ventana corrediza reforzada vidrio entero con celosia` }],
   },
@@ -305,7 +311,7 @@ async function mediaFor(photo: Photo, alt: string): Promise<number> {
       file: { data, mimetype: 'image/jpeg', name: `${slugify(alt)}-${tag}.jpg`, size: data.length },
       overrideAccess: true,
       overwriteExistingFiles: true,
-      context: ctx,
+      context: { ...ctx },
     })
   }
   if (!id) {
@@ -315,12 +321,83 @@ async function mediaFor(photo: Photo, alt: string): Promise<number> {
       data: { alt, watermarked: true },
       file: { data, mimetype: 'image/jpeg', name: `${slugify(alt)}-${tag}.jpg`, size: data.length },
       overrideAccess: true,
-      context: ctx,
+      context: { ...ctx },
     })
     id = doc.id
   }
   mediaCache.set(tag, id)
   return id
+}
+
+/** Categorías de la tienda: las mismas carpetas del Drive, en ese orden. */
+const CATEGORIES: { slug: string; name: string; parent?: string }[] = [
+  { slug: 'ventanas', name: 'Ventanas' },
+  { slug: 'ventanas-economicas', name: 'Ventanas económicas', parent: 'ventanas' },
+  { slug: 'ventanas-reforzadas', name: 'Ventanas reforzadas', parent: 'ventanas' },
+  { slug: 'ventanas-modena', name: 'Ventanas Módena', parent: 'ventanas' },
+  { slug: 'raja', name: 'Rajas' },
+  { slug: 'brazo-de-empuje', name: 'Brazo de empuje' },
+  { slug: 'panos-fijos', name: 'Paños fijos' },
+  { slug: 'puertas', name: 'Puertas' },
+  { slug: 'puertas-economicas-25-mm', name: 'Puertas económicas 25 mm', parent: 'puertas' },
+  { slug: 'puertas-reforzadas-36-mm', name: 'Puertas reforzadas 36 mm', parent: 'puertas' },
+  { slug: 'puertas-modena', name: 'Puertas Módena', parent: 'puertas' },
+  { slug: 'puerta-balcon', name: 'Puerta balcón' },
+  { slug: 'puerta-balcon-economica', name: 'Puerta balcón económica', parent: 'puerta-balcon' },
+  { slug: 'puerta-balcon-reforzada', name: 'Puerta balcón reforzada', parent: 'puerta-balcon' },
+  { slug: 'puerta-balcon-modena', name: 'Puerta balcón Módena', parent: 'puerta-balcon' },
+  { slug: 'puertas-placa', name: 'Puerta placa' },
+  { slug: 'aireadores', name: 'Aireadores' },
+  { slug: 'rejas', name: 'Rejas y mosquiteros' },
+  { slug: 'mamparas', name: 'Mamparas de baño' },
+]
+/** Categorías que ya no van (se borran solo si quedaron vacías). */
+const OBSOLETE = [
+  'ventanas-corredizas',
+  'puertas-placa-pino',
+  'puertas-placa-cedrillo',
+  'puertas-placa-mdf',
+  'mamparas-pano-fijo',
+  'mamparas-corrediza',
+  'mamparas-box',
+]
+
+const findCategory = async (slug: string) =>
+  (
+    await payload.find({
+      collection: 'product-categories',
+      where: { slug: { equals: slug } },
+      limit: 1,
+      depth: 0,
+      draft: true,
+      overrideAccess: true,
+    })
+  ).docs[0] ?? null
+
+const categoryIds = new Map<string, number>()
+for (const [order, c] of CATEGORIES.entries()) {
+  const data = {
+    name: c.name,
+    parent: c.parent ? (categoryIds.get(c.parent) ?? null) : null,
+    order,
+    _status: 'published' as const,
+  }
+  const existing = await findCategory(c.slug)
+  const doc = existing
+    ? await payload.update({
+        collection: 'product-categories',
+        id: existing.id,
+        data,
+        overrideAccess: true,
+        context: { ...ctx },
+      })
+    : await payload.create({
+        collection: 'product-categories',
+        data: { ...data, slug: c.slug },
+        overrideAccess: true,
+        context: { ...ctx },
+      })
+  categoryIds.set(c.slug, doc.id)
 }
 
 let created = 0
@@ -348,6 +425,7 @@ for (const [i, doc] of catalog.products.entries()) {
     skipped.push(`${doc.title} (sin fotos)`)
     continue
   }
+  if (rule.lead && mine[rule.lead]) mine.unshift(...mine.splice(rule.lead, 1))
   const name = doc.title.replace(/\s+/g, ' ').trim()
   const mediaIds: number[] = []
   for (const p of mine) mediaIds.push(await mediaFor(p, name))
@@ -402,7 +480,7 @@ for (const [i, doc] of catalog.products.entries()) {
       id: existing.docs[0].id,
       data,
       overrideAccess: true,
-      context: ctx,
+      context: { ...ctx },
     })
     updated++
   } else {
@@ -410,7 +488,7 @@ for (const [i, doc] of catalog.products.entries()) {
       collection: 'products',
       data: { ...data, slug: slugify(name) },
       overrideAccess: true,
-      context: ctx,
+      context: { ...ctx },
     })
     created++
   }
@@ -431,7 +509,7 @@ const SECTION_PHOTOS: {
 }[] = [
   {
     collection: 'product-categories',
-    slug: 'ventanas-corredizas',
+    slug: 'ventanas-economicas',
     folder: `${V}/1. Economicas/Ventana corrediza vidrio entero`,
     index: 2,
   },
@@ -440,6 +518,11 @@ const SECTION_PHOTOS: {
     slug: 'ventanas',
     folder: `${V}/2. Reforzada/Ventana corrediza reforzada vidrio entero con celosia`,
     index: 1,
+  },
+  {
+    collection: 'product-categories',
+    slug: 'ventanas-reforzadas',
+    folder: `${V}/2. Reforzada/Ventana corrediza reforzada vidrio repartido`,
   },
   { collection: 'product-categories', slug: 'raja', folder: '2. Rajas' },
   { collection: 'product-categories', slug: 'brazo-de-empuje', folder: '3. Brazo de empuje' },
@@ -469,15 +552,9 @@ const SECTION_PHOTOS: {
   },
   { collection: 'product-categories', slug: 'puerta-balcon-modena', folder: `${PB}/3. Módena` },
   { collection: 'product-categories', slug: 'puertas-placa', folder: PLACA, index: 5 },
-  { collection: 'product-categories', slug: 'puertas-placa-pino', folder: PLACA, index: 4 },
-  { collection: 'product-categories', slug: 'puertas-placa-cedrillo', folder: PLACA, index: 0 },
-  { collection: 'product-categories', slug: 'puertas-placa-mdf', folder: PLACA, index: 1 },
   { collection: 'product-categories', slug: 'aireadores', folder: '8. Aireadores', index: 3 },
   { collection: 'product-categories', slug: 'rejas', folder: '9. Rejas y mosquiteros' },
   { collection: 'product-categories', slug: 'mamparas', folder: MAMP, index: 1 },
-  { collection: 'product-categories', slug: 'mamparas-corrediza', folder: MAMP, index: 0 },
-  { collection: 'product-categories', slug: 'mamparas-box', folder: MAMP, index: 3 },
-  { collection: 'product-categories', slug: 'mamparas-pano-fijo', folder: MAMP, index: 2 },
   {
     collection: 'product-lines',
     slug: ECO,
@@ -514,7 +591,7 @@ for (const sec of SECTION_PHOTOS) {
       id: target.id,
       data: { image: media },
       overrideAccess: true,
-      context: ctx,
+      context: { ...ctx },
     })
   else
     await payload.update({
@@ -522,29 +599,49 @@ for (const sec of SECTION_PHOTOS) {
       id: target.id,
       data: { heroImage: media },
       overrideAccess: true,
-      context: ctx,
+      context: { ...ctx },
     })
   sections++
 }
 
-// Productos de ejemplo (precios ficticios): fuera del sitio.
+// Productos de ejemplo de la tienda (código EJ-…, precios ficticios): se eliminan.
 const examples = await payload.find({
   collection: 'products',
-  where: { and: [{ 'shop.sku': { like: 'EJ-' } }, { _status: { equals: 'published' } }] },
+  where: { 'shop.sku': { like: 'EJ-' } },
   limit: 200,
   depth: 0,
+  draft: true,
   overrideAccess: true,
 })
 for (const ex of examples.docs)
-  await payload.update({
+  await payload.delete({
     collection: 'products',
     id: ex.id,
-    data: { _status: 'draft' },
     overrideAccess: true,
-    context: ctx,
+    context: { ...ctx },
   })
 
+// Categorías que ya no están en el Drive: se borran si quedaron sin productos.
+let removed = 0
+for (const slug of OBSOLETE) {
+  const cat = await findCategory(slug)
+  if (!cat) continue
+  const used = await payload.count({
+    collection: 'products',
+    where: { category: { equals: cat.id } },
+    overrideAccess: true,
+  })
+  if (used.totalDocs > 0) continue
+  await payload.delete({
+    collection: 'product-categories',
+    id: cat.id,
+    overrideAccess: true,
+    context: { ...ctx },
+  })
+  removed++
+}
+
 payload.logger.info(
-  `Catálogo: ${created} creados · ${updated} actualizados · ${sections} fotos de categorías y líneas · ${examples.docs.length} de ejemplo despublicados${skipped.length ? ` · sin cargar: ${skipped.join(' | ')}` : ''}`,
+  `Catálogo: ${created} creados · ${updated} actualizados · ${sections} fotos de categorías y líneas · ${examples.docs.length} de ejemplo eliminados · ${removed} categorías viejas eliminadas${skipped.length ? ` · sin cargar: ${skipped.join(' | ')}` : ''}`,
 )
 process.exit(0)
