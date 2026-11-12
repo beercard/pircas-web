@@ -9,6 +9,8 @@ import { buttonVariants } from '@/components/ui/button-variants'
 import { cn } from '@/lib/cn'
 import type { ShopProduct } from '@/lib/shop/config'
 import type { AccessoryValue } from '@/lib/shop/options'
+import { MEASURE_EVENT } from '@/components/catalog/ProductGallery'
+import { measureRatio } from '@/lib/shop/ratio'
 import { MAX_QTY } from '@/lib/shop/schema'
 import { colorsFor, measuresOf, optionsFor, resolveVariant } from '@/lib/shop/variants'
 import { pathFor, ROUTES } from '@/lib/routes'
@@ -353,7 +355,13 @@ export function QuoteBox({ product }: { product: ShopProduct }) {
           <select
             id="quote-measure"
             value={measure ?? ''}
-            onChange={(e) => setWanted((w) => ({ ...w, measure: e.target.value }))}
+            onChange={(e) => {
+              const value = e.target.value
+              setWanted((w) => ({ ...w, measure: value }))
+              // La galería muestra la foto que más se parece a esta medida.
+              const ratio = measureRatio(value)
+              if (ratio) window.dispatchEvent(new CustomEvent(MEASURE_EVENT, { detail: ratio }))
+            }}
             className="h-12 w-full border border-line-strong bg-white px-3 text-sm font-medium outline-none focus:border-brand"
           >
             {measures.map((m) => (

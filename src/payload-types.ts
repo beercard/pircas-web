@@ -381,6 +381,10 @@ export interface Media {
   caption?: string | null;
   credit?: string | null;
   /**
+   * Opcional. En productos con varias medidas, la ficha muestra la foto cuya proporción más se parece a la medida elegida. Ej: una ventana de 1,50 × 1,00 m → 1,5.
+   */
+  openingRatio?: number | null;
+  /**
    * Se marca sola: las fotos de productos reciben el logo de Pircas al publicar el producto.
    */
   watermarked?: boolean | null;
@@ -3194,6 +3198,7 @@ export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
   credit?: T;
+  openingRatio?: T;
   watermarked?: T;
   prefix?: T;
   _objectKey?: T;

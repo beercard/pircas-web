@@ -13,6 +13,8 @@ export type GalleryImage = {
   height: number
   caption?: string | null
   focal?: string
+  /** Proporción ancho/alto de la abertura que muestra (fotos de productos). */
+  ratio?: number | null
 }
 
 /**

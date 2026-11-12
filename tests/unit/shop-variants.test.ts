@@ -74,3 +74,19 @@ describe('medidas y opciones del presupuesto', () => {
     )
   })
 })
+
+describe('foto según la medida elegida', () => {
+  it('calcula la proporción de una medida', async () => {
+    const { measureRatio } = await import('@/lib/shop/ratio')
+    expect(measureRatio('1,50 × 1,00 m')).toBeCloseTo(1.5)
+    expect(measureRatio('1 hoja · 0,80 × 2,05 m')).toBeCloseTo(0.39, 2)
+    expect(measureRatio('sin medida')).toBeNull()
+  })
+
+  it('elige la foto de proporción más parecida e ignora las que no la tienen', async () => {
+    const { closestRatio } = await import('@/lib/shop/ratio')
+    expect(closestRatio([1.09, null, 3.12, 0.86], 5)).toBe(2)
+    expect(closestRatio([1.09, null, 3.12, 0.86], 0.67)).toBe(3)
+    expect(closestRatio([null, undefined], 1)).toBe(-1)
+  })
+})

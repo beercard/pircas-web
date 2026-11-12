@@ -1,14 +1,33 @@
 'use client'
 
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import type { GalleryImage } from '@/components/ui/Gallery'
 import { cn } from '@/lib/cn'
+import { closestRatio } from '@/lib/shop/ratio'
+
+/** Evento que emite el selector de medida de la ficha: `detail` = ancho ÷ alto elegido. */
+export const MEASURE_EVENT = 'pircas:measure'
 
 /** Galería del producto: imagen principal 4:3 + miniaturas cuadradas (hasta 4 por fila). */
 export function ProductGallery({ images, name }: { images: GalleryImage[]; name: string }) {
   const [active, setActive] = useState(0)
+
+  // Al elegir una medida, se muestra la foto de proporción más parecida (si las fotos la traen).
+  useEffect(() => {
+    const onMeasure = (e: Event) => {
+      const wanted = (e as CustomEvent<number>).detail
+      if (!(wanted > 0)) return
+      const i = closestRatio(
+        images.map((img) => img.ratio),
+        wanted,
+      )
+      if (i >= 0) setActive(i)
+    }
+    window.addEventListener(MEASURE_EVENT, onMeasure)
+    return () => window.removeEventListener(MEASURE_EVENT, onMeasure)
+  }, [images])
   const current = images[active] ?? images[0]
   if (!current) return <div className="aspect-[4/3] bg-stone" />
   return (

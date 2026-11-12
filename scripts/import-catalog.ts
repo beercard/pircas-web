@@ -17,6 +17,7 @@ import { getPayload } from 'payload'
 import sharp from 'sharp'
 
 import config from '../src/payload.config'
+import { openingRatio } from '../src/lib/media/opening-ratio'
 import { applyWatermark } from '../src/lib/media/watermark'
 import { slugify } from '../src/lib/slugify'
 import { richText, specs } from '../src/seed/helpers'
@@ -287,10 +288,8 @@ const idBySlug = async (collection: 'product-categories' | 'product-lines', slug
 
 const mediaCache = new Map<string, number>()
 async function mediaFor(photo: Photo, alt: string): Promise<number> {
-  const key = createHash('md5')
-    .update(readFileSync(path.join(DIR, photo.path)))
-    .digest('hex')
-  const tag = key.slice(0, 12)
+  const original = readFileSync(path.join(DIR, photo.path))
+  const tag = createHash('md5').update(original).digest('hex').slice(0, 12)
   const cached = mediaCache.get(tag)
   if (cached) return cached
   const found = await payload.find({
@@ -300,33 +299,46 @@ async function mediaFor(photo: Photo, alt: string): Promise<number> {
     depth: 0,
     overrideAccess: true,
   })
-  let id = found.docs[0]?.id
-  // REFRESH_PHOTOS=1 vuelve a generar las fotos ya cargadas (cambios de lienzo o de marca).
-  if (id && process.env.REFRESH_PHOTOS) {
-    const data = await applyWatermark(await productCanvas(readFileSync(path.join(DIR, photo.path))))
+  const existing = found.docs[0]
+  const file = async () => {
+    const data = await applyWatermark(await productCanvas(original))
+    return { data, mimetype: 'image/jpeg', name: `${slugify(alt)}-${tag}.jpg`, size: data.length }
+  }
+  let id = existing?.id
+  if (existing && process.env.REFRESH_PHOTOS) {
+    // REFRESH_PHOTOS=1 vuelve a generar las fotos ya cargadas (cambios de lienzo o de marca).
     await payload.update({
       collection: 'media',
-      id,
-      data: { watermarked: true },
-      file: { data, mimetype: 'image/jpeg', name: `${slugify(alt)}-${tag}.jpg`, size: data.length },
+      id: existing.id,
+      data: { watermarked: true, openingRatio: await openingRatio(original) },
+      file: await file(),
       overrideAccess: true,
       overwriteExistingFiles: true,
       context: { ...ctx },
     })
-  }
-  if (!id) {
-    const data = await applyWatermark(await productCanvas(readFileSync(path.join(DIR, photo.path))))
+  } else if (existing && existing.openingRatio == null) {
+    // Foto ya cargada sin proporción: se completa el dato, sin tocar el archivo.
+    const ratio = await openingRatio(original)
+    if (ratio)
+      await payload.update({
+        collection: 'media',
+        id: existing.id,
+        data: { openingRatio: ratio },
+        overrideAccess: true,
+        context: { ...ctx },
+      })
+  } else if (!existing) {
     const doc = await payload.create({
       collection: 'media',
-      data: { alt, watermarked: true },
-      file: { data, mimetype: 'image/jpeg', name: `${slugify(alt)}-${tag}.jpg`, size: data.length },
+      data: { alt, watermarked: true, openingRatio: await openingRatio(original) },
+      file: await file(),
       overrideAccess: true,
       context: { ...ctx },
     })
     id = doc.id
   }
-  mediaCache.set(tag, id)
-  return id
+  mediaCache.set(tag, id!)
+  return id!
 }
 
 /** Categorías de la tienda: las mismas carpetas del Drive, en ese orden. */

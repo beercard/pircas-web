@@ -37,6 +37,7 @@ export function toGalleryImages(
           typeof m.focalX === 'number' && typeof m.focalY === 'number'
             ? `${m.focalX}% ${m.focalY}%`
             : undefined,
+        ratio: m.openingRatio ?? null,
       },
     ]
   })

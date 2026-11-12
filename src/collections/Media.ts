@@ -45,6 +45,19 @@ export const Media: CollectionConfig = {
     },
     { name: 'credit', label: 'Crédito / autor', type: 'text' },
     {
+      name: 'openingRatio',
+      label: 'Proporción de la abertura (ancho ÷ alto)',
+      type: 'number',
+      min: 0.1,
+      max: 10,
+      admin: {
+        position: 'sidebar',
+        step: 0.01,
+        description:
+          'Opcional. En productos con varias medidas, la ficha muestra la foto cuya proporción más se parece a la medida elegida. Ej: una ventana de 1,50 × 1,00 m → 1,5.',
+      },
+    },
+    {
       name: 'watermarked',
       label: 'Con marca de agua',
       type: 'checkbox',
