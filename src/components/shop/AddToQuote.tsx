@@ -8,6 +8,8 @@ import { useState } from 'react'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { cn } from '@/lib/cn'
 import type { ShopProduct } from '@/lib/shop/config'
+
+import { useShopLabels } from './ShopLabels'
 import type { AccessoryValue } from '@/lib/shop/options'
 import { MEASURE_EVENT } from '@/components/catalog/ProductGallery'
 import { measureRatio } from '@/lib/shop/ratio'
@@ -23,13 +25,14 @@ import { quote } from './quote-store'
  */
 export function QuickAddButton({ product }: { product: ShopProduct }) {
   const [added, setAdded] = useState(false)
+  const labels = useShopLabels()
   if (product.measureCount > 0)
     return (
       <Link
         href={pathFor('products', product.slug)}
         className={cn(buttonVariants({ variant: 'primary', size: 'sm' }), 'w-full justify-center')}
       >
-        <ClipboardList aria-hidden="true" className="size-4" /> Elegir medida
+        <ClipboardList aria-hidden="true" className="size-4" /> {labels.choose}
       </Link>
     )
   return (
@@ -51,7 +54,7 @@ export function QuickAddButton({ product }: { product: ShopProduct }) {
         </>
       ) : (
         <>
-          <ClipboardList aria-hidden="true" className="size-4" /> Agregar al presupuesto
+          <ClipboardList aria-hidden="true" className="size-4" /> {labels.add}
         </>
       )}
     </button>
@@ -298,6 +301,7 @@ function ChipGroup({
 /** Caja de la ficha: medida, color, opciones, accesorios, cantidad y "Agregar al presupuesto". */
 export function QuoteBox({ product }: { product: ShopProduct }) {
   const router = useRouter()
+  const labels = useShopLabels()
   const rows = product.variants ?? []
   const measures = measuresOf(rows)
   const [wanted, setWanted] = useState<{
@@ -410,7 +414,7 @@ export function QuoteBox({ product }: { product: ShopProduct }) {
           className={cn(buttonVariants({ variant: 'primary' }), 'flex-1 justify-center')}
         >
           <ClipboardList aria-hidden="true" className="size-4" />
-          Agregar al presupuesto
+          {labels.add}
         </button>
         <button
           type="button"
@@ -420,7 +424,7 @@ export function QuoteBox({ product }: { product: ShopProduct }) {
           }}
           className={cn(buttonVariants({ variant: 'outline' }), 'flex-1 justify-center')}
         >
-          Pedir presupuesto ahora
+          {labels.now}
         </button>
       </div>
     </div>

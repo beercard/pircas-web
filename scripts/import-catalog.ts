@@ -49,7 +49,8 @@ type Rule = {
   category: string
   line?: string
   /** Carpeta de fotos y, si hace falta, filtro por nombre de archivo. */
-  photos: { folder: string; file?: RegExp }[]
+  /** `exclude`: fotos de la carpeta que no son de este producto. */
+  photos: { folder: string; file?: RegExp; exclude?: RegExp }[]
   optionLabel?: string
   choices?: { label: string; values: string[] }[]
   featured?: boolean
@@ -63,6 +64,9 @@ const V = '1. Ventanas'
 const P36 = '5. Puertas/2. Reforzadas 36 mm'
 const PB = '6. Puerta Balcón'
 const GIRO = { label: 'Giro', values: ['Derecha', 'Izquierda'] }
+/** Carpeta de la ventana con celosía: trae una foto que es de puerta balcón (alto de puerta). */
+const V_CEL = `${V}/2. Reforzada/Ventana corrediza reforzada vidrio entero con celosia`
+const DOOR_IN_V_CEL = /Cel\. \(3\)/
 const VIDRIO = { label: 'Vidrio', values: ['Repartido', 'Entero'] }
 
 const door = (model: string, n: number, extra: Partial<Rule> = {}): Rule => ({
@@ -122,7 +126,7 @@ const RULES: Rule[] = [
     sku: 'PIR-VCR-CEL',
     category: 'ventanas-reforzadas',
     line: REF,
-    photos: [{ folder: `${V}/2. Reforzada/Ventana corrediza reforzada vidrio entero con celosia` }],
+    photos: [{ folder: V_CEL, exclude: DOOR_IN_V_CEL }],
   },
   {
     match: /^Raja de abrir económica/,
@@ -191,6 +195,7 @@ const RULES: Rule[] = [
     line: REF,
     photos: [
       { folder: `${PB}/2. Reforzada/Puerta corrediza balcón reforzada con celosia corrediza` },
+      { folder: V_CEL, file: DOOR_IN_V_CEL },
     ],
   },
   {
@@ -200,6 +205,7 @@ const RULES: Rule[] = [
     line: REF,
     photos: [
       { folder: `${PB}/2. Reforzada/Puerta corrediza balcón reforzada con celosia corrediza` },
+      { folder: V_CEL, file: DOOR_IN_V_CEL },
     ],
   },
   {
@@ -427,7 +433,10 @@ for (const [i, doc] of catalog.products.entries()) {
       rule.photos
         .flatMap((sel) =>
           photos.filter(
-            (p) => p.folder === sel.folder && (!sel.file || sel.file.test(path.basename(p.path))),
+            (p) =>
+              p.folder === sel.folder &&
+              (!sel.file || sel.file.test(path.basename(p.path))) &&
+              !sel.exclude?.test(path.basename(p.path)),
           ),
         )
         .map((p) => [p.hash, p]),

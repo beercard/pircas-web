@@ -43,7 +43,10 @@ export const Projects: CollectionConfig<'projects'> = {
       type: 'text',
       required: true,
       localized: true,
-      admin: { placeholder: 'Ej: Casa en Coronda · Ventanal DVH' },
+      admin: {
+        placeholder: 'Ej: Casa en Coronda · Ventanal DVH',
+        components: { Cell: '@/components/admin/ThumbnailCell#TitleCell' },
+      },
     },
     {
       name: 'summary',

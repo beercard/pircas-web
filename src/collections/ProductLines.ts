@@ -40,7 +40,14 @@ export const ProductLines: CollectionConfig<'product-lines'> = {
   },
   fields: [
     // --- Lo esencial -----------------------------------------------------------------------
-    { name: 'name', label: 'Nombre de la línea', type: 'text', required: true, localized: true },
+    {
+      name: 'name',
+      label: 'Nombre de la línea',
+      type: 'text',
+      required: true,
+      localized: true,
+      admin: { components: { Cell: '@/components/admin/ThumbnailCell#TitleCell' } },
+    },
     {
       name: 'tagline',
       label: 'Frase corta',

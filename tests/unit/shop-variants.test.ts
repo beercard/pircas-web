@@ -90,3 +90,14 @@ describe('foto según la medida elegida', () => {
     expect(closestRatio([null, undefined], 1)).toBe(-1)
   })
 })
+
+describe('textos de botones', () => {
+  it('usa los originales cuando el panel está vacío', async () => {
+    const { resolveShopLabels, DEFAULT_SHOP_LABELS } = await import('@/lib/shop/labels')
+    expect(resolveShopLabels(null)).toEqual(DEFAULT_SHOP_LABELS)
+    expect(resolveShopLabels({ card: '  ', add: 'Sumar' })).toEqual({
+      ...DEFAULT_SHOP_LABELS,
+      add: 'Sumar',
+    })
+  })
+})

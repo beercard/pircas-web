@@ -171,6 +171,24 @@ export interface Product {
    */
   shortDescription: string;
   /**
+   * Texto largo que se muestra debajo de las fotos en la página del producto.
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
    * La que se ve en tarjetas y listados. Horizontal, idealmente 1600 px de ancho.
    */
   featuredImage: number | Media;
@@ -250,26 +268,6 @@ export interface Product {
      */
     installments?: number | null;
   };
-  category: number | ProductCategory;
-  /**
-   * Opcional (vidrios o rejas no pertenecen a una línea).
-   */
-  line?: (number | null) | ProductLine;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
   audience?: string | null;
   /**
    * Ej: "2–4" → "Hojas". Máximo 3.
@@ -336,6 +334,11 @@ export interface Product {
      */
     fixedDescription?: string | null;
   };
+  category: number | ProductCategory;
+  /**
+   * Opcional (vidrios o rejas no pertenecen a una línea).
+   */
+  line?: (number | null) | ProductLine;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -2240,6 +2243,7 @@ export interface PayloadMigration {
 export interface ProductsSelect<T extends boolean = true> {
   name?: T;
   shortDescription?: T;
+  description?: T;
   featuredImage?: T;
   gallery?: T;
   shop?:
@@ -2277,9 +2281,6 @@ export interface ProductsSelect<T extends boolean = true> {
         transferDiscount?: T;
         installments?: T;
       };
-  category?: T;
-  line?: T;
-  description?: T;
   audience?: T;
   facts?:
     | T
@@ -2327,6 +2328,8 @@ export interface ProductsSelect<T extends boolean = true> {
         secondSide?: T;
         fixedDescription?: T;
       };
+  category?: T;
+  line?: T;
   generateSlug?: T;
   slug?: T;
   featured?: T;
@@ -4232,6 +4235,15 @@ export interface ShopSetting {
   vatPercent?: number | null;
   thanksMessage?: string | null;
   /**
+   * Texto de los botones de los productos. Si dejás uno vacío se usa el texto original.
+   */
+  buttons?: {
+    card?: string | null;
+    choose?: string | null;
+    add?: string | null;
+    now?: string | null;
+  };
+  /**
    * Si queda vacío se usan los destinatarios de las consultas (Formularios y cotizador).
    */
   notificationEmails?:
@@ -4805,6 +4817,14 @@ export interface ShopSettingsSelect<T extends boolean = true> {
   validityDays?: T;
   vatPercent?: T;
   thanksMessage?: T;
+  buttons?:
+    | T
+    | {
+        card?: T;
+        choose?: T;
+        add?: T;
+        now?: T;
+      };
   notificationEmails?:
     | T
     | {

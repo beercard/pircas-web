@@ -2039,3 +2039,17 @@ h4 {
     }
   }
 }
+
+/* Nombre del documento en los listados: enlace para entrar a editar. */
+.pircas-title-link {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+
+  &:hover {
+    color: var(--p-brand, #c46128);
+    text-decoration-color: currentColor;
+  }
+}

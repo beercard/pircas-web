@@ -88,6 +88,55 @@ export const ShopSettings: GlobalConfig = {
               defaultValue:
                 'Te escribimos por WhatsApp para resolver tus dudas, coordinar la entrega o la colocación.',
             },
+            {
+              name: 'buttons',
+              label: 'Textos de los botones',
+              type: 'group',
+              admin: {
+                description:
+                  'Texto de los botones de los productos. Si dejás uno vacío se usa el texto original.',
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'card',
+                      label: 'En la tarjeta del producto (listado)',
+                      type: 'text',
+                      maxLength: 40,
+                      admin: { width: '50%', placeholder: 'Pedir presupuesto' },
+                    },
+                    {
+                      name: 'choose',
+                      label: 'En la tarjeta de la tienda (productos con medidas)',
+                      type: 'text',
+                      maxLength: 40,
+                      admin: { width: '50%', placeholder: 'Elegir medida' },
+                    },
+                  ],
+                },
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'add',
+                      label: 'Botón principal de la ficha',
+                      type: 'text',
+                      maxLength: 40,
+                      admin: { width: '50%', placeholder: 'Agregar al presupuesto' },
+                    },
+                    {
+                      name: 'now',
+                      label: 'Botón secundario de la ficha',
+                      type: 'text',
+                      maxLength: 40,
+                      admin: { width: '50%', placeholder: 'Pedir presupuesto ahora' },
+                    },
+                  ],
+                },
+              ],
+            },
           ],
         },
         {

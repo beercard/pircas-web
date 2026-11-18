@@ -9,9 +9,11 @@ import { DraftModeBanner } from '@/components/layout/DraftModeBanner'
 import { SiteFooter } from '@/components/layout/SiteFooter'
 import { SiteHeader } from '@/components/layout/SiteHeader'
 import { JsonLd } from '@/components/seo/JsonLd'
+import { ShopLabelsProvider } from '@/components/shop/ShopLabels'
 import { isDraftMode } from '@/lib/data/client'
-import { getSeoDefaults, getSiteSettings } from '@/lib/data/globals'
+import { getSeoDefaults, getShopSettings, getSiteSettings } from '@/lib/data/globals'
 import { getSiteUrl } from '@/lib/routes'
+import { resolveShopLabels } from '@/lib/shop/labels'
 import { organizationJsonLd, websiteJsonLd } from '@/lib/seo/jsonld'
 
 const montserrat = Montserrat({
@@ -50,11 +52,14 @@ export const viewport: Viewport = {
 }
 
 export default async function FrontendLayout({ children }: { children: ReactNode }) {
-  const [settings, seo, draft] = await Promise.all([
+  const [settings, seo, draft, shop] = await Promise.all([
     getSiteSettings(),
     getSeoDefaults(),
     isDraftMode(),
+    getShopSettings(),
   ])
+  // Textos de los botones de la tienda: los del panel, o los originales si están vacíos.
+  const labels = resolveShopLabels(shop?.buttons)
 
   return (
     <html lang="es-AR" className={montserrat.variable}>
@@ -68,7 +73,7 @@ export default async function FrontendLayout({ children }: { children: ReactNode
         {draft && <DraftModeBanner />}
         <SiteHeader />
         <main id="contenido" className="min-h-[60vh]">
-          {children}
+          <ShopLabelsProvider labels={labels}>{children}</ShopLabelsProvider>
         </main>
         <SiteFooter />
         <JsonLd data={[organizationJsonLd(settings, seo), websiteJsonLd(seo)]} />

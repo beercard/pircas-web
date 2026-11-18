@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { ShopLabel } from '@/components/shop/ShopLabels'
 import { CmsImage } from '@/components/ui/CmsImage'
 import type { Product } from '@/payload-types'
 import { isPopulated } from '@/lib/data/populated'
@@ -40,7 +41,7 @@ export function ProductCard({
           </span>
         )}
         <span className="mt-auto flex items-center justify-between pt-[18px] text-[0.72rem] tracking-[0.18em] uppercase">
-          {product.shop?.enabled && product.shop.price ? 'Pedir presupuesto' : 'Ver detalle'}{' '}
+          {product.shop?.enabled && product.shop.price ? <ShopLabel name="card" /> : 'Ver detalle'}{' '}
           <span aria-hidden="true" className="text-base text-brand">
             →
           </span>
