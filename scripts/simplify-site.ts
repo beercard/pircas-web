@@ -37,7 +37,9 @@ const draftHome = await payload.findGlobal({
   draft: true,
   overrideAccess: true,
 })
-const sections = (home.sections ?? []) as unknown as Block[]
+// Se parte del último borrador: así no se pisan las correcciones de texto hechas en el panel
+// que todavía no se publicaron (quedan publicadas junto con este cambio).
+const sections = (draftHome.sections ?? home.sections ?? []) as unknown as Block[]
 
 const isRemoved = (b: Block) =>
   ['audiences', 'statement', 'advisor'].includes(b.blockType) ||
@@ -64,11 +66,9 @@ const kept = sections
   .map(({ b }) => b)
 const homeChanged = JSON.stringify(kept) !== JSON.stringify(sections)
 
-log(`Inicio publicado: ${sections.map(name).join(' | ')}`)
+log(`Inicio antes:     ${sections.map(name).join(' | ')}`)
 if (JSON.stringify(draftHome.sections) !== JSON.stringify(home.sections))
-  log(
-    `Inicio (borrador sin publicar, distinto): ${((draftHome.sections ?? []) as unknown as Block[]).map(name).join(' | ')}`,
-  )
+  log('Inicio: hay un borrador sin publicar; se publica junto con este cambio.')
 log(`Inicio después:   ${kept.map(name).join(' | ')}`)
 
 // --- Menú y pie: enlaces a las páginas de "ambientes" -----------------------------------------
