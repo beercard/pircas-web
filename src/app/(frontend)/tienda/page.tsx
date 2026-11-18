@@ -7,7 +7,7 @@ import { MadeToMeasureCard, ShopProductCard } from '@/components/shop/ShopProduc
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { cn } from '@/lib/cn'
-import { getProductCategories, getProducts } from '@/lib/data/catalog'
+import { getProductCategories, getProductLines, getProducts } from '@/lib/data/catalog'
 import { ROUTES } from '@/lib/routes'
 import { buildMetadata } from '@/lib/seo/metadata'
 import { getQuoteCatalog } from '@/lib/quote/catalog'
@@ -17,7 +17,7 @@ import { getShopConfig } from '@/lib/shop/config'
 import type { MadeToMeasureItem } from '@/lib/shop/catalog'
 import { COLORS } from '@/lib/shop/options'
 
-type Search = { categoria?: string; color?: string; orden?: string; q?: string }
+type Search = { categoria?: string; linea?: string; color?: string; orden?: string; q?: string }
 type Props = { searchParams: Promise<Search> }
 
 const SORTS = [
@@ -29,7 +29,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const [sp, categories] = await Promise.all([searchParams, getProductCategories()])
   const category = categories.find((c) => c.slug === sp.categoria) ?? null
   // Solo la tienda y sus categorías se indexan; búsqueda, color y orden son variantes.
-  const filtered = Boolean(sp.q || sp.color || (sp.orden && sp.orden !== 'destacados'))
+  const filtered = Boolean(sp.q || sp.linea || sp.color || (sp.orden && sp.orden !== 'destacados'))
   const canonicalPath = category ? `${ROUTES.shop}?categoria=${category.slug}` : ROUTES.shop
   return buildMetadata({
     path: ROUTES.shop,
@@ -54,9 +54,10 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 export default async function ShopPage({ searchParams }: Props) {
   const sp = await searchParams
   const search = sp.q?.trim().slice(0, 80) || undefined
-  const [config, categories, docs, quoteCatalog] = await Promise.all([
+  const [config, categories, lines, docs, quoteCatalog] = await Promise.all([
     getShopConfig(),
     getProductCategories(),
+    getProductLines(),
     getProducts({ search, limit: 300 }),
     getQuoteCatalog(),
   ])
@@ -76,6 +77,9 @@ export default async function ShopPage({ searchParams }: Props) {
   const activeSub = activeTop?.children.find((s) => s.slug === sp.categoria) ?? null
   const scope = activeSub ? [activeSub.id] : activeTop ? categoryIds(activeTop) : null
 
+  // Línea activa (llega desde la página de cada línea).
+  const line = lines.find((l) => l.slug === sp.linea) ?? null
+
   const usedColors = COLORS.filter((c) =>
     all.some((p) => p.colors.some((x) => x.value === c.value)),
   )
@@ -86,6 +90,7 @@ export default async function ShopPage({ searchParams }: Props) {
     .filter(
       (p) =>
         (!scope || (p.categoryId !== null && scope.includes(p.categoryId))) &&
+        (!line || p.lineSlug === line.slug) &&
         (!color || p.colors.some((c) => c.value === color.value)),
     )
     .sort((a, b) =>
@@ -98,7 +103,7 @@ export default async function ShopPage({ searchParams }: Props) {
     return all.filter((p) => p.categoryId !== null && ids.includes(p.categoryId)).length
   }
 
-  const hasFilters = Boolean(activeTop || color || search || order !== 'destacados')
+  const hasFilters = Boolean(activeTop || line || color || search || order !== 'destacados')
   const hrefWith = (patch: Partial<Search>) => {
     const next: Search = { ...sp, ...patch }
     const qs = new URLSearchParams(
@@ -109,7 +114,9 @@ export default async function ShopPage({ searchParams }: Props) {
 
   const title = search
     ? `Resultados para “${search}”`
-    : (activeSub?.name ?? activeTop?.name ?? 'Todos los productos')
+    : line
+      ? [activeSub?.name ?? activeTop?.name, `Línea ${line.name}`].filter(Boolean).join(' · ')
+      : (activeSub?.name ?? activeTop?.name ?? 'Todos los productos')
   const label = 'text-eyebrow tracking-[0.2em] text-muted uppercase'
   const input =
     'h-11 w-full border border-line-strong bg-white px-3 text-sm outline-none focus:border-brand'
@@ -182,6 +189,7 @@ export default async function ShopPage({ searchParams }: Props) {
           })}
         </ul>
         {sp.categoria && activeTop && <input type="hidden" name="categoria" value={sp.categoria} />}
+        {line && <input type="hidden" name="linea" value={line.slug ?? ''} />}
       </nav>
 
       {usedColors.length > 1 && (

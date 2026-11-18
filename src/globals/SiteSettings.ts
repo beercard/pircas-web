@@ -178,6 +178,41 @@ export const SiteSettings: GlobalConfig = {
               ],
             },
             {
+              name: 'branches',
+              label: 'Otros locales',
+              type: 'array',
+              labels: { singular: 'Local', plural: 'Locales' },
+              admin: {
+                description:
+                  'Sucursales además del local principal. Se muestran en Contacto y en el pie de página, cada una con su "Cómo llegar".',
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'street',
+                      label: 'Dirección',
+                      type: 'text',
+                      required: true,
+                      admin: { width: '50%', description: 'Ej: Av. Richieri esq. Mosconi' },
+                    },
+                    { name: 'city', label: 'Ciudad', type: 'text', admin: { width: '25%' } },
+                    { name: 'region', label: 'Provincia', type: 'text', admin: { width: '25%' } },
+                  ],
+                },
+                {
+                  name: 'mapsUrl',
+                  label: 'Enlace a Google Maps (opcional)',
+                  type: 'text',
+                  admin: {
+                    description:
+                      'Vacío = "Cómo llegar" abre Google Maps con la ruta hasta esta dirección.',
+                  },
+                },
+              ],
+            },
+            {
               name: 'coverageArea',
               label: 'Zona de cobertura',
               type: 'text',

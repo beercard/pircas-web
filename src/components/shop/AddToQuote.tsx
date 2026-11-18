@@ -416,7 +416,7 @@ export function QuoteBox({ product }: { product: ShopProduct }) {
           type="button"
           onClick={() => {
             add(false)
-            router.push(ROUTES.quoteList)
+            router.push(`${ROUTES.quoteList}#tus-datos`)
           }}
           className={cn(buttonVariants({ variant: 'outline' }), 'flex-1 justify-center')}
         >

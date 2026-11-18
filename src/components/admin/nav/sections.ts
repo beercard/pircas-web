@@ -2,7 +2,7 @@
  * Estructura del menú del panel, pensada por tareas (como Shopify / Tiendanube) y no por el
  * modelo de datos: 7 entradas principales; lo técnico queda dentro de "Configuración".
  * Cada ítem se muestra solo si el usuario puede ver esa sección.
- * SEO, redirecciones, menú y footer no están: se gestionan por código.
+ * SEO y redirecciones no están: se gestionan por código.
  */
 
 export type NavIconName =
@@ -43,7 +43,7 @@ export const NAV_SECTIONS: NavSectionConfig[] = [
   },
   {
     key: 'catalog',
-    label: 'Productos',
+    label: 'Productos y líneas',
     icon: 'package',
     items: [
       { label: 'Productos', entity: c('products') },
@@ -68,6 +68,8 @@ export const NAV_SECTIONS: NavSectionConfig[] = [
       { label: 'Página de inicio', entity: g('homepage') },
       { label: 'Otras páginas', entity: c('pages') },
       { label: 'Listados', entity: g('archive-pages') },
+      { label: 'Menú del sitio', entity: g('header') },
+      { label: 'Pie de página y franja final', entity: g('footer') },
     ],
   },
   {

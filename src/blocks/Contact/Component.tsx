@@ -9,6 +9,7 @@ import type { ContactBlock as ContactBlockData } from '@/payload-types'
 import { getFormsSettings, getSiteSettings } from '@/lib/data/globals'
 import { turnstileSiteKey } from '@/lib/forms/turnstile'
 import type { CmsLink as CmsLinkData } from '@/lib/links'
+import { siteLocations } from '@/lib/locations'
 import { getWhatsAppConfig, whatsappUrl } from '@/lib/whatsapp'
 
 /** Datos del local + recuadro al cotizador + formulario de consulta. */
@@ -19,32 +20,27 @@ export async function ContactBlock({ title, promo, showMap, form, settings }: Co
   const instagramHandle = site.instagram?.match(/instagram\.com\/([^/?#]+)/)?.[1]
 
   const rows: { label: string; value: ReactNode }[] = []
-  if (a?.street)
+  const locations = siteLocations(site)
+  for (const loc of locations)
     rows.push({
-      label: 'Local',
-      value: a.mapsUrl ? (
+      label: locations.length > 1 && loc.city ? `Local ${loc.city}` : 'Local',
+      value: (
         <TrackedAnchor
-          href={a.mapsUrl}
+          href={loc.directionsUrl}
           target="_blank"
           rel="noopener noreferrer"
           event="map_click"
           params={{ location: 'contact' }}
           className="group inline-block hover:text-brand"
-          title="Ver en Google Maps"
+          title="Cómo llegar (Google Maps)"
         >
-          {a.street}
+          {loc.street}
           <br />
-          {[a.city, a.region, 'Argentina'].filter(Boolean).join(', ')}
+          {[loc.cityLine, 'Argentina'].filter(Boolean).join(', ')}
           <span className="mt-1.5 block text-eyebrow font-medium tracking-[0.18em] text-brand-ink uppercase group-hover:underline">
             Cómo llegar →
           </span>
         </TrackedAnchor>
-      ) : (
-        <>
-          {a.street}
-          <br />
-          {[a.city, a.region, 'Argentina'].filter(Boolean).join(', ')}
-        </>
       ),
     })
   if (site.workingHours?.length)

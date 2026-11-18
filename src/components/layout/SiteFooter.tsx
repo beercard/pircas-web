@@ -8,6 +8,7 @@ import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
 import { cn } from '@/lib/cn'
 import { getFooter, getSiteSettings } from '@/lib/data/globals'
 import type { CmsLink as CmsLinkData } from '@/lib/links'
+import { siteLocations } from '@/lib/locations'
 import { getWhatsAppConfig, whatsappUrl } from '@/lib/whatsapp'
 
 /** Franja final terracota ("¿Tenés una obra o una reforma?"). Se oculta con [data-hide-footer-cta]. */
@@ -63,7 +64,6 @@ async function FooterCta() {
 export async function SiteFooter() {
   const [footer, settings] = await Promise.all([getFooter(), getSiteSettings()])
   const wa = whatsappUrl(getWhatsAppConfig(settings))
-  const a = settings.address
   const copyright = (footer.copyright || `© {year} ${settings.brandName}`).replace(
     '{year}',
     String(new Date().getFullYear()),
@@ -103,28 +103,25 @@ export async function SiteFooter() {
           ))}
 
           <address className="flex flex-col gap-2.5 text-[0.84rem] leading-relaxed font-normal text-white/75 not-italic">
-            {a?.street &&
-              (a.mapsUrl ? (
-                <TrackedAnchor
-                  href={a.mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  event="map_click"
-                  params={{ location: 'footer' }}
-                  className="hover:text-white"
-                  title="Ver en Google Maps"
-                >
-                  {a.street}
-                  <br />
-                  {[a.city, a.region].filter(Boolean).join(', ')}
-                </TrackedAnchor>
-              ) : (
-                <span>
-                  {a.street}
-                  <br />
-                  {[a.city, a.region].filter(Boolean).join(', ')}
+            {siteLocations(settings).map((loc) => (
+              <TrackedAnchor
+                key={loc.key}
+                href={loc.directionsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                event="map_click"
+                params={{ location: 'footer' }}
+                className="group hover:text-white"
+                title="Cómo llegar (Google Maps)"
+              >
+                {loc.street}
+                <br />
+                {loc.cityLine}
+                <span className="block text-[0.72rem] tracking-[0.14em] text-white uppercase group-hover:text-brand-soft">
+                  Cómo llegar →
                 </span>
-              ))}
+              </TrackedAnchor>
+            ))}
             {settings.phone && (
               <TrackedAnchor
                 href={`tel:+${(settings.whatsapp?.number ?? settings.phone).replace(/\D/g, '')}`}

@@ -51,8 +51,8 @@ export function HeroBlock({
           />
           {decoration !== false && (
             <DoorShape
-              hollow
-              className="-right-[5%] -bottom-[10%] w-[clamp(200px,34vw,520px)] text-brand/80"
+              brand
+              className="-right-[5%] -bottom-[10%] w-[clamp(200px,34vw,520px)] text-brand opacity-80"
             />
           )}
           <div className="relative mx-auto flex w-full max-w-site flex-col justify-end gap-8 px-gutter pt-[11.25rem] pb-[4.5rem]">

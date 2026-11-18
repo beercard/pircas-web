@@ -37,11 +37,11 @@ export function HeaderLogo({ brandName, logo }: Pick<Props, 'brandName' | 'logo'
         width={logo.width}
         height={logo.height}
         priority
-        className="h-10 w-auto"
+        className="h-12 w-auto"
       />
     )
   }
-  return <BrandLogo />
+  return <BrandLogo size="lg" />
 }
 
 /**

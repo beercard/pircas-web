@@ -52,6 +52,8 @@ export type ShopProduct = {
   categoryId: number | null
   category: string | null
   categorySlug: string | null
+  /** Línea a la que pertenece (filtro de la tienda). */
+  lineSlug: string | null
   image: { url: string; alt: string } | null
   colors: { value: ColorValue; label: string; hex: string }[]
   /** Accesorios opcionales que se pueden sumar (ventanas). */
@@ -139,6 +141,7 @@ export function toShopProduct(p: Product, { full = false } = {}): ShopProduct | 
     categoryId: category?.id ?? (typeof p.category === 'number' ? p.category : null),
     category: category?.name ?? null,
     categorySlug: category?.slug ?? null,
+    lineSlug: isPopulated(p.line) ? (p.line.slug ?? null) : null,
     image: thumb ? { url: mediaSrc(thumb) ?? thumb, alt: media?.alt || p.name } : null,
     colors: COLORS.filter((c) => colorValues.includes(c.value)).map((c) => ({ ...c })),
     accessories: ACCESSORIES.filter((a) => a.value in prices).map((a) => ({ ...a })),

@@ -3693,6 +3693,24 @@ export interface SiteSetting {
     mapEmbedQuery?: string | null;
   };
   /**
+   * Sucursales además del local principal. Se muestran en Contacto y en el pie de página, cada una con su "Cómo llegar".
+   */
+  branches?:
+    | {
+        /**
+         * Ej: Av. Richieri esq. Mosconi
+         */
+        street: string;
+        city?: string | null;
+        region?: string | null;
+        /**
+         * Vacío = "Cómo llegar" abre Google Maps con la ruta hasta esta dirección.
+         */
+        mapsUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
    * Ej: "Coronda y zona (+40 km) · Envíos a todo el país".
    */
   coverageArea?: string | null;
@@ -3733,7 +3751,7 @@ export interface SiteSetting {
   createdAt?: string | null;
 }
 /**
- * Menú principal. Un ítem puede tener un menú desplegable grande (columnas de enlaces + recuadro destacado). Arrastrá para reordenar.
+ * Menú principal del sitio. Un ítem puede tener un menú desplegable grande (columnas de enlaces + recuadro destacado). Arrastrá para reordenar. El enlace a la Tienda se agrega solo mientras el presupuesto online esté activo.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header".
@@ -4482,6 +4500,15 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         country?: T;
         mapsUrl?: T;
         mapEmbedQuery?: T;
+      };
+  branches?:
+    | T
+    | {
+        street?: T;
+        city?: T;
+        region?: T;
+        mapsUrl?: T;
+        id?: T;
       };
   coverageArea?: T;
   workingHours?:

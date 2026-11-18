@@ -9,36 +9,40 @@ import {
   WORD_VIEWBOX,
 } from './brand-paths'
 
-/** Trazo de la "P-puerta" de la marca, en unidades de 480×680. */
-const DOOR_PATH = 'M0 0 H280 A200 200 0 0 1 280 400 H160 V680 H0 Z'
-/** Misma forma con el vano interior calado (hero de la home). */
-const DOOR_PATH_HOLLOW = `${DOOR_PATH} M160 130 H270 A70 70 0 0 1 270 270 H160 Z`
-
 /**
- * Forma decorativa de marca (la "P" que también es una puerta).
+ * Forma decorativa de marca: el isotipo de la identidad (la "P" que también es una puerta).
+ * Por defecto es una silueta de un solo color (toma el color del texto). Con `brand` va en
+ * los colores de la marca: cuerpo en el color del texto (naranja) y hoja gris.
  * Siempre decorativa: aria-hidden y sin eventos de puntero.
  */
 export function DoorShape({
   className,
-  hollow,
+  brand,
   mirrored,
 }: {
   className?: string
-  hollow?: boolean
+  brand?: boolean
   mirrored?: boolean
 }) {
   return (
     <svg
       aria-hidden="true"
-      viewBox="0 0 480 680"
-      preserveAspectRatio="none"
+      viewBox={ISO_VIEWBOX}
       className={cn(
-        'pointer-events-none absolute aspect-[480/680]',
+        'pointer-events-none absolute aspect-[67/89]',
         mirrored && '-scale-x-100',
         className,
       )}
     >
-      <path d={hollow ? DOOR_PATH_HOLLOW : DOOR_PATH} fill="currentColor" fillRule="evenodd" />
+      {brand ? (
+        <>
+          <path d={ISO_BODY} fill="currentColor" />
+          <path d={ISO_LEAF} fill="#6d6e71" />
+        </>
+      ) : (
+        // Un solo trazo: la superposición de cuerpo y hoja no se oscurece con colores translúcidos.
+        <path d={`${ISO_BODY} ${ISO_LEAF}`} fill="currentColor" />
+      )}
     </svg>
   )
 }
@@ -75,22 +79,25 @@ export function BrandLogo({
   brandName = 'PIRCAS',
   tagline = 'ABERTURAS',
   tone,
+  size,
 }: {
   className?: string
   brandName?: string
   tagline?: string
   tone?: 'light'
+  /** `lg`: versión más grande (encabezado del sitio). */
+  size?: 'lg'
 }) {
   const official = brandName.toUpperCase() === 'PIRCAS' && tagline.toUpperCase() === 'ABERTURAS'
   return (
     <span className={cn('brand-logo flex items-center gap-3', className)} data-tone={tone}>
-      <DoorMark className="h-9 w-[27px]" />
+      <DoorMark className={size === 'lg' ? 'h-11 w-[33px]' : 'h-9 w-[27px]'} />
       {official ? (
         <svg
           role="img"
           aria-label={`${brandName} ${tagline}`}
           viewBox={WORD_VIEWBOX}
-          className="h-[23px] w-auto shrink-0"
+          className={cn('w-auto shrink-0', size === 'lg' ? 'h-7' : 'h-[23px]')}
         >
           <path d={WORD_NAME} fill="var(--brand-name)" />
           <path d={WORD_TAGLINE} fill="var(--brand-tagline)" />

@@ -15,12 +15,13 @@ import { Chips } from '@/components/ui/Chips'
 import { CmsImage } from '@/components/ui/CmsImage'
 import { Facts } from '@/components/ui/Facts'
 import { Gallery } from '@/components/ui/Gallery'
-import { getProductLineBySlug, getProductLines } from '@/lib/data/catalog'
+import { getProductLineBySlug, getProductLines, getProducts } from '@/lib/data/catalog'
 import { getSiteSettings } from '@/lib/data/globals'
 import { cn } from '@/lib/cn'
 import { fileUrl, toGalleryImages } from '@/lib/media'
 import { pathFor, ROUTES } from '@/lib/routes'
 import { buildMetadata } from '@/lib/seo/metadata'
+import { getShopConfig, toShopProduct } from '@/lib/shop/config'
 import { getWhatsAppConfig, productWhatsAppMessage, whatsappUrl } from '@/lib/whatsapp'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -44,7 +45,15 @@ export default async function ProductLinePage({ params }: Props) {
   const line = await getProductLineBySlug((await params).slug)
   if (!line) notFound()
   const datasheet = fileUrl(line.datasheetFile)
-  const [site, allLines] = await Promise.all([getSiteSettings(), getProductLines()])
+  const [site, allLines, shop, lineProducts] = await Promise.all([
+    getSiteSettings(),
+    getProductLines(),
+    getShopConfig(),
+    getProducts({ lineId: line.id, limit: 300 }),
+  ])
+  // Productos de la línea que se pueden presupuestar en la tienda.
+  const inShop = shop.enabled ? lineProducts.filter((p) => toShopProduct(p)).length : 0
+  const shopHref = `${ROUTES.shop}?linea=${encodeURIComponent(line.slug ?? '')}`
   const others = allLines.filter((l) => l.id !== line.id)
   const wa = whatsappUrl(getWhatsAppConfig(site), productWhatsAppMessage(`la línea ${line.name}`))
   const gallery = toGalleryImages(line.gallery)
@@ -79,12 +88,18 @@ export default async function ProductLinePage({ params }: Props) {
             {line.tagline}
           </p>
           <div className="flex flex-wrap gap-3 pt-1.5">
-            <Link
-              href={`${ROUTES.quote}?linea=${encodeURIComponent(line.slug)}`}
-              className={buttonVariants({ variant: 'primary-on-dark' })}
-            >
-              Solicitar presupuesto <span aria-hidden="true">→</span>
-            </Link>
+            {inShop > 0 ? (
+              <Link href={shopHref} className={buttonVariants({ variant: 'primary-on-dark' })}>
+                Ver productos de esta línea <span aria-hidden="true">→</span>
+              </Link>
+            ) : (
+              <Link
+                href={`${ROUTES.quote}?linea=${encodeURIComponent(line.slug)}`}
+                className={buttonVariants({ variant: 'primary-on-dark' })}
+              >
+                Solicitar presupuesto <span aria-hidden="true">→</span>
+              </Link>
+            )}
             {wa && (
               <TrackedAnchor
                 href={wa}
@@ -110,6 +125,14 @@ export default async function ProductLinePage({ params }: Props) {
           <div className="flex flex-col gap-[18px]">
             <RichText data={line.description} />
             <Facts facts={line.facts} className="mt-2" />
+            {inShop > 0 && (
+              <Link
+                href={shopHref}
+                className={cn(buttonVariants({ variant: 'dark' }), 'mt-3 self-start')}
+              >
+                Ver los {inShop} productos de la línea <span aria-hidden="true">→</span>
+              </Link>
+            )}
           </div>
         </div>
       </section>

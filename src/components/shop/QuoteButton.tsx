@@ -99,7 +99,7 @@ export function QuoteButton() {
               <footer className="shrink-0 border-t border-line bg-white px-5 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
                 <div className="flex flex-col gap-2">
                   <Link
-                    href={ROUTES.quoteList}
+                    href={`${ROUTES.quoteList}#tus-datos`}
                     className={cn(buttonVariants({ variant: 'primary' }), 'justify-center')}
                   >
                     Recibir mi presupuesto

@@ -56,6 +56,8 @@ function EmptyQuote() {
 }
 
 type Values = { fullName: string; phone: string; city: string; notes: string; website: string }
+/** Ancla del formulario de datos (paso 2). */
+export const FORM_ID = 'tus-datos'
 const EMPTY: Values = { fullName: '', phone: '', city: '', notes: '', website: '' }
 
 /** Página del presupuesto: la lista (editable) + el formulario corto con WhatsApp. */
@@ -79,6 +81,14 @@ export function QuotePage({ turnstileSiteKey }: { turnstileSiteKey: string | nul
     viewed.current = true
     track('view_quote', { items: count, products: lines.length })
   }, [ready, lines.length, count])
+
+  // Quien llega desde "Pedir presupuesto" va directo a sus datos (en el celular quedan
+  // debajo de la lista de productos). La página se dibuja recién al leer la lista guardada.
+  useEffect(() => {
+    if (!ready || !lines.length || window.location.hash !== `#${FORM_ID}`) return
+    formRef.current?.scrollIntoView({ block: 'start' })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready])
 
   if (!ready || done)
     return (
@@ -192,13 +202,23 @@ export function QuotePage({ turnstileSiteKey }: { turnstileSiteKey: string | nul
           </Link>
         </header>
         <QuoteLines lines={lines} />
+        <a
+          href={`#${FORM_ID}`}
+          className={cn(
+            buttonVariants({ variant: 'dark', size: 'sm' }),
+            'my-4 justify-center lg:hidden',
+          )}
+        >
+          Continuar: completar mis datos <span aria-hidden="true">↓</span>
+        </a>
       </section>
 
       <form
+        id={FORM_ID}
         ref={formRef}
         onSubmit={onSubmit}
         noValidate
-        className="flex flex-col gap-5 border border-line bg-white p-5 sm:p-7 lg:sticky lg:top-[calc(var(--spacing-header)+1.5rem)]"
+        className="flex scroll-mt-[calc(var(--spacing-header)+1rem)] flex-col gap-5 border border-line bg-white p-5 sm:p-7 lg:sticky lg:top-[calc(var(--spacing-header)+1.5rem)]"
       >
         <div className="flex flex-col gap-2">
           <h2 className="text-xl tracking-[-0.01em]">2. Completá tu WhatsApp</h2>

@@ -10,6 +10,7 @@ import * as migration_20261110_222904_presupuesto_agregar from './20261110_22290
 import * as migration_20261112_221447_medidas_iva from './20261112_221447_medidas_iva';
 import * as migration_20261112_221933_marca_de_agua from './20261112_221933_marca_de_agua';
 import * as migration_20261112_231345_proporcion_foto from './20261112_231345_proporcion_foto';
+import * as migration_20261118_022540_sucursales from './20261118_022540_sucursales';
 
 export const migrations = [
   {
@@ -70,6 +71,11 @@ export const migrations = [
   {
     up: migration_20261112_231345_proporcion_foto.up,
     down: migration_20261112_231345_proporcion_foto.down,
-    name: '20261112_231345_proporcion_foto'
+    name: '20261112_231345_proporcion_foto',
+  },
+  {
+    up: migration_20261118_022540_sucursales.up,
+    down: migration_20261118_022540_sucursales.down,
+    name: '20261118_022540_sucursales'
   },
 ];
