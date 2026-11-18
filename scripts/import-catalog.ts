@@ -8,6 +8,14 @@
  * IVA), photos.json y la carpeta fotos/. Las fotos se llevan a un lienzo 4:3 (para que la
  * tarjeta muestre la abertura entera) y reciben la marca de agua.
  * Además deja las categorías del Drive y elimina los productos de ejemplo (código EJ-…).
+ *
+ * Los productos que YA existen no se tocan: lo que se edita en el panel manda. Para pisar
+ * algo a propósito hay que pedirlo con ACTUALIZAR (una o varias partes, separadas por coma):
+ *   ACTUALIZAR=fotos      foto principal y galería (y fotos de categorías y líneas)
+ *   ACTUALIZAR=precios    medidas, precios, colores y opciones
+ *   ACTUALIZAR=textos     nombre, descripciones y ficha técnica
+ *   ACTUALIZAR=orden      categoría, línea, destacado y orden
+ *   ACTUALIZAR=todo       todo lo anterior
  */
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
@@ -274,6 +282,17 @@ function shortOf(text: string, max = 210): string {
 }
 
 const payload = await getPayload({ config })
+
+/** Partes de los productos existentes que esta corrida puede pisar (ver cabecera). */
+const PARTS = ['fotos', 'precios', 'textos', 'orden'] as const
+type Part = (typeof PARTS)[number]
+const asked = (process.env.ACTUALIZAR ?? '')
+  .split(',')
+  .map((x) => x.trim().toLowerCase())
+  .filter(Boolean)
+const unknown = asked.filter((x) => x !== 'todo' && !PARTS.includes(x as Part))
+if (unknown.length) throw new Error(`ACTUALIZAR no reconoce: ${unknown.join(', ')}`)
+const overwrite = (part: Part) => asked.includes('todo') || asked.includes(part)
 const catalog = JSON.parse(readFileSync(path.join(DIR, 'catalog.json'), 'utf8')) as {
   products: Doc[]
 }
@@ -420,6 +439,8 @@ for (const [order, c] of CATEGORIES.entries()) {
 
 let created = 0
 let updated = 0
+/** Productos existentes que se dejaron como están en el panel. */
+let kept = 0
 const skipped: string[] = []
 
 for (const [i, doc] of catalog.products.entries()) {
@@ -448,8 +469,19 @@ for (const [i, doc] of catalog.products.entries()) {
   }
   if (rule.lead && mine[rule.lead]) mine.unshift(...mine.splice(rule.lead, 1))
   const name = doc.title.replace(/\s+/g, ' ').trim()
+  const existing = (
+    await payload.find({
+      collection: 'products',
+      where: { 'shop.sku': { equals: rule.sku } },
+      limit: 1,
+      depth: 0,
+      draft: true,
+      overrideAccess: true,
+    })
+  ).docs[0]
+  // Las fotos solo se suben si el producto es nuevo o se pidió actualizar las fotos.
   const mediaIds: number[] = []
-  for (const p of mine) mediaIds.push(await mediaFor(p, name))
+  if (!existing || overwrite('fotos')) for (const p of mine) mediaIds.push(await mediaFor(p, name))
 
   const colors = [...new Set(doc.rows.map((r) => r.color).filter(Boolean))] as (
     'blanco' | 'negro'
@@ -487,23 +519,51 @@ for (const [i, doc] of catalog.products.entries()) {
     _status: 'published' as const,
   }
 
-  const existing = await payload.find({
-    collection: 'products',
-    where: { 'shop.sku': { equals: rule.sku } },
-    limit: 1,
-    depth: 0,
-    draft: true,
-    overrideAccess: true,
-  })
-  if (existing.docs[0]) {
-    await payload.update({
-      collection: 'products',
-      id: existing.docs[0].id,
-      data,
-      overrideAccess: true,
-      context: { ...ctx },
-    })
-    updated++
+  if (existing) {
+    // Producto ya cargado: solo se pisa lo pedido con ACTUALIZAR; el resto queda como en el panel.
+    const patch = {
+      ...(overwrite('textos')
+        ? {
+            name: data.name,
+            shortDescription: data.shortDescription,
+            description: data.description,
+            technicalSpecifications: data.technicalSpecifications,
+          }
+        : {}),
+      ...(overwrite('fotos') ? { featuredImage: data.featuredImage, gallery: data.gallery } : {}),
+      ...(overwrite('orden')
+        ? {
+            category: data.category,
+            line: data.line,
+            featured: data.featured,
+            order: data.order,
+          }
+        : {}),
+      ...(overwrite('precios')
+        ? {
+            shop: {
+              ...existing.shop,
+              price: data.shop.price,
+              colors: data.shop.colors,
+              variants: data.shop.variants,
+              optionLabel: data.shop.optionLabel,
+              choices: data.shop.choices,
+            },
+          }
+        : {}),
+    }
+    const parts = PARTS.filter(overwrite)
+    if (parts.length) {
+      await payload.update({
+        collection: 'products',
+        id: existing.id,
+        data: patch as never,
+        overrideAccess: true,
+        context: { ...ctx },
+      })
+      updated++
+      payload.logger.info(`${rule.sku} · ${existing.name} · actualizado: ${parts.join(', ')}`)
+    } else kept++
   } else {
     await payload.create({
       collection: 'products',
@@ -512,10 +572,10 @@ for (const [i, doc] of catalog.products.entries()) {
       context: { ...ctx },
     })
     created++
+    payload.logger.info(
+      `${rule.sku} · ${name} · nuevo · ${doc.rows.length} precios · ${mediaIds.length} fotos`,
+    )
   }
-  payload.logger.info(
-    `${rule.sku} · ${name} · ${doc.rows.length} precios · ${mediaIds.length} fotos`,
-  )
 }
 
 // Fotos de categorías y líneas (home, menú, listados): también salen del Drive.
@@ -605,6 +665,10 @@ for (const sec of SECTION_PHOTOS) {
   })
   const target = found.docs[0]
   if (!photo || !target) continue
+  const current = (target as { image?: unknown; heroImage?: unknown })[
+    sec.collection === 'product-categories' ? 'image' : 'heroImage'
+  ]
+  if (current && !overwrite('fotos')) continue
   const media = await mediaFor(photo, (target as { name?: string }).name ?? sec.slug)
   if (sec.collection === 'product-categories')
     await payload.update({
@@ -663,7 +727,7 @@ for (const slug of OBSOLETE) {
 }
 
 payload.logger.info(
-  `Catálogo: ${created} creados · ${updated} actualizados · ${sections} fotos de categorías y líneas · ${examples.docs.length} de ejemplo eliminados · ${removed} categorías viejas eliminadas${skipped.length ? ` · sin cargar: ${skipped.join(' | ')}` : ''}`,
+  `Catálogo: ${created} creados · ${updated} actualizados · ${kept} sin tocar (editables en el panel) · ${sections} fotos de categorías y líneas · ${examples.docs.length} de ejemplo eliminados · ${removed} categorías viejas eliminadas${skipped.length ? ` · sin cargar: ${skipped.join(' | ')}` : ''}`,
 )
 // El script escribe por fuera de Next: se le pide al sitio que vacíe su caché de datos.
 // SITE_URL=https://… (el sitio que usa esta misma base).
