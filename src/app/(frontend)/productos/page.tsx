@@ -1,3 +1,4 @@
+import { Search } from 'lucide-react'
 import type { Metadata } from 'next'
 
 import { RenderBlocks, type LayoutBlock } from '@/blocks/RenderBlocks'
@@ -100,31 +101,38 @@ export default async function ProductsPage({ searchParams }: Props) {
 
       <section className="bg-paper pb-section-sm">
         <div className="container-site flex flex-col gap-[clamp(1.75rem,3vw,2.75rem)]">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <FilterTabs tabs={tabs} label="Filtrar productos por categoría" />
-            <form
-              action={ROUTES.products}
-              role="search"
-              className="flex items-center gap-2 border-b border-line-strong lg:mb-2 lg:w-64"
-            >
-              <label htmlFor="product-search" className="sr-only">
-                Buscar productos
-              </label>
-              <input
-                id="product-search"
-                name="q"
-                type="search"
-                defaultValue={search}
-                placeholder="Buscar…"
-                className="h-11 w-full bg-transparent text-sm outline-none placeholder:text-muted"
-              />
-              <button
-                type="submit"
-                className="text-eyebrow tracking-[0.18em] uppercase hover:text-brand"
+          {/* Barra de filtros: título + buscador arriba, categorías debajo a todo el ancho. */}
+          <div className="flex flex-col gap-5 border-y border-line py-6">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <p className="text-eyebrow tracking-[0.2em] text-muted uppercase">
+                Filtrar por categoría
+              </p>
+              <form
+                action={ROUTES.products}
+                role="search"
+                className="flex h-11 w-full items-center border border-line-strong bg-white focus-within:border-brand md:w-80"
               >
-                Buscar
-              </button>
-            </form>
+                <label htmlFor="product-search" className="sr-only">
+                  Buscar productos
+                </label>
+                <Search aria-hidden="true" className="ml-3.5 size-4 shrink-0 text-muted" />
+                <input
+                  id="product-search"
+                  name="q"
+                  type="search"
+                  defaultValue={search}
+                  placeholder="Buscar un producto…"
+                  className="h-full min-w-0 flex-1 bg-transparent px-3 text-sm outline-none placeholder:text-muted"
+                />
+                <button
+                  type="submit"
+                  className="h-full shrink-0 border-l border-line-strong px-4 text-[0.6875rem] tracking-[0.16em] uppercase hover:bg-ink hover:text-white"
+                >
+                  Buscar
+                </button>
+              </form>
+            </div>
+            <FilterTabs tabs={tabs} label="Filtrar productos por categoría" variant="chips" />
           </div>
 
           {showLines && lines.length > 0 && (
